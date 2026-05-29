@@ -18,27 +18,31 @@ app.use(express.static(path.join(__dirname, 'public')));
 const KB = JSON.parse(fs.readFileSync(path.join(__dirname, 'elbasan-knowledge.json'), 'utf8'));
 
 const CITY_CONTEXT = `
-KONTEKSTI I QYTETIT TË ELBASANIT (NJOHURI E DETYRUESHME):
+KONTEKSTI I QYTETIT TË ELBASANIT (NJOHURI E DETYRUESHME — BURIME ZYRTARE):
 
-HISTORIA: ${KB.historia.themelimi}. ${KB.historia.rilindja}. ${KB.historia.pas_1990}
+QYTETI: ${KB.qyteti.titujt}. ${KB.qyteti.pozita}. Popullsia bashkia: ${KB.qyteti.popullsia.bashkia_regjistri_civil}. Qyteti urban: ${KB.qyteti.popullsia.qyteti_urban}.
 
-ÇELIKU: ${KB.industria_dhe_ekonomia.celiku.historia}. ${KB.industria_dhe_ekonomia.celiku.gjendja_sot} ${KB.industria_dhe_ekonomia.celiku.kosto_sociale}
+HISTORIA: ${KB.historia.lashtesia}. ${KB.historia.periudha_osmane}. ${KB.historia.rilindja_kombetare}. ${KB.historia.pas_1990}
 
-EKONOMIA SOT: Papunësia ${KB.industria_dhe_ekonomia.ekonomia_sot.papunesia}. ${KB.industria_dhe_ekonomia.ekonomia_sot.te_rinjte}. ${KB.industria_dhe_ekonomia.ekonomia_sot.remitancat}
+KOMBINATI METALURGJIK (ÇELIKU): ${KB.kombinati_metalurgjik.ndertimi}. ${KB.kombinati_metalurgjik.privatizimi}. ${KB.kombinati_metalurgjik.gjendja_2024}. ${KB.kombinati_metalurgjik.ndotja_sot}. ${KB.kombinati_metalurgjik.kosto_humane}
 
-INFRASTRUKTURA: Transporti: ${KB.infrastruktura.transporti.rruga}. ${KB.infrastruktura.transporti.autobusat}. Ujësjellësi: ${KB.infrastruktura.ujesjellesi.problemi}. ${KB.infrastruktura.ujesjellesi.investimi}
+EKONOMIA SOT: ${KB.industria_dhe_ekonomia.ekonomia_sot.sektoret}. Remitanca: ${KB.industria_dhe_ekonomia.remitancat}
 
-MJEDISI: ${KB.mjedisi.ndotja_industriale}. ${KB.mjedisi.lumi_shkumbin}
+INFRASTRUKTURA: ${KB.infrastruktura.transporti.autostrada}. Autobusët: ${KB.infrastruktura.transporti.autobusat_urban}. Ujësjellësi: ${KB.infrastruktura.ujesjellesi.problemi}. ${KB.infrastruktura.kanalizimi}
 
-KULTURA: ${KB.kultura_dhe_trashegimia.kalaja}. ${KB.kultura_dhe_trashegimia.kongresi_1909}
+MJEDISI: ${KB.mjedisi.ndotja_kombinat}. ${KB.mjedisi.balezi}
 
-BASHKIA: Buxheti ${KB.bashkia_dhe_politika.buxheti}. Projektet aktive: ${KB.bashkia_dhe_politika.projektet_ne_zbatim.join('; ')}
+KULTURA: ${KB.kultura_dhe_trashegimia.kalaja}. ${KB.kultura_dhe_trashegimia.onufri}. ${KB.kultura_dhe_trashegimia.gastronomia}
 
-SFIDAT KRYESORE 2025-2030: ${KB.sfidat_2025_2030.join('; ')}
+BASHKIA: Buxheti ${KB.bashkia_dhe_politika.buxheti}. Projektet: ${KB.bashkia_dhe_politika.projektet_ne_zbatim.join('; ')}.
 
-UNIVERSITETI: ${KB.arsimi.universiteti.emri}, ${KB.arsimi.universiteti.studentet}. ${KB.arsimi.universiteti.sfidat}
+UNIVERSITETI: ${KB.arsimi.universiteti.emri}. ${KB.arsimi.universiteti.regjistrimet_2024_2025}. ${KB.arsimi.universiteti.nderkombetarizimi}. ${KB.arsimi.universiteti.sfidat}
 
-NORVEGJIA: ${KB.norvegjia_dhe_bashkepunimi.diaspora}. ${KB.norvegjia_dhe_bashkepunimi.modeli_nordik}
+DIASPORA: ${KB.diaspora.konteksti_kombetar}. Destinacionet: ${KB.diaspora.destinacionet_kryesore}. ${KB.diaspora.trendi_i_ri}. Për Elbasanin: ${KB.diaspora.per_elbasanin}
+
+NORVEGJIA: ${KB.norvegjia_bashkepunimi.konteksti_i_sakte}. ${KB.norvegjia_bashkepunimi.modeli_nordik}
+
+SFIDAT 2025-2030: ${KB.sfidat_2025_2030.join('; ')}
 `;
 
 const AGENTS = [
