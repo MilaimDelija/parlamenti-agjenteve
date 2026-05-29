@@ -18,212 +18,144 @@ app.use(express.static(path.join(__dirname, 'public')));
 const KB = JSON.parse(fs.readFileSync(path.join(__dirname, 'elbasan-knowledge.json'), 'utf8'));
 
 const CITY_CONTEXT = `
-KONTEKSTI I QYTETIT TË ELBASANIT (NJOHURI E DETYRUESHME — BURIME ZYRTARE):
+KONTEKSTI I QYTETIT TË ELBASANIT (NJOHURI E DETYRUESHME — BURIME ZYRTARE: elbasani.gov.al, INSTAT, euronews.al, reporter.al):
 
-QYTETI: ${KB.qyteti.titujt}. ${KB.qyteti.pozita}. Popullsia bashkia: ${KB.qyteti.popullsia.bashkia_regjistri_civil}. Qyteti urban: ${KB.qyteti.popullsia.qyteti_urban}.
+QYTETI: ${KB.qyteti.titujt}. ${KB.qyteti.pozita}. Popullsia e bashkisë sipas Regjistrit Civil: ${KB.qyteti.popullsia.bashkia_regjistri_civil}. Zona urbane: ${KB.qyteti.popullsia.qyteti_urban}.
 
 HISTORIA: ${KB.historia.lashtesia}. ${KB.historia.periudha_osmane}. ${KB.historia.rilindja_kombetare}. ${KB.historia.pas_1990}
 
-KOMBINATI METALURGJIK (ÇELIKU): ${KB.kombinati_metalurgjik.ndertimi}. ${KB.kombinati_metalurgjik.privatizimi}. ${KB.kombinati_metalurgjik.gjendja_2024}. ${KB.kombinati_metalurgjik.ndotja_sot}. ${KB.kombinati_metalurgjik.kosto_humane}
+KOMBINATI METALURGJIK: ${KB.kombinati_metalurgjik.ndertimi}. ${KB.kombinati_metalurgjik.privatizimi}. ${KB.kombinati_metalurgjik.gjendja_2024}. ${KB.kombinati_metalurgjik.ndotja_sot}. ${KB.kombinati_metalurgjik.kosto_humane}
 
-EKONOMIA SOT: ${KB.industria_dhe_ekonomia.ekonomia_sot.sektoret}. Remitanca: ${KB.industria_dhe_ekonomia.remitancat}
+EKONOMIA: ${KB.industria_dhe_ekonomia.ekonomia_sot.sektoret}. ${KB.industria_dhe_ekonomia.remitancat}
 
-INFRASTRUKTURA: ${KB.infrastruktura.transporti.autostrada}. Autobusët: ${KB.infrastruktura.transporti.autobusat_urban}. Ujësjellësi: ${KB.infrastruktura.ujesjellesi.problemi}. ${KB.infrastruktura.kanalizimi}
+INFRASTRUKTURA: ${KB.infrastruktura.transporti.autostrada}. ${KB.infrastruktura.transporti.autobusat_urban}. ${KB.infrastruktura.kanalizimi}
 
 MJEDISI: ${KB.mjedisi.ndotja_kombinat}. ${KB.mjedisi.balezi}
 
 KULTURA: ${KB.kultura_dhe_trashegimia.kalaja}. ${KB.kultura_dhe_trashegimia.onufri}. ${KB.kultura_dhe_trashegimia.gastronomia}
 
-BASHKIA: Buxheti ${KB.bashkia_dhe_politika.buxheti}. Projektet: ${KB.bashkia_dhe_politika.projektet_ne_zbatim.join('; ')}.
+BASHKIA: ${KB.bashkia_dhe_politika.buxheti}. Projekte: ${KB.bashkia_dhe_politika.projektet_ne_zbatim.join('; ')}.
 
-UNIVERSITETI: ${KB.arsimi.universiteti.emri}. ${KB.arsimi.universiteti.regjistrimet_2024_2025}. ${KB.arsimi.universiteti.nderkombetarizimi}. ${KB.arsimi.universiteti.sfidat}
+UNIVERSITETI: ${KB.arsimi.universiteti.emri}. ${KB.arsimi.universiteti.regjistrimet_2024_2025}. ${KB.arsimi.universiteti.nderkombetarizimi}.
 
-DIASPORA: ${KB.diaspora.konteksti_kombetar}. Destinacionet: ${KB.diaspora.destinacionet_kryesore}. ${KB.diaspora.trendi_i_ri}. Për Elbasanin: ${KB.diaspora.per_elbasanin}
+DIASPORA (E SAKTË): ${KB.diaspora.konteksti_kombetar}. ${KB.diaspora.destinacionet_kryesore}. ${KB.diaspora.per_elbasanin}
 
 NORVEGJIA: ${KB.norvegjia_bashkepunimi.konteksti_i_sakte}. ${KB.norvegjia_bashkepunimi.modeli_nordik}
 
-SFIDAT 2025-2030: ${KB.sfidat_2025_2030.join('; ')}
+SFIDAT: ${KB.sfidat_2025_2030.join('; ')}
 `;
 
-const AGENTS = [
+// ─── AGJENTËT ───────────────────────────────────────────────────────────────
+const DEBATE_AGENTS = [
   {
-    id: 'ekonomisti',
-    name: 'Artan Dervishi',
-    role: 'Ekonomisti',
-    color: '#1a6fb5',
-    bg: '#e8f2fc',
-    avatar: 'male_1',
-    personality: `Ti je Artan Dervishi, 52 vjeç, ekonomist zhvillimi urban me PhD nga Universiteti i Bolonjës.
-Ke punuar 15 vjet në Bankën Botërore dhe tani jeton dhe punon në Elbasan.
-Beson fuqimisht në investime strategjike, tërheqje kapitali të huaj dhe reformë institucionale.
-Je optimist për të ardhmen e Elbasanit nëse merren vendimet e drejta ekonomike.
-Ke shifra konkrete: di buxhetin e bashkisë (3.2 miliardë lekë), papunësinë (18-22%), koston e dekontaminimit të Kombinatit (200+ milionë euro sipas vlerësimeve).
-Shpesh bie ndesh me ekologen Mirela — ajo vë mjedisin mbi ekonominë, ti besoj se pa ekonomi të fortë nuk ka as mjedis.
-Kundërshtoje me emër kur nuk bie dakord: "Mirela, ajo që thua është ideale por jo realiste..."`
+    id: 'ekonomisti', name: 'Artan Dervishi', role: 'Ekonomisti',
+    color: '#1a6fb5', bg: '#e8f2fc', seat: 0,
+    personality: `Je Artan Dervishi, 52 vjeç, ekonomist zhvillimi urban me doktoraturë nga Universiteti i Bolonjës. Ke punuar 15 vjet në Bankën Botërore dhe tani jeton e punon në Elbasan. Beson në investime strategjike, tërheqje kapitali dhe reformë institucionale. Je optimist për Elbasanin nëse merren vendimet e duhura. Di shifra konkrete: buxheti i bashkisë, papunësia, kostot e dekontaminimit. Bie shpesh ndesh me ekologen Mirela — ajo vë mjedisin mbi gjithçka, ti beson se pa ekonomi të fortë nuk ka as mjedis. Kur nuk bie dakord e thua haptas: "Mirela, ajo që thua është ideale por jo e realizueshme tani..."
+RREGULLA GJUHE: Fol shqip standard, fjali të plota dhe të qarta. Mos përdor fjalë angleze. Mos u prezanto me emër. Mos thuaj "Si ekonomist..." — jeto rolin, mos e shpjego. Përgjigju gjithmonë DREJTPËRDREJT temës dhe asaj që tha folësi i fundit.`
   },
   {
-    id: 'ekolologu',
-    name: 'Mirela Kodra',
-    role: 'Ekolologja',
-    color: '#0a8a5c',
-    bg: '#e0f5ec',
-    avatar: 'female_1',
-    personality: `Ti je Mirela Kodra, 44 vjeç, ekologe dhe aktiviste mjedisore nga Elbasani.
-Ke studiuar mjedisin e Elbasanit për 20 vjet. Di çdo hollësi: zona e Kombinatit me 400 hektarë tokë të ndotur, nivelet e metaleve të rënda në ujërat nëntokësore, statistikat e kancerit dhe sëmundjeve respiratore mbi mesataren kombëtare.
-Je pasionante dhe e drejtpërdrejtë. Kur ekonomisti flet për "zhvillim industrial" ti thuaj se toka është e helmuar dhe fëmijët tanë paguajnë çmimin.
-Referoco gjithmonë të dhëna konkrete: "Lumi Shkumbin merr ton ujëra të patrajtuar çdo ditë", "40% e ujit humbet nga tubacionet e vjetra".
-Kundërshtoje Artanin me emër kur propozon zgjidhje që injorojnë mjedisin.
-Mbështete diasporën norvegjeze si model: Norvegjia ka treguar se ekonomia e gjelbër funksionon.`
+    id: 'ekolologu', name: 'Mirela Kodra', role: 'Ekolologja',
+    color: '#0a7a50', bg: '#e0f5ec', seat: 1,
+    personality: `Je Mirela Kodra, 44 vjeç, ekologe dhe aktiviste mjedisore nga Elbasani. Ke studiuar mjedisin e Elbasanit për 20 vjet. Di çdo hollësi: mbi 1.5 milionë ton mbetje industriale në zonën e ish-Kombinatit, ndotja e ujërave nëntokësore, problemet shëndetësore të banorëve të Bradasheshit. Je pasionante dhe e drejtpërdrejtë. Kur ekonomisti flet për "zhvillim pa kufizime" i thua: "Artan, kemi 1.5 milionë ton mbetje — kjo është trashëgimia jonë industriale." Mbështet modelet nordike të ekonomisë së gjelbër.
+RREGULLA GJUHE: Fol shqip standard, fjali të plota dhe të qarta. Mos përdor fjalë angleze. Mos u prezanto. Mos thuaj "Si ekologe..." Cito gjithmonë fakte konkrete nga realiteti i Elbasanit.`
   },
   {
-    id: 'historiani',
-    name: 'Prof. Skënder Hoxha',
-    role: 'Historiani',
-    color: '#8a5a0a',
-    bg: '#fdf0dc',
-    avatar: 'male_2',
-    personality: `Ti je Prof. Skënder Hoxha, 67 vjeç, historian dhe albanolog, profesor emeritus i Universitetit "Aleksandër Xhuvani" të Elbasanit.
-Ke shkruar 12 libra për historinë e Elbasanit. E njeh qytetin si shpellën e tua.
-Di çdo datë, çdo ngjarje: themelimin 1466 nga Mehmeti II, Kongresin e Elbasanit 1909 ku u standardizua alfabeti shqip, rolin e Pazarit si qendër tregtare ballkanike, industrializimin komunist dhe çmimin human të tij.
-Çdo vendim aktual e sheh nëpërmjet lentës historike. Shpesh mendon se të tjerët po bëjnë të njëjtat gabime si paraardhësit.
-Citoje historinë kur është relevante por mos u kthe vetëm në të kaluarën — Elbasani ka nevojë për vizion, jo vetëm kujtesë.
-Je pak melankolik por me shpresë. Ke parë qytetin të lulëzojë dhe të bjerë. Beson se mund të ngrihet sërish.`
+    id: 'historiani', name: 'Prof. Skënder Hoxha', role: 'Historiani',
+    color: '#7a4f08', bg: '#fdf0dc', seat: 2,
+    personality: `Je Prof. Skënder Hoxha, 67 vjeç, historian dhe albanolog, profesor emeritus i Universitetit "Aleksandër Xhuvani" të Elbasanit. Ke shkruar 12 libra për historinë e qytetit. E njeh çdo ngjarje: themelimin e qytetit si Skampa romake, Kongresin e Elbasanit 1909 ku u standardizua alfabeti shqip, Onufrin e Elbasanit — piktotin e madh të shekullit XVI, industrializimin komunist dhe çmimin e tij. Çdo vendim aktual e sheh nëpërmjet historisë. Je paksa melankolik por me shpresë. Beson se Elbasani mund të ngrihet sërish.
+RREGULLA GJUHE: Fol shqip standard dhe letrar, fjali të plota. Mos u prezanto. Mos thuaj "Si historian..." Refero ngjarje historike vetëm kur ndriçojnë të tashmen konkrete.`
   },
   {
-    id: 'qytetarja',
-    name: 'Fatmira Shehu',
-    role: 'Qytetarja',
-    color: '#b03a1a',
-    bg: '#fceae4',
-    avatar: 'female_2',
-    personality: `Ti je Fatmira Shehu, 38 vjeç, nënë e tre fëmijëve, punon si kamariere dhe pastruse — dy punë për të mbajtur familjen.
-Burri jot ka emigruar në Gjermani 5 vjet më parë. Jetoni nga remitancat dhe pagat e tua të ulëta.
-Merr autobusin çdo ditë — di si punon (ose nuk punon) transporti publik i Elbasanit.
-Fëmijët e tu shkojnë në shkollë me infrastrukturë të vjetër. Ke fqinjë me sëmundje nga ndotja e Kombinatit.
-Flet nga përvoja reale, jo nga teoritë. Kur profesori flet për historinë ose ekonomisti për shifrat, ti pyete: "Po unë dhe familja ime konkretisht çfarë marrim?"
-Nuk ke frikë të jesh e ashpër: "Kemi dëgjuar shumë premtime. Ne duam vepra."
-Shpesh je e frustruar por nuk je cinik — ke ende shpresë, sidomos për fëmijët.
-Ndonjëherë thua se po mendon seriozisht të emigrosh — ky është mesazhi më i fuqishëm i krizës demografike.`
+    id: 'qytetarja', name: 'Fatmira Shehu', role: 'Qytetarja',
+    color: '#a03318', bg: '#fceae4', seat: 3,
+    personality: `Je Fatmira Shehu, 38 vjeç, nënë e tre fëmijëve, punon si kamariere dhe pastruse — dy punë për të mbajtur familjen. Burri yt ka emigruar në Gjermani 5 vjet më parë. Jetoni nga remitancat dhe paga jote. Merr autobusin çdo ditë — e di si funksionon ose nuk funksionon transporti. Fëmijët tënë shkojnë në shkollë me probleme infrastrukture. Ke fqinjë me sëmundje frymëmarrjeje nga ndotja e zonës industriale. Flet nga jeta reale, jo nga teoritë. Kur të tjerët bëhen shumë teknikë pyet: "E gjithë kjo është mirë, por unë dhe fëmijët e mi çfarë marrim konkretisht?" Ndonjëherë thua se po mendon seriozisht të emigrosh — ky është mesazhi më i fortë i krizës.
+RREGULLA GJUHE: Fol shqip të thjeshtë dhe të drejtpërdrejtë, siç flet njeriu i zakonshëm. Mos u prezanto. Mos thuaj "Si qytetare..." Fjali të shkurtra, konkrete, njerëzore.`
   },
   {
-    id: 'avokatja',
-    name: 'Arta Gjiknuri',
-    role: 'Avokatja',
-    color: '#4a38b0',
-    bg: '#eeecfe',
-    avatar: 'female_3',
-    personality: `Ti je Arta Gjiknuri, 41 vjeç, avokate e specializuar në të drejtën administrative dhe të drejtat e njeriut.
-Ke qenë konsulente ligjore e disa bashkive shqiptare dhe ke punuar me organizata ndërkombëtare për reformën e drejtësisë lokale.
-Di ligjin shqiptar të vetëqeverisjes lokale, direktivat evropiane, konventat ndërkombëtare.
-Çdo çështje e kalon nëpërmjet filtrit ligjor: a është transparent procesi? A janë konsultuar qytetarët? A ka llogaridhënie?
-Ke analizuar buxhetin e bashkisë Elbasan — ke gjetur probleme me prokurimet publike dhe mungesë transparence.
-Mbështete modelin norvegjez të e-governance dhe pjesëmarrjes qytetare si standard të arritur.
-Ndonjëherë ndesh me Fatmirën — ti flet për procedura ligjore, ajo dëshiron rezultate të shpejta. Duhet t'i shpjegosh se procedurat ligjore mbrojnë pikërisht njerëz si ajo.
-Shpesh cito raste konkrete: "Bashkia Elbasan ka humbur tre herë në gjykatë për çështje tokash..."` 
-  },
-  {
-    id: 'moderatori',
-    name: 'Ada Berisha',
-    role: 'Moderatorja',
-    color: '#c9a84c',
-    bg: '#fdf6e3',
-    avatar: 'female_4',
-    personality: `Ti je Ada Berisha, 35 vjeç, gazetare investigative dhe moderatore e njohur televizive nga Tirana.
-Ke moderuar dhjetëra debate politike kombëtare. Je e njohur për pyetjet provokuese dhe të drejta.
-Detyrë jote: mbaj debatin gjallë, nxirr kontradiktat, bëj pyetje që të tjerët nuk guxojnë.
-Prezanto çdo agjent me fjalë të shkurtra goditëse para se të flasin.
-Kur debati ngec ose bëhet shumë teknik, ndërhy me një pyetje provokuese për publikun.
-Gjenerojë pyetje specifike për çdo agjent bazuar në atë që kanë thënë.
-Ndonjëherë citon statistika apo fakte befasuese për të nxitur debat.
-Mbaj kohën: pas 2 raundesh bëj sintetizën e pozicioneve dhe pyet publikun të vendosë.
-ROLI TEKNIK: Vetëm moderatori e ka këtë rol — ti koordinon, nuk debaton.`
+    id: 'avokatja', name: 'Arta Gjiknuri', role: 'Avokatja',
+    color: '#3d2ea0', bg: '#eeecfe', seat: 4,
+    personality: `Je Arta Gjiknuri, 41 vjeç, avokate e specializuar në të drejtën administrative dhe të drejtat e njeriut. Ke qenë konsulente ligjore e disa bashkive dhe ke punuar me organizata ndërkombëtare për reformën e drejtësisë lokale. Çdo çështje e kalon nëpërmjet filtrit ligjor: transparenca e procesit, konsultimi me qytetarët, llogaridhënia institucionale. Ke analizuar buxhetin e bashkisë Elbasan dhe ke gjetur probleme me prokurimin publik. Mbështet modelin nordik të e-governance. Ndonjëherë bie ndesh me Fatmirën — ti flet për procedura, ajo dëshiron rezultate. Duhet t'i shpjegosh: "Fatmira, procedurat ligjore mbrojnë pikërisht njerëz si ty."
+RREGULLA GJUHE: Fol shqip standard dhe juridik, por të kuptueshëm. Mos u prezanto. Mos thuaj "Si avokate..." Cito të drejta konkrete dhe precedentë realistë.`
   }
 ];
 
-const PROVOCATIVE_QUESTIONS = [
-  "Nëse nesër do largoheshit nga Elbasani, cili do ishte arsyeja kryesore?",
-  "Çeliku i Partisë prodhoi dy gjenerata punëtorësh — kush mban përgjegjësi për atë që lanë pas?",
-  "Norvegjia arriti prosperity me naftë — Elbasani çfarë ka si burim të paexploatuar?",
-  "Nëse do kishit 10 milionë euro për Elbasanin, ku do i investonit SAKTË?",
-  "Fëmijët e sotëm të Elbasanit — ku do jenë pas 20 vjetësh?",
-  "Kush e largoi më shumë Elbasanin — komunizmi apo tranzicioni?",
-  "A mundet Elbasani të jetë turizëm, teknologji dhe bujqësi — apo duhet të zgjedhë?",
-  "Emigrantët elbasanas dërgojnë para — po nëse dërgonin talente, çfarë do ndryshonte?",
-  "Universiteti 'Aleksandër Xhuvani' — aktiv i paçmuar apo i humbur?",
-  "Bashkia ka 3.2 miliardë lekë buxhet — citoni një shpenzim me të cilin nuk bini dakord."
-];
-
-let debateState = {
-  topic: '',
-  round: 0,
-  messages: [],
-  isDebating: false,
-  currentSpeaker: null,
-  audienceVotes: {},
-  tensionMatrix: {},
-  phase: 'idle'
+const MODERATOR = {
+  id: 'moderatori', name: 'Ada Berisha', role: 'Moderatorja',
+  color: '#b8922a', bg: '#fdf6e3', seat: 5,
+  personality: `Je Ada Berisha, 35 vjeç, gazetare investigative dhe moderatore televizive. Ke moderuar dhjetëra debate politike. Je e njohur për pyetje provokuese dhe të drejta.
+FUNKSIONET E TUAT:
+1. HAPJA: Prezanto temën me 2-3 fjali dramatike. Pastaj njoftoje SAKTËSISHT rendin e foljes: "Do flasë fillimisht Artan Dervishi — Ekonomisti, pastaj Mirela Kodra — Ekolologja, pastaj Prof. Skënder Hoxha — Historiani, pastaj Fatmira Shehu — Qytetarja, dhe së fundi Arta Gjiknuri — Avokatja."
+2. TRANZICIONI: Pas çdo rundi bëj sintezën e dy tensioneve kryesore (2 fjali) dhe bëj një pyetje të re provokuese për të gjithë.
+3. PYETJA E AUDIENCËS: Kur dikush nga publiku pyet, thirr me emër agjentin e adresuar dhe pyete të përgjigjet.
+RREGULLA GJUHE: Fol shqip standard dhe profesional, fjali të plota. Mos u prezanto. Mos thuaj "Si moderatore..." Gjuha duhet të jetë televizive dhe dinamike.`
 };
 
-app.get('/qr', async (req, res) => {
-  const host = req.protocol + '://' + req.get('host');
-  const url = `${host}/audience`;
-  const qr = await QRCode.toDataURL(url, { width: 300, margin: 2, color: { dark: '#1a1a1a', light: '#ffffff' } });
-  res.json({ qr, url });
-});
+const PROVOCATIVE_QUESTIONS = [
+  "Nëse do të largoheshit nga Elbasani nesër, cili do të ishte arsyeja kryesore?",
+  "Çeliku i Partisë prodhoi dy breza punëtorësh — kush mban sot përgjegjësinë për 1.5 milionë ton mbetje?",
+  "Norvegjia arriti mirëqenien me naftë — Elbasani çfarë burimi të paexploatuar ka?",
+  "Nëse do kishit 10 milionë euro për Elbasanin, ku do i investonit saktësisht?",
+  "Fëmijët e sotëm të Elbasanit — ku do jenë pas 20 vjetësh?",
+  "Kongresi i Elbasanit 1909 standardizoi alfabetin shqip — çfarë do të standardizonte Kongresi i 2026?",
+  "Universiteti 'Aleksandër Xhuvani' ka 97 programe studimi — sa prej tyre zgjidhim një problem real të qytetit?",
+  "48,000 shqiptarë morën shtetësi të huaj në 2024 — si e ndjen Elbasani këtë shifër?",
+  "Bashkia ka buxhet 3 miliardë lekë — citoni një shpenzim me të cilin nuk bini dakord.",
+  "Çfarë ka mësuar Elbasani nga rënia e Kombinatit që nuk do ta përsërisë kurrë?"
+];
 
-app.get('/audience', (req, res) => res.sendFile(path.join(__dirname, 'public', 'audience.html')));
-app.get('/agents', (req, res) => res.json(AGENTS));
-app.get('/state', (req, res) => res.json(debateState));
-app.get('/questions', (req, res) => res.json(PROVOCATIVE_QUESTIONS));
+// ─── STATE ──────────────────────────────────────────────────────────────────
+let state = {
+  topic: '', round: 0, messages: [],
+  isRunning: false, currentSpeaker: null,
+  votes: {}, phase: 'idle'
+};
 
-function updateTension(agentId1, agentId2, level) {
-  const key = [agentId1, agentId2].sort().join('-');
-  debateState.tensionMatrix[key] = level;
-  io.emit('tensionUpdate', debateState.tensionMatrix);
-}
-
-async function agentSpeak(agentId, trigger, phase = 'debate') {
-  const agent = AGENTS.find(a => a.id === agentId);
+// ─── AGENT SPEAK — sekuencial dhe i sigurt ──────────────────────────────────
+async function agentSpeak(agentId, trigger, phase) {
+  const agent = agentId === 'moderatori'
+    ? MODERATOR
+    : DEBATE_AGENTS.find(a => a.id === agentId);
   if (!agent) return '';
 
-  debateState.currentSpeaker = agentId;
-  const msgId = agentId + '-' + Date.now();
-  io.emit('speaking', { agentId, start: true, msgId });
+  const msgId = `${agentId}-${Date.now()}`;
+  state.currentSpeaker = agentId;
+  io.emit('speaking', { agentId, start: true, msgId, agentName: agent.name, agentRole: agent.role, agentColor: agent.color });
 
-  const recentHistory = debateState.messages.slice(-8).map(m =>
+  // Ndërtojmë historikun e debatit
+  const history = state.messages.slice(-10).map(m =>
     `[${m.agentRole}] ${m.agentName}: ${m.text}`
   ).join('\n\n');
 
-  const phaseInstructions = {
-    'opening': `Ky është FJALIMI HAPËS. Prezanto qartë pozicionin tënd për temën. Jep 2-3 argumente kryesore. Refero gjithmonë realitete konkrete të Elbasanit. Shkruaj 4-6 paragrafë të plotë.`,
-    'debate': `Ky është RUNDI I DEBATIT. DETYRIMISHT reago ndaj asaj që kanë thënë të tjerët — cito me emër atë me të cilin nuk bie dakord. Zhvillo argumentin tënd me fakte konkrete. Mund të ndryshohen mendimet bazuar në argumente të forta. Shkruaj 3-5 paragrafë.`,
-    'response': `Kjo është KUNDËRPËRGJIGJE. Dikush të ka sfiduar direkt — përgjigju me forcë dhe argumente. Mos u rrëmbe, mos u trego. Shkruaj 3-4 paragrafë të fuqishëm.`,
-    'audience': `NJË QYTETAR NGA AUDIENCA KA PYETUR. Kjo është rast i shtuar — fol direkt me publikun, jo me kolegët. Bëj lidhjen me realitetin e përditshëm. Shkruaj 3-4 paragrafë.`,
-    'closing': `Ky është FJALIMI MBYLLËS. Sintetizo pozicionin tënd, çfarë ke mësuar nga debati, dhe çfarë do të bëje konkretisht nëse vendimi do ishte yt. Shkruaj 4-5 paragrafë.`
+  const phaseGuide = {
+    opening: 'FJALIM HAPËS: Prezanto qartë qëndrimin tënd. Jep 3-4 argumente konkrete me shifra dhe fakte nga realiteti i Elbasanit. Shkruaj 4-5 paragrafë të plotë dhe koherentë.',
+    debate: 'DEBAT: DETYRIMISHT cito me emër atë me të cilin bie dakord ose nuk bie dakord. Zhvillo argumentin me fakte konkrete. Shkruaj 3-5 paragrafë.',
+    response: 'KUNDËRPËRGJIGJE: Dikush të ka sfiduar — përgjigju me argumente të forta. 3-4 paragrafë.',
+    audience: 'PYETJE NGA AUDIENCA: Foli drejtpërdrejt publikut. Bëji lidhjen me jetën e përditshme. 3-4 paragrafë.',
+    closing: 'FJALIM MBYLLËS: Sintetizo qëndrimin, çfarë ke mësuar nga debati, çfarë do bëje konkretisht. 4-5 paragrafë.',
+    moderation: 'MODERIM: Prezanto, ndërli, bëj pyetje provokuese. 2-4 fjali maksimum.'
   };
 
   const systemPrompt = `${agent.personality}
 
 ${CITY_CONTEXT}
 
-HISTORIA E DEBATIT DERI TANI:
-${recentHistory || 'Debati sapo ka filluar.'}
+HISTORIA E DEBATIT:
+${history || '(Debati sapo ka filluar)'}
 
-TEMA E DEBATIT: "${debateState.topic}"
+TEMA: "${state.topic}"
 
-INSTRUKSIONE KRITIKE:
-${phaseInstructions[phase] || phaseInstructions['debate']}
+UDHËZIM PËR KËTË NDËRHYRJE:
+${phaseGuide[phase] || phaseGuide.debate}
 
-- Fol GJITHMONË në shqip
-- Mos u prezanto me emër — dihesh kush jesh
-- Mos thuaj "Si ekonomist..." — jeto rolin, mos e shpjego
-- Refero FAKTE KONKRETE të Elbasanit nga njohuritë e tua
-- Nëse dikush ka thënë diçka të gabuar ose jo realiste, kundërshtoje me emër
-- Gjuha duhet të jetë e gjallë, njerëzore, me ndjenjë — jo si raport
-- Tensioni dhe mosmarrëveshja janë të mira — mos i shmang
-- Nëse je Fatmira, fol si dikush që ka humbur diçka — sepse ke humbur
-- Nëse je Prof. Skënder, citon historinë vetëm kur ndriçon të tashmen`;
+RREGULLA ABSOLUTE:
+- Shkruaj VETËM në shqip standard. Asnjë fjalë angleze.
+- Fjali të plota me kryefjalë, kallëzues dhe kundrinë — mos lër fjali të prera.
+- Mos u prezanto me emër në fillim.
+- Mos thuaj "Si [roli yt]..." — jeto rolin drejtpërdrejt.
+- Refero gjithmonë fakte konkrete nga Elbasani — mos fol në abstrakt.
+- Nëse dikush ka thënë diçka të gabuar, kundërshtoje me emër dhe argument.`;
 
+  let fullText = '';
   try {
     const stream = await groq.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
@@ -232,12 +164,11 @@ ${phaseInstructions[phase] || phaseInstructions['debate']}
         { role: 'user', content: trigger }
       ],
       stream: true,
-      max_tokens: 600,
-      temperature: 0.88,
-      top_p: 0.95
+      max_tokens: phase === 'moderation' ? 250 : 700,
+      temperature: 0.82,
+      top_p: 0.93
     });
 
-    let fullText = '';
     for await (const chunk of stream) {
       const delta = chunk.choices[0]?.delta?.content || '';
       if (delta) {
@@ -246,194 +177,179 @@ ${phaseInstructions[phase] || phaseInstructions['debate']}
       }
     }
 
-    const msg = {
-      agentId,
-      agentName: agent.name,
-      agentRole: agent.role,
-      agentColor: agent.color,
-      text: fullText,
-      timestamp: Date.now(),
-      phase,
-      msgId
-    };
-    debateState.messages.push(msg);
+    const msg = { agentId, agentName: agent.name, agentRole: agent.role, agentColor: agent.color, text: fullText, phase, msgId, timestamp: Date.now() };
+    state.messages.push(msg);
     io.emit('message', msg);
-
-    // Calculate tension with previous speaker
-    if (debateState.messages.length >= 2) {
-      const prev = debateState.messages[debateState.messages.length - 2];
-      if (prev && prev.agentId !== agentId) {
-        const tensionWords = ['jo', 'gabim', 'kundër', 'problem', 'nuk', 'por', 'megjithatë', 'absurd', 'i pamundur', 'rrezik'];
-        const tensionScore = tensionWords.filter(w => fullText.toLowerCase().includes(w)).length;
-        updateTension(agentId, prev.agentId, Math.min(tensionScore, 5));
-      }
-    }
-
     return fullText;
-  } catch (e) {
-    console.error('Agent error:', agentId, e.message);
-    io.emit('token', { agentId, token: 'Gabim teknik — duke riprøvuar...', msgId });
-    return '';
+
+  } catch (err) {
+    console.error(`[${agentId}] error:`, err.message);
+    const errText = 'Ndodhi një problem teknik. Po vazhdon debati...';
+    io.emit('token', { agentId, token: errText, msgId });
+    return errText;
   } finally {
-    debateState.currentSpeaker = null;
+    state.currentSpeaker = null;
     io.emit('speaking', { agentId, start: false, msgId });
+    await sleep(700);
   }
 }
 
-async function moderatorIntro(topic) {
-  return agentSpeak('moderatori', 
-    `Hap debatin për temën: "${topic}". Prezanto temën me 2-3 fjali dramatike, pastaj prezanto shkurtimisht (1 fjali secili) të pesë folësit dhe caktoi radhën e fjalës.`,
-    'opening'
-  );
-}
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-async function moderatorTransition(round) {
-  const question = PROVOCATIVE_QUESTIONS[round % PROVOCATIVE_QUESTIONS.length];
-  return agentSpeak('moderatori',
-    `Rundi ${round} mbaroi. Bëj një sintezë të shkurtër (2 fjali) të tensioneve kryesore, pastaj bëji kësaj pyetjeje provokuese seancës: "${question}"`,
-    'debate'
-  );
-}
+// ─── DEBATE ORCHESTRATION — sekuenciale dhe e garantuar ─────────────────────
+async function runFullRound(phase) {
+  state.round++;
+  state.phase = phase;
+  io.emit('roundStart', { round: state.round, phase });
+  console.log(`[Round ${state.round}] Phase: ${phase}`);
 
-async function runDebateRound(phase = 'debate') {
-  if (debateState.isDebating) return;
-  debateState.isDebating = true;
-  debateState.round++;
-  debateState.phase = phase;
-  io.emit('roundStart', { round: debateState.round, phase });
-
-  const speakingAgents = AGENTS.filter(a => a.id !== 'moderatori');
-
-  for (let i = 0; i < speakingAgents.length; i++) {
-    const agent = speakingAgents[i];
-    const prevMessages = debateState.messages.slice(-4);
-    const prevText = prevMessages.map(m => `${m.agentName}: ${m.text.substring(0, 200)}...`).join('\n');
+  for (let i = 0; i < DEBATE_AGENTS.length; i++) {
+    const agent = DEBATE_AGENTS[i];
+    const prev = state.messages.slice(-4).map(m => `${m.agentName}: ${m.text.substring(0, 150)}`).join('\n');
 
     let trigger;
-    if (phase === 'opening' || debateState.messages.filter(m => m.agentId !== 'moderatori').length === 0) {
-      trigger = `Tema e debatit është: "${debateState.topic}". Çfarë mendon ti për këtë?`;
+    if (phase === 'opening') {
+      trigger = `Tema e debatit është: "${state.topic}". Ky është fjalimi yt hapës. Çfarë mendon ti?`;
+    } else if (phase === 'closing') {
+      trigger = `Debati po mbyllet. Jep fjalimin tënd mbyllës për temën: "${state.topic}".`;
     } else {
-      trigger = `Reago ndaj asaj që u tha. Mos harro: je ${agent.name}, ${agent.role}. Çfarë thuaj ti?`;
+      trigger = `Reagoji atyre që u thanë. Merr qëndrimin tënd të qartë.\n\nÇfarë u tha kohët e fundit:\n${prev}`;
     }
 
-    await agentSpeak(agent.id, trigger, phase);
-    await new Promise(r => setTimeout(r, 800));
+    try {
+      await agentSpeak(agent.id, trigger, phase);
+    } catch (e) {
+      console.error(`Skipped agent ${agent.id}:`, e.message);
+    }
+    await sleep(500);
   }
 
-  debateState.isDebating = false;
-  io.emit('roundEnd', { round: debateState.round });
+  io.emit('roundEnd', { round: state.round });
+  state.isRunning = false;
+  console.log(`[Round ${state.round}] Completed.`);
 
-  // Moderator transition after each round
-  if (debateState.round > 0) {
-    setTimeout(() => moderatorTransition(debateState.round), 1500);
-  }
+  // Moderator tranzicion pas çdo rundi
+  await sleep(1200);
+  const q = PROVOCATIVE_QUESTIONS[state.round % PROVOCATIVE_QUESTIONS.length];
+  await agentSpeak('moderatori',
+    `Rundi ${state.round} mbaroi. Bëj sintezën e shkurtër të dy tensioneve kryesore (2 fjali) dhe bëji kësaj pyetjeje të re debatit: "${q}"`,
+    'moderation'
+  );
 }
 
-io.on('connection', (socket) => {
+// ─── ROUTES ─────────────────────────────────────────────────────────────────
+app.get('/qr', async (req, res) => {
+  const host = req.protocol + '://' + req.get('host');
+  const url = `${host}/audience`;
+  const qr = await QRCode.toDataURL(url, { width: 280, margin: 2, color: { dark: '#1a1a1a', light: '#ffffff' } });
+  res.json({ qr, url });
+});
+app.get('/audience', (req, res) => res.sendFile(path.join(__dirname, 'public', 'audience.html')));
+app.get('/agents', (req, res) => res.json([...DEBATE_AGENTS, MODERATOR]));
+app.get('/state', (req, res) => res.json(state));
+app.get('/knowledge', (req, res) => res.json(KB));
+app.get('/questions', (req, res) => res.json(PROVOCATIVE_QUESTIONS));
+
+// ─── SOCKET ──────────────────────────────────────────────────────────────────
+io.on('connection', socket => {
   console.log('Connected:', socket.id);
-  socket.emit('init', { agents: AGENTS, state: debateState });
+  socket.emit('init', { agents: [...DEBATE_AGENTS, MODERATOR], state, kb: KB });
 
   socket.on('setTopic', async ({ topic }) => {
-    debateState = {
-      topic,
-      round: 0,
-      messages: [],
-      isDebating: false,
-      currentSpeaker: null,
-      audienceVotes: {},
-      tensionMatrix: {},
-      phase: 'idle'
-    };
+    if (state.isRunning) return;
+    state = { topic, round: 0, messages: [], isRunning: true, currentSpeaker: null, votes: {}, phase: 'intro' };
     io.emit('topicSet', { topic });
     io.emit('clearMessages');
 
-    // Moderator opens
-    await moderatorIntro(topic);
-    await new Promise(r => setTimeout(r, 1000));
+    // Moderatori hap
+    await agentSpeak('moderatori',
+      `Hap debatin për temën: "${topic}". Prezantoje temën me 2-3 fjali dramatike. Pastaj njoftoje rendin e saktë të foljes: Artan Dervishi (Ekonomisti), Mirela Kodra (Ekolologja), Prof. Skënder Hoxha (Historiani), Fatmira Shehu (Qytetarja), Arta Gjiknuri (Avokatja). Thuaju se secilit do i jepet fjala sipas kësaj radhe.`,
+      'moderation'
+    );
 
-    // First round - opening statements
-    await runDebateRound('opening');
+    await sleep(800);
+    await runFullRound('opening');
   });
 
   socket.on('nextRound', async () => {
-    if (!debateState.isDebating && debateState.topic) {
-      const phase = debateState.round >= 2 ? 'closing' : 'debate';
-      await runDebateRound(phase);
-    }
+    if (state.isRunning || !state.topic) return;
+    state.isRunning = true;
+    const phase = state.round >= 2 ? 'closing' : 'debate';
+    await runFullRound(phase);
   });
 
   socket.on('audienceQuestion', async ({ question, targetAgent }) => {
-    io.emit('audienceQuestion', { question, targetAgent, timestamp: Date.now() });
+    if (state.isRunning) return;
+    state.isRunning = true;
 
-    const target = targetAgent || AGENTS[Math.floor(Math.random() * (AGENTS.length - 1))].id;
-    const agent = AGENTS.find(a => a.id === target);
+    const target = DEBATE_AGENTS.find(a => a.id === targetAgent) || DEBATE_AGENTS[Math.floor(Math.random() * DEBATE_AGENTS.length)];
+    io.emit('audienceQuestion', { question, targetAgent: target.id, targetName: target.name });
 
-    if (!debateState.isDebating) {
-      debateState.isDebating = true;
-      io.emit('roundStart', { round: debateState.round, phase: 'audience' });
+    // Moderatori e prezanton
+    await agentSpeak('moderatori',
+      `Një qytetar nga audienca ka pyetur ${target.name}: "${question}". Thirre ${target.name} të përgjigjet.`,
+      'moderation'
+    );
+    await sleep(500);
 
-      await agentSpeak(
-        target,
-        `Një qytetar nga audienca të pyet drejtpërdrejt: "${question}". Përgjigju direkt, me njerëzi dhe fakte konkrete.`,
-        'audience'
-      );
+    // Agjenti i adresuar përgjigjet
+    await agentSpeak(target.id,
+      `Një qytetar nga audienca të pyet drejtpërdrejt: "${question}". Përgjigju qartë, me fakte konkrete dhe me respekt për qytetarin.`,
+      'audience'
+    );
 
-      // One other agent reacts
-      const others = AGENTS.filter(a => a.id !== target && a.id !== 'moderatori');
-      const reactor = others[Math.floor(Math.random() * others.length)];
-      await new Promise(r => setTimeout(r, 600));
-      await agentSpeak(
-        reactor.id,
-        `${agent?.name} u përgjigj pyetjes së audiencës. Ke diçka për të shtuar ose kundërshtuar?`,
-        'response'
-      );
+    // Një agjent tjetër reagon
+    const reactor = DEBATE_AGENTS.filter(a => a.id !== target.id)[Math.floor(Math.random() * 4)];
+    await sleep(400);
+    await agentSpeak(reactor.id,
+      `${target.name} u përgjigj pyetjes. Ke diçka të rëndësishme për të shtuar ose kundërshtuar?`,
+      'debate'
+    );
 
-      debateState.isDebating = false;
-      io.emit('roundEnd', { round: debateState.round });
-    }
+    state.isRunning = false;
+    io.emit('roundEnd', { round: state.round });
   });
 
   socket.on('challengeAgent', async ({ challengerId, targetId }) => {
-    if (debateState.isDebating) return;
-    debateState.isDebating = true;
+    if (state.isRunning) return;
+    state.isRunning = true;
 
-    const challenger = AGENTS.find(a => a.id === challengerId);
-    const target = AGENTS.find(a => a.id === targetId);
-    if (!challenger || !target) { debateState.isDebating = false; return; }
+    const challenger = DEBATE_AGENTS.find(a => a.id === challengerId);
+    const target = DEBATE_AGENTS.find(a => a.id === targetId);
+    if (!challenger || !target) { state.isRunning = false; return; }
 
-    io.emit('challenge', { challengerId, targetId });
+    io.emit('challenge', { challengerId, targetId, challengerName: challenger.name, targetName: target.name });
+    const lastMsg = state.messages.filter(m => m.agentId === targetId).pop();
 
-    const lastMsg = debateState.messages.filter(m => m.agentId === targetId).pop();
-    await agentSpeak(
-      challengerId,
-      `Sfido ${target.name} direkt për atë që tha: "${lastMsg?.text?.substring(0, 300) || 'pozicionin e tyre'}". Kundërshto me argumente konkrete.`,
+    await agentSpeak(challengerId,
+      `Sfidon drejtpërdrejt ${target.name} për qëndrimin e tyre: "${lastMsg?.text?.substring(0, 200) || 'qëndrimin e tyre të fundit'}". Kundërshto me argumente konkrete.`,
+      'response'
+    );
+    await sleep(500);
+    await agentSpeak(targetId,
+      `${challenger.name} të ka sfiduar drejtpërdrejt. Mbroj qëndrimin tënd me argumente solide.`,
       'response'
     );
 
-    await new Promise(r => setTimeout(r, 600));
-    await agentSpeak(
-      targetId,
-      `${challenger.name} të ka sfiduar direkt. Mbrohu me argumente.`,
-      'response'
-    );
-
-    debateState.isDebating = false;
+    state.isRunning = false;
+    io.emit('roundEnd', { round: state.round });
   });
 
   socket.on('vote', ({ agentId }) => {
-    debateState.audienceVotes[agentId] = (debateState.audienceVotes[agentId] || 0) + 1;
-    io.emit('voteUpdate', debateState.audienceVotes);
+    state.votes[agentId] = (state.votes[agentId] || 0) + 1;
+    io.emit('voteUpdate', state.votes);
   });
 
   socket.on('injectQuestion', async ({ question }) => {
+    if (state.isRunning) return;
     io.emit('injectedQuestion', { question });
-    if (!debateState.isDebating) {
-      await agentSpeak('moderatori', `Bëju kësaj pyetjeje të papritur debatit: "${question}"`, 'debate');
-    }
+    state.isRunning = true;
+    await agentSpeak('moderatori', `Ndërhy në debat me këtë pyetje të papritur për të gjithë: "${question}"`, 'moderation');
+    state.isRunning = false;
   });
 
   socket.on('disconnect', () => console.log('Disconnected:', socket.id));
 });
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`Parlamenti live: http://localhost:${PORT}`));
+server.listen(PORT, () => console.log(`Parlamenti: http://localhost:${PORT}`));
