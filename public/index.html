@@ -108,7 +108,7 @@ html,body{height:100%;overflow:hidden;font-family:'IBM Plex Sans',sans-serif;bac
 
 /* STAGE — top half */
 .pstage{
-  flex:0 0 42%;position:relative;
+  flex:0 0 36%;position:relative;
   background:radial-gradient(ellipse at 50% 110%,#0f1e38 0%,#07090e 65%);
   border-bottom:1px solid var(--border);overflow:hidden
 }
@@ -173,10 +173,11 @@ html,body{height:100%;overflow:hidden;font-family:'IBM Plex Sans',sans-serif;bac
 
 /* Speaking info bar */
 .speak-bar{
-  position:absolute;top:10px;left:50%;transform:translateX(-50%);
-  background:rgba(7,9,14,.88);border:1px solid var(--gold);
-  padding:5px 16px;font-size:11px;color:var(--gold);
-  display:none;white-space:nowrap;backdrop-filter:blur(4px)
+  position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  background:rgba(7,9,14,.92);border:1px solid var(--gold);
+  padding:6px 20px;font-size:12px;font-weight:500;color:var(--gold);
+  display:none;white-space:nowrap;backdrop-filter:blur(6px);
+  letter-spacing:.04em;z-index:10
 }
 .speak-bar.show{display:block;animation:fu .3s}
 
@@ -195,7 +196,7 @@ html,body{height:100%;overflow:hidden;font-family:'IBM Plex Sans',sans-serif;bac
 
 /* DEBATE — bottom half */
 .pdebate{
-  flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;max-height:58vh
+  flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0
 }
 .dhead{display:flex;align-items:center;justify-content:space-between;
   padding:7px 16px;border-bottom:1px solid var(--border);flex-shrink:0;
@@ -211,12 +212,12 @@ html,body{height:100%;overflow:hidden;font-family:'IBM Plex Sans',sans-serif;bac
 .feed::-webkit-scrollbar{width:2px}
 .feed::-webkit-scrollbar-thumb{background:var(--border)}
 .msg{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.03);animation:fu .35s}
-.mav{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-size:8px;font-weight:600;flex-shrink:0;margin-top:2px}
+.mav{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:600;flex-shrink:0;margin-top:2px}
 .mbody{}
 .mname{font-size:9px;font-weight:500;margin-bottom:3px}
-.mtext{font-size:12px;line-height:1.75;color:rgba(232,228,216,.85);white-space:pre-wrap;word-break:break-word}
-.mtyp{font-size:11px;color:var(--muted);font-style:italic}
+.mtext{font-size:13px;line-height:1.78;color:rgba(232,228,216,.88);white-space:pre-wrap;word-break:break-word}
+.mtyp{font-size:12px;color:var(--muted);font-style:italic}
 .dctrl{display:flex;gap:6px;padding:8px 14px;border-top:1px solid var(--border);flex-shrink:0;background:var(--s1)}
 .cb{flex:1;padding:7px 4px;background:transparent;border:1px solid var(--border);color:var(--muted);
   font-size:9px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;
@@ -542,15 +543,25 @@ socket.on('roundEnd',()=>{
   document.querySelectorAll('.agent-seat.speaking').forEach(s=>s.classList.remove('speaking'));
   const f=document.getElementById('feed'); f.scrollTop=f.scrollHeight;
 });
-socket.on('speaking',({agentId,start,agentName,agentRole,agentColor})=>{
+socket.on('speaking',({agentId,start,agentName,agentRole,agentColor,msgId})=>{
   const seat=document.getElementById('seat-'+agentId);
   if(seat) seat.classList.toggle('speaking',start);
+  const nsEl=document.getElementById('nowSpeaking');
   if(start){
     showSpeakBar(agentName,agentRole,agentColor);
+    // Update now-speaking bar in debate area
+    document.getElementById('nsName').textContent=agentName;
+    document.getElementById('nsName').style.color=agentColor;
+    document.getElementById('nsRole').textContent=agentRole;
+    document.getElementById('nsBall').style.background=agentColor;
+    nsEl.style.display='flex';
     const liveKey=msgId||agentId;
     currentTokens[liveKey]='';
     addMsg({agentId,agentName,agentRole,agentColor,msgId:liveKey},true);
-  } else hideSpeakBar();
+  } else {
+    hideSpeakBar();
+    nsEl.style.display='none';
+  }
 });
 socket.on('token',({agentId,token,msgId})=>{
   const key=msgId||agentId;
