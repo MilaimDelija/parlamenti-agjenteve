@@ -4,492 +4,479 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Parlamenti i Agjentëve · Elbasan 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <style>
-:root {
-  --bg: #0c0f14;
-  --surface: #141820;
-  --surface2: #1c2230;
-  --border: rgba(255,255,255,0.07);
-  --text: #e8e6e0;
-  --muted: rgba(232,230,224,0.45);
-  --accent: #c9a84c;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; min-height: 100vh; overflow: hidden; }
+:root{--bg:#0c0f14;--s1:#141820;--s2:#1c2230;--s3:#242d3e;--border:rgba(255,255,255,0.07);--text:#e8e6e0;--muted:rgba(232,230,224,0.45);--accent:#c9a84c;--danger:#e24b4a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;overflow:hidden}
+.grid-bg{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
 
-.bg-grid {
-  position: fixed; inset: 0; z-index: 0;
-  background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-  background-size: 60px 60px;
-  pointer-events: none;
-}
+/* HEADER */
+.hdr{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border);background:rgba(12,15,20,0.97);backdrop-filter:blur(10px)}
+.hdr-l{display:flex;align-items:center;gap:12px}
+.logo{width:34px;height:34px;border:1px solid var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;color:var(--accent);font-size:16px;flex-shrink:0}
+.app-title{font-family:'Playfair Display',serif;font-size:17px}
+.app-sub{font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px}
+.hdr-c{display:flex;align-items:center;gap:10px}
+.phase-badge{padding:4px 12px;border:1px solid var(--border);font-size:10px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase}
+.phase-badge.active{border-color:var(--accent);color:var(--accent)}
+.live-pill{display:flex;align-items:center;gap:6px;padding:4px 12px;border:1px solid rgba(201,168,76,0.3);font-size:10px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);animation:pulse 1.5s infinite}
 
-.header {
-  position: relative; z-index: 10;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 32px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(12,15,20,0.95);
-  backdrop-filter: blur(10px);
-}
-.header-left { display: flex; align-items: center; gap: 14px; }
-.logo-mark {
-  width: 36px; height: 36px; border: 1px solid var(--accent);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Playfair Display', serif; color: var(--accent); font-size: 18px;
-}
-.app-name { font-family: 'Playfair Display', serif; font-size: 18px; letter-spacing: 0.02em; }
-.app-sub { font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
-.header-center { font-size: 12px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
-.live-badge {
-  display: flex; align-items: center; gap: 7px;
-  padding: 5px 14px; border: 1px solid rgba(201,168,76,0.3);
-  font-size: 11px; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase;
-}
-.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 1.5s infinite; }
+/* TOPIC */
+.topic-row{position:relative;z-index:9;display:flex;align-items:center;gap:14px;padding:10px 28px;background:var(--s1);border-bottom:1px solid var(--border)}
+.topic-lbl{font-size:10px;color:var(--accent);letter-spacing:0.1em;text-transform:uppercase;white-space:nowrap}
+.topic-inp{flex:1;background:transparent;border:none;outline:none;font-family:'Playfair Display',serif;font-size:14px;color:var(--text)}
+.topic-inp::placeholder{color:var(--muted)}
+.start-btn{padding:7px 18px;background:var(--accent);color:#0c0f14;border:none;cursor:pointer;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;white-space:nowrap;transition:opacity .2s}
+.start-btn:hover{opacity:.85}
+.start-btn:disabled{opacity:.4;cursor:not-allowed}
 
-.main { position: relative; z-index: 5; display: flex; flex-direction: column; height: calc(100vh - 69px); }
+/* LAYOUT */
+.arena{display:flex;height:calc(100vh - 115px);position:relative;z-index:5}
 
-.topic-bar {
-  padding: 12px 32px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 16px;
-}
-.topic-label { font-size: 10px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; white-space: nowrap; }
-.topic-text { font-family: 'Playfair Display', serif; font-size: 15px; color: var(--text); }
-.topic-input {
-  flex: 1; background: transparent; border: none; outline: none;
-  font-family: 'Playfair Display', serif; font-size: 15px; color: var(--text);
-}
-.topic-input::placeholder { color: var(--muted); }
-.start-btn {
-  padding: 7px 20px; background: var(--accent); color: #0c0f14;
-  border: none; cursor: pointer; font-size: 12px; font-weight: 500;
-  letter-spacing: 0.08em; text-transform: uppercase; transition: opacity 0.2s;
-  white-space: nowrap;
-}
-.start-btn:hover { opacity: 0.85; }
-.start-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+/* LEFT: AGENTS + DEBATE */
+.left{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--border);overflow:hidden}
+.agents-row{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--s1)}
 
-.arena { display: flex; flex: 1; overflow: hidden; }
+.acard{background:var(--bg);border:1px solid var(--border);padding:12px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all .3s;position:relative}
+.acard:hover{border-color:rgba(255,255,255,0.15);transform:translateY(-2px)}
+.acard.speaking{border-color:var(--agent-color);box-shadow:0 0 18px -4px var(--agent-color);transform:translateY(-4px) scale(1.02)}
+.acard.moderator{border-color:var(--accent)}
+.acard.moderator.speaking{box-shadow:0 0 18px -4px var(--accent)}
 
-.agents-panel {
-  width: 72%; padding: 24px 28px 16px;
-  display: flex; flex-direction: column; gap: 16px;
-  border-right: 1px solid var(--border);
-}
+.av3d{width:58px;height:58px;position:relative}
+.av3d svg{width:58px;height:58px;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.4))}
+.acard.speaking .av3d{animation:headbob 1.8s ease-in-out infinite}
 
-.agents-row {
-  display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px;
-}
+.aname{font-size:11px;font-weight:500;text-align:center;color:var(--text);line-height:1.2}
+.arole{font-size:9px;text-align:center;letter-spacing:0.05em;text-transform:uppercase;line-height:1.2}
 
-.agent-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 16px 12px 12px;
-  display: flex; flex-direction: column; align-items: center; gap: 8px;
-  cursor: pointer; transition: all 0.3s; position: relative;
-  transform-style: preserve-3d;
-}
-.agent-card:hover { transform: translateY(-3px); border-color: rgba(255,255,255,0.15); }
-.agent-card.speaking {
-  border-color: var(--agent-color);
-  box-shadow: 0 0 20px -5px var(--agent-color);
-  transform: translateY(-5px) scale(1.02);
-}
-.agent-card.speaking::before {
-  content: ''; position: absolute; inset: -1px;
-  border: 1px solid var(--agent-color);
-  animation: borderPulse 1.5s infinite;
-}
+.soundwave{display:none;align-items:center;gap:2px;height:12px}
+.acard.speaking .soundwave{display:flex}
+.sw-bar{width:3px;background:var(--agent-color);border-radius:2px;animation:swbar .5s ease-in-out infinite}
+.sw-bar:nth-child(1){animation-delay:0s;height:4px}
+.sw-bar:nth-child(2){animation-delay:.1s;height:10px}
+.sw-bar:nth-child(3){animation-delay:.2s;height:6px}
+.sw-bar:nth-child(4){animation-delay:.15s;height:8px}
+.sw-bar:nth-child(5){animation-delay:.05s;height:4px}
 
-.avatar-3d {
-  width: 70px; height: 70px; position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.6s;
-}
-.agent-card.speaking .avatar-3d { animation: headBob 2s ease-in-out infinite; }
-.avatar-face {
-  width: 70px; height: 70px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  position: relative; overflow: visible;
-}
-.avatar-svg { width: 70px; height: 70px; }
+.vote-strip{width:100%;height:2px;background:rgba(255,255,255,0.05);margin-top:3px}
+.vote-fill{height:100%;transition:width .8s}
 
-.agent-name { font-size: 12px; font-weight: 500; color: var(--text); text-align: center; }
-.agent-role { font-size: 10px; color: var(--muted); text-align: center; letter-spacing: 0.05em; text-transform: uppercase; }
-.speaking-indicator {
-  display: none; align-items: center; gap: 3px;
-  margin-top: 2px;
-}
-.agent-card.speaking .speaking-indicator { display: flex; }
-.speaking-dot { width: 4px; height: 4px; border-radius: 50%; animation: soundwave 0.6s ease-in-out infinite; }
-.speaking-dot:nth-child(2) { animation-delay: 0.15s; height: 8px; margin-top: -2px; }
-.speaking-dot:nth-child(3) { animation-delay: 0.3s; }
+/* TENSION METER between agents */
+.tension-row{display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 20px;border-bottom:1px solid var(--border);background:var(--bg)}
+.tension-lbl{font-size:9px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase}
+.tension-bars{display:flex;gap:4px}
+.t-bar{width:16px;height:4px;border-radius:2px;background:var(--border);transition:background .5s}
+.t-bar.active{background:var(--danger)}
 
-.vote-bar-agent {
-  width: 100%; height: 2px; background: rgba(255,255,255,0.05);
-  margin-top: 4px; position: relative; overflow: hidden;
-}
-.vote-fill { height: 100%; width: 0%; transition: width 0.8s; }
+/* DEBATE FEED */
+.feed{flex:1;overflow-y:auto;padding:16px 20px}
+.feed::-webkit-scrollbar{width:2px}
+.feed::-webkit-scrollbar-thumb{background:var(--border)}
 
-.debate-stream {
-  flex: 1; overflow-y: auto; padding: 0 4px;
-  display: flex; flex-direction: column; gap: 0;
-  scroll-behavior: smooth;
-}
-.debate-stream::-webkit-scrollbar { width: 2px; }
-.debate-stream::-webkit-scrollbar-track { background: transparent; }
-.debate-stream::-webkit-scrollbar-thumb { background: var(--border); }
+.msg{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.03);animation:fadein .4s ease}
+.msg-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0;margin-top:2px}
+.msg-body{flex:1}
+.msg-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.msg-name{font-size:12px;font-weight:500}
+.msg-role{font-size:9px;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase}
+.phase-tag{font-size:8px;padding:1px 6px;letter-spacing:.05em;text-transform:uppercase}
+.aud-tag{font-size:9px;padding:2px 7px;background:rgba(201,168,76,0.15);color:var(--accent);letter-spacing:0.06em;text-transform:uppercase}
+.msg-text{font-size:13px;line-height:1.8;color:rgba(232,230,224,0.88);white-space:pre-wrap}
+.msg-typing{font-size:13px;color:var(--muted);font-style:italic}
 
-.message {
-  display: flex; gap: 12px; padding: 12px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  animation: fadeSlideIn 0.4s ease;
-}
-.msg-avatar-sm {
-  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: 500; margin-top: 2px;
-}
-.msg-content {}
-.msg-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-.msg-name { font-size: 11px; font-weight: 500; }
-.msg-role-tag { font-size: 9px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
-.audience-tag { font-size: 9px; letter-spacing: 0.06em; text-transform: uppercase; padding: 1px 6px; background: rgba(201,168,76,0.15); color: var(--accent); }
-.msg-text { font-size: 13px; line-height: 1.7; color: rgba(232,230,224,0.85); }
-.msg-typing { font-size: 13px; color: var(--muted); font-style: italic; }
+/* CONTROLS */
+.controls{padding:10px 20px;border-top:1px solid var(--border);display:flex;gap:8px;background:var(--s1)}
+.ctrl-btn{flex:1;padding:8px;background:transparent;border:1px solid var(--border);color:var(--muted);font-size:10px;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:all .2s;font-family:inherit}
+.ctrl-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.ctrl-btn:disabled{opacity:.3;cursor:not-allowed}
+.ctrl-btn.primary{border-color:var(--accent);color:var(--accent)}
 
-.sidebar {
-  width: 28%; display: flex; flex-direction: column;
-  overflow: hidden;
-}
+/* RIGHT SIDEBAR */
+.sidebar{width:280px;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
 
-.qr-section {
-  padding: 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-}
-.qr-title { font-size: 10px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; text-align: center; }
-.qr-box { width: 110px; height: 110px; background: white; display: flex; align-items: center; justify-content: center; }
-.qr-box img { width: 100%; height: 100%; }
-.qr-sub { font-size: 10px; color: var(--muted); text-align: center; line-height: 1.5; }
+.qr-section{padding:16px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:8px}
+.qr-lbl{font-size:9px;color:var(--accent);letter-spacing:.12em;text-transform:uppercase}
+.qr-wrap{width:100px;height:100px;background:white;display:flex;align-items:center;justify-content:center}
+.qr-wrap img{width:100%;height:100%}
+.qr-url{font-size:9px;color:var(--muted);text-align:center}
 
-.audience-feed {
-  flex: 1; overflow-y: auto; padding: 16px 20px;
-}
-.audience-feed-title { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
-.audience-msg {
-  background: var(--surface2); padding: 10px 12px; margin-bottom: 8px;
-  font-size: 12px; color: var(--text); line-height: 1.5;
-  border-left: 2px solid var(--accent);
-  animation: fadeSlideIn 0.4s ease;
-}
-.audience-msg-meta { font-size: 10px; color: var(--muted); margin-top: 4px; }
+.aud-feed{flex:1;overflow-y:auto;padding:14px}
+.aud-title{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.aud-msg{background:var(--s2);padding:10px 12px;margin-bottom:8px;font-size:12px;color:var(--text);line-height:1.5;border-left:2px solid var(--accent);animation:fadein .4s}
+.aud-msg-meta{font-size:9px;color:var(--muted);margin-top:4px}
 
-.votes-section {
-  padding: 16px 20px;
-  border-top: 1px solid var(--border);
-}
-.votes-title { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
-.vote-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.vote-name { font-size: 11px; color: var(--text); width: 90px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.vote-track { flex: 1; height: 3px; background: rgba(255,255,255,0.07); }
-.vote-fill-bar { height: 100%; transition: width 0.8s; }
-.vote-count { font-size: 10px; color: var(--muted); width: 20px; text-align: right; }
+.votes-wrap{padding:14px;border-top:1px solid var(--border)}
+.votes-title{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.vrow{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.vname{font-size:10px;width:80px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vtrack{flex:1;height:3px;background:rgba(255,255,255,0.06)}
+.vfill{height:100%;transition:width .8s}
+.vcnt{font-size:10px;color:var(--muted);width:18px;text-align:right}
 
-.round-badge {
-  position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
-  background: var(--surface); border: 1px solid var(--accent);
-  padding: 8px 24px; font-size: 11px; color: var(--accent);
-  letter-spacing: 0.12em; text-transform: uppercase;
-  animation: fadeInOut 3s forwards;
-  z-index: 100;
-}
+/* INJECT Q */
+.inject-btn{width:calc(100% - 28px);margin:0 14px 14px;padding:8px;background:transparent;border:1px dashed rgba(201,168,76,0.3);color:rgba(201,168,76,0.6);font-size:9px;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;transition:all .2s;font-family:inherit}
+.inject-btn:hover{border-color:var(--accent);color:var(--accent)}
 
-.next-btn {
-  margin: 0 32px 12px;
-  padding: 8px; background: transparent; border: 1px solid var(--border);
-  color: var(--muted); font-size: 11px; cursor: pointer; letter-spacing: 0.08em;
-  text-transform: uppercase; transition: all 0.2s; width: calc(72% - 64px);
-}
-.next-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
-.next-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+/* CHALLENGE OVERLAY */
+.challenge-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center}
+.challenge-overlay.show{display:flex}
+.challenge-box{background:var(--s1);border:1px solid var(--border);padding:24px;width:400px}
+.ch-title{font-size:13px;font-weight:500;margin-bottom:16px;color:var(--text)}
+.ch-agents{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.ch-agent{padding:10px;border:1px solid var(--border);cursor:pointer;text-align:center;font-size:11px;transition:all .2s}
+.ch-agent:hover{border-color:var(--accent);color:var(--accent)}
+.ch-cancel{width:100%;padding:8px;background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:10px;font-family:inherit}
 
-@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.2} }
-@keyframes borderPulse { 0%,100%{opacity:1}50%{opacity:0.4} }
-@keyframes headBob { 0%,100%{transform:translateY(0) rotate(0deg)}25%{transform:translateY(-3px) rotate(-1deg)}75%{transform:translateY(-2px) rotate(1deg)} }
-@keyframes soundwave { 0%,100%{transform:scaleY(1)}50%{transform:scaleY(2.5)} }
-@keyframes fadeSlideIn { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)} }
-@keyframes fadeInOut { 0%{opacity:0;transform:translateX(-50%) translateY(-10px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}75%{opacity:1}100%{opacity:0} }
+/* ROUND BANNER */
+.round-banner{position:fixed;top:72px;left:50%;transform:translateX(-50%);background:var(--s1);border:1px solid var(--accent);padding:8px 28px;font-size:11px;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;z-index:200;animation:bannerAnim 3.5s forwards}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+@keyframes headbob{0%,100%{transform:translateY(0) rotate(0deg)}30%{transform:translateY(-4px) rotate(-1.5deg)}70%{transform:translateY(-2px) rotate(1deg)}}
+@keyframes swbar{0%,100%{transform:scaleY(1)}50%{transform:scaleY(2.2)}}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bannerAnim{0%{opacity:0;transform:translateX(-50%) translateY(-8px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}80%{opacity:1}100%{opacity:0}}
 </style>
 </head>
 <body>
-<div class="bg-grid"></div>
+<div class="grid-bg"></div>
 
-<header class="header">
-  <div class="header-left">
-    <div class="logo-mark">P</div>
-    <div>
-      <div class="app-name">Parlamenti i Agjentëve</div>
-      <div class="app-sub">Java e Demokracisë · Elbasan 2026</div>
-    </div>
+<header class="hdr">
+  <div class="hdr-l">
+    <div class="logo">P</div>
+    <div><div class="app-title">Parlamenti i Agjentëve</div><div class="app-sub">Java e Demokracisë · Elbasan 2026</div></div>
   </div>
-  <div class="header-center" id="roundIndicator">Vendos temën dhe fillo debatin</div>
-  <div class="live-badge"><span class="live-dot"></span>Live</div>
+  <div class="hdr-c">
+    <div class="phase-badge" id="phaseBadge">Pritje</div>
+    <div class="phase-badge" id="roundBadge">Rundi 0</div>
+  </div>
+  <div class="live-pill"><span class="live-dot"></span>Live</div>
 </header>
 
-<div class="main">
-  <div class="topic-bar">
-    <span class="topic-label">Tema</span>
-    <input class="topic-input" id="topicInput" placeholder="Shkruaj temën e debatit dhe shtyp Enter..." />
-    <button class="start-btn" id="startBtn" onclick="startDebate()">Fillo Debatin</button>
+<div class="topic-row">
+  <span class="topic-lbl">Tema</span>
+  <input class="topic-inp" id="topicInp" placeholder="Shkruaj temën e debatit dhe shtyp Enter — p.sh. 'Si ta ndalim emigracionin e të rinjve nga Elbasani?'" />
+  <button class="start-btn" id="startBtn" onclick="startDebate()">Fillo Debatin</button>
+</div>
+
+<div class="arena">
+  <div class="left">
+    <div class="agents-row" id="agentsRow"></div>
+    <div class="tension-row">
+      <span class="tension-lbl">Tensioni i debatit</span>
+      <div class="tension-bars" id="tensionBars">
+        <div class="t-bar"></div><div class="t-bar"></div><div class="t-bar"></div>
+        <div class="t-bar"></div><div class="t-bar"></div>
+      </div>
+    </div>
+    <div class="feed" id="feed"></div>
+    <div class="controls">
+      <button class="ctrl-btn" id="nextBtn" onclick="nextRound()" disabled>Rundi tjetër →</button>
+      <button class="ctrl-btn" onclick="showChallenge()">Sfidë direkte ⚡</button>
+      <button class="ctrl-btn primary" onclick="injectRandom()">Pyetje e befasishme</button>
+    </div>
   </div>
 
-  <div class="arena">
-    <div class="agents-panel">
-      <div class="agents-row" id="agentsRow"></div>
-      <div class="debate-stream" id="debateStream"></div>
-      <button class="next-btn" id="nextBtn" onclick="nextRound()" disabled>Rundi tjetër →</button>
+  <div class="sidebar">
+    <div class="qr-section">
+      <div class="qr-lbl">Audienca — skanoni për të pyetur</div>
+      <div class="qr-wrap"><img id="qrImg" src="" alt="QR" /></div>
+      <div class="qr-url" id="qrUrl">Duke ngarkuar...</div>
     </div>
+    <div class="aud-feed">
+      <div class="aud-title">Pyetje nga audienca</div>
+      <div id="audMsgs"></div>
+    </div>
+    <button class="inject-btn" onclick="injectRandom()">+ Injekto pyetje provokuese</button>
+    <div class="votes-wrap">
+      <div class="votes-title">Votat e audiencës</div>
+      <div id="votesDisplay"></div>
+    </div>
+  </div>
+</div>
 
-    <div class="sidebar">
-      <div class="qr-section">
-        <div class="qr-title">Audienca — skanoni për të pyetur</div>
-        <div class="qr-box"><img id="qrImg" src="" alt="QR Code" /></div>
-        <div class="qr-sub" id="qrUrl">Duke ngarkuar...</div>
-      </div>
-      <div class="audience-feed">
-        <div class="audience-feed-title">Pyetje nga audienca</div>
-        <div id="audienceMessages"></div>
-      </div>
-      <div class="votes-section">
-        <div class="votes-title">Votat e audiencës</div>
-        <div id="votesDisplay"></div>
-      </div>
+<!-- Challenge Overlay -->
+<div class="challenge-overlay" id="challengeOverlay">
+  <div class="challenge-box">
+    <div class="ch-title">Zgjidh sfiduesin dhe të sfiduarin</div>
+    <div id="chStep1">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px">SFIDUES:</div>
+      <div class="ch-agents" id="ch1"></div>
     </div>
+    <div id="chStep2" style="display:none">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px">SFIDOHET:</div>
+      <div class="ch-agents" id="ch2"></div>
+    </div>
+    <button class="ch-cancel" onclick="hideChallenge()">Anulo</button>
   </div>
 </div>
 
 <script>
 const socket = io();
 let agents = [];
+let votes = {};
+let tensionData = {};
+let challengerSel = null;
+let questions = [];
 let currentTokens = {};
 
-function makeSVGAvatar(type, color, bg) {
-  const isFemale = type.startsWith('female');
-  const idx = parseInt(type.split('_')[1]) || 1;
-  const hairColors = ['#2c1810','#1a1a2e','#4a3728','#8b6914','#c0392b'];
-  const skinTones = ['#f4c49a','#e8a87c','#d4956a','#c07850','#a0644a'];
-  const hair = hairColors[(idx * 2) % hairColors.length];
-  const skin = skinTones[idx % skinTones.length];
+function makeSVG(type, color, bg) {
+  const f = type.startsWith('female');
+  const i = parseInt(type.split('_')[1])||1;
+  const hc = ['#2c1810','#1a1a2e','#4a3728','#8b6914','#8b4513'];
+  const sc = ['#f4c49a','#e8a87c','#d4956a','#c07850','#a0644a'];
+  const h = hc[i%hc.length], s = sc[i%sc.length];
 
-  if (isFemale) {
+  if (f) {
+    const longHair = i <= 2;
     return `<svg viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
+      <defs><radialGradient id="sg${i}" cx="40%" cy="35%"><stop offset="0%" stop-color="rgba(255,255,255,0.3)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient></defs>
       <circle cx="35" cy="35" r="34" fill="${bg}" stroke="${color}" stroke-width="1.5"/>
-      <ellipse cx="35" cy="46" rx="18" ry="14" fill="${skin}"/>
-      <circle cx="35" cy="30" r="14" fill="${skin}"/>
-      <path d="M21 28 Q22 16 35 16 Q48 16 49 28 Q45 18 35 18 Q25 18 21 28Z" fill="${hair}"/>
-      ${idx===1 ? `<path d="M21 28 Q18 38 20 48 Q22 38 22 30Z" fill="${hair}"/>
-      <path d="M49 28 Q52 38 50 48 Q48 38 48 30Z" fill="${hair}"/>` : ''}
-      ${idx===2 ? `<path d="M21 28 Q17 22 20 18 Q25 12 35 13 Q45 12 50 18 Q53 22 49 28" fill="${hair}"/>` : ''}
-      <circle cx="29" cy="30" r="2" fill="#2c1810"/>
-      <circle cx="41" cy="30" r="2" fill="#2c1810"/>
-      <circle cx="29.5" cy="29.5" r="0.7" fill="white"/>
-      <circle cx="41.5" cy="29.5" r="0.7" fill="white"/>
-      <path d="M31 35 Q35 38 39 35" stroke="#c07850" stroke-width="1.2" fill="none" stroke-linecap="round"/>
-      <path d="M26 27 Q29 25 32 27" stroke="#2c1810" stroke-width="1" fill="none"/>
-      <path d="M38 27 Q41 25 44 27" stroke="#2c1810" stroke-width="1" fill="none"/>
+      <ellipse cx="35" cy="50" rx="20" ry="15" fill="${s}"/>
+      <circle cx="35" cy="29" r="15" fill="${s}"/>
+      <ellipse cx="35" cy="28" rx="16" ry="6" fill="${h}"/>
+      ${longHair?`<path d="M20 26 Q16 42 18 54 Q22 40 22 30Z" fill="${h}"/><path d="M50 26 Q54 42 52 54 Q48 40 48 30Z" fill="${h}"/>`:''}
+      ${i===3?`<path d="M20 26 Q22 18 35 17 Q48 18 50 26 Q46 19 35 19 Q24 19 20 26Z" fill="${h}"/>`:``}
+      <circle cx="29" cy="29" r="2.2" fill="#1a1a1a"/>
+      <circle cx="41" cy="29" r="2.2" fill="#1a1a1a"/>
+      <circle cx="29.6" cy="28.3" r=".8" fill="white"/>
+      <circle cx="41.6" cy="28.3" r=".8" fill="white"/>
+      <path d="M31 35 Q35 38.5 39 35" stroke="#b07050" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+      <path d="M26 26 Q29.5 24 32 26" stroke="${h}" stroke-width="1" fill="none"/>
+      <path d="M38 26 Q41.5 24 44 26" stroke="${h}" stroke-width="1" fill="none"/>
+      <circle cx="35" cy="27" r="16" fill="url(#sg${i})" opacity=".4"/>
     </svg>`;
   } else {
     return `<svg viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
+      <defs><radialGradient id="sg${i}m" cx="40%" cy="35%"><stop offset="0%" stop-color="rgba(255,255,255,0.25)"/><stop offset="100%" stop-color="rgba(0,0,0,0)"/></radialGradient></defs>
       <circle cx="35" cy="35" r="34" fill="${bg}" stroke="${color}" stroke-width="1.5"/>
-      <ellipse cx="35" cy="47" rx="19" ry="13" fill="${skin}"/>
-      <circle cx="35" cy="30" r="14" fill="${skin}"/>
-      <path d="M21 26 Q22 13 35 13 Q48 13 49 26 Q46 15 35 15 Q24 15 21 26Z" fill="${hair}"/>
-      ${idx===2 ? `<path d="M21 26 Q19 20 22 16 Q26 11 35 12 Q44 11 48 16 Q51 20 49 26 Q46 14 35 14 Q24 14 21 26Z" fill="${hair}"/>` : ''}
-      <circle cx="29" cy="30" r="2.2" fill="#1a1a1a"/>
-      <circle cx="41" cy="30" r="2.2" fill="#1a1a1a"/>
-      <circle cx="29.6" cy="29.4" r="0.8" fill="white"/>
-      <circle cx="41.6" cy="29.4" r="0.8" fill="white"/>
-      <path d="M31 36 Q35 39 39 36" stroke="#a0644a" stroke-width="1.3" fill="none" stroke-linecap="round"/>
-      <path d="M26 27 Q29 25 32 27" stroke="#2c1810" stroke-width="1.1" fill="none"/>
-      <path d="M38 27 Q41 25 44 27" stroke="#2c1810" stroke-width="1.1" fill="none"/>
-      <path d="M28 38 Q35 41 42 38" stroke="${skin}" stroke-width="2" fill="none"/>
+      <ellipse cx="35" cy="51" rx="21" ry="14" fill="${s}"/>
+      <circle cx="35" cy="29" r="15" fill="${s}"/>
+      <path d="M20 25 Q22 12 35 12 Q48 12 50 25 Q46 14 35 14 Q24 14 20 25Z" fill="${h}"/>
+      ${i===2?`<path d="M20 26 Q25 30 20 25 Q22 13 35 12 Q48 13 50 25 Q45 30 50 26 Q46 13 35 13 Q24 13 20 26Z" fill="${h}"/>`:``}
+      <circle cx="29" cy="29" r="2.3" fill="#111"/>
+      <circle cx="41" cy="29" r="2.3" fill="#111"/>
+      <circle cx="29.7" cy="28.2" r=".9" fill="white"/>
+      <circle cx="41.7" cy="28.2" r=".9" fill="white"/>
+      <path d="M31 35.5 Q35 39 39 35.5" stroke="#9a6040" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+      <path d="M26 26 Q29 23.5 32 26" stroke="${h}" stroke-width="1.1" fill="none"/>
+      <path d="M38 26 Q41 23.5 44 26" stroke="${h}" stroke-width="1.1" fill="none"/>
+      ${i===2?`<path d="M28 30 Q35 33 42 30" stroke="${s}" stroke-width="2.5" fill="none" opacity=".5"/>`:``}
+      <circle cx="35" cy="27" r="16" fill="url(#sg${i}m)" opacity=".35"/>
     </svg>`;
   }
 }
 
-function renderAgents(agentsList) {
+function renderAgents(list) {
   const row = document.getElementById('agentsRow');
   row.innerHTML = '';
-  agentsList.forEach(agent => {
+  list.forEach(a => {
+    const initials = a.name.split(' ').map(w=>w[0]).join('');
     const card = document.createElement('div');
-    card.className = 'agent-card';
-    card.id = 'agent-' + agent.id;
-    card.style.setProperty('--agent-color', agent.color);
+    card.className = 'acard' + (a.id==='moderatori'?' moderator':'');
+    card.id = 'ag-'+a.id;
+    card.style.setProperty('--agent-color', a.color);
     card.innerHTML = `
-      <div class="avatar-3d">
-        <div class="avatar-face">${makeSVGAvatar(agent.avatar, agent.color, agent.bg)}</div>
+      <div class="av3d">${makeSVG(a.avatar||'male_1', a.color, a.bg)}</div>
+      <div class="aname">${a.name.split(' ')[0]}</div>
+      <div class="arole" style="color:${a.color}">${a.role}</div>
+      <div class="soundwave">
+        <div class="sw-bar" style="background:${a.color}"></div>
+        <div class="sw-bar" style="background:${a.color}"></div>
+        <div class="sw-bar" style="background:${a.color}"></div>
+        <div class="sw-bar" style="background:${a.color}"></div>
+        <div class="sw-bar" style="background:${a.color}"></div>
       </div>
-      <div class="agent-name">${agent.name.split(' ')[0]}</div>
-      <div class="agent-role">${agent.role}</div>
-      <div class="speaking-indicator">
-        <div class="speaking-dot" style="background:${agent.color}"></div>
-        <div class="speaking-dot" style="background:${agent.color}"></div>
-        <div class="speaking-dot" style="background:${agent.color}"></div>
-      </div>
-      <div class="vote-bar-agent"><div class="vote-fill" id="vf-${agent.id}" style="background:${agent.color}"></div></div>
-    `;
-    card.onclick = () => askAgent(agent.id);
+      <div class="vote-strip"><div class="vote-fill" id="vf-${a.id}" style="background:${a.color};width:0%"></div></div>`;
     row.appendChild(card);
-
-    currentTokens[agent.id] = '';
+    currentTokens[a.id] = '';
   });
 }
 
-function renderVotes(votes) {
-  const total = Object.values(votes).reduce((a,b)=>a+b,0)||1;
-  const display = document.getElementById('votesDisplay');
-  display.innerHTML = '';
-  agents.forEach(agent => {
-    const count = votes[agent.id] || 0;
-    const pct = Math.round((count/total)*100);
-    display.innerHTML += `<div class="vote-row">
-      <div class="vote-name" style="color:${agent.color}">${agent.name.split(' ')[0]}</div>
-      <div class="vote-track"><div class="vote-fill-bar" style="width:${pct}%;background:${agent.color}"></div></div>
-      <div class="vote-count">${count}</div>
-    </div>`;
-    const vf = document.getElementById('vf-'+agent.id);
-    if (vf) vf.style.width = pct + '%';
+function renderVotes(v) {
+  votes = v;
+  const total = Object.values(v).reduce((a,b)=>a+b,0)||1;
+  const d = document.getElementById('votesDisplay');
+  d.innerHTML = '';
+  agents.filter(a=>a.id!=='moderatori').forEach(a => {
+    const c = v[a.id]||0, pct = Math.round(c/total*100);
+    d.innerHTML += `<div class="vrow"><div class="vname" style="color:${a.color}">${a.name.split(' ')[0]}</div><div class="vtrack"><div class="vfill" style="width:${pct}%;background:${a.color}"></div></div><div class="vcnt">${c}</div></div>`;
+    const vf = document.getElementById('vf-'+a.id);
+    if (vf) vf.style.width = pct+'%';
   });
 }
 
-function addMessage(msg, isTyping=false) {
-  const agent = agents.find(a=>a.id===msg.agentId);
-  if (!agent) return;
-  const stream = document.getElementById('debateStream');
+function addMsg(msg, typing=false) {
+  const a = agents.find(x=>x.id===msg.agentId);
+  if (!a) return null;
+  const feed = document.getElementById('feed');
+  const initials = a.name.split(' ').map(w=>w[0]).join('');
+  const phaseTags = {opening:'Fjalim hapës',debate:'Debat',response:'Kundërpërgjigje',audience:'Pyetje audiencë',closing:'Fjalim mbyllës'};
   const el = document.createElement('div');
-  el.className = 'message';
-  el.id = 'msg-' + msg.agentId + '-' + (msg.timestamp||Date.now());
+  el.className = 'msg';
+  el.id = 'msg-'+msg.msgId;
   el.innerHTML = `
-    <div class="msg-avatar-sm" style="background:${agent.bg};color:${agent.color}">${agent.name.split(' ').map(w=>w[0]).join('')}</div>
-    <div class="msg-content">
+    <div class="msg-av" style="background:${a.bg};color:${a.color}">${initials}</div>
+    <div class="msg-body">
       <div class="msg-meta">
-        <span class="msg-name" style="color:${agent.color}">${agent.name}</span>
-        <span class="msg-role-tag">${agent.role}</span>
-        ${msg.isAudience ? '<span class="audience-tag">Pyetje audiencë</span>' : ''}
+        <span class="msg-name" style="color:${a.color}">${a.name}</span>
+        <span class="msg-role">${a.role}</span>
+        ${msg.phase&&phaseTags[msg.phase]?`<span class="phase-tag" style="background:${a.color}20;color:${a.color}">${phaseTags[msg.phase]}</span>`:''}
+        ${msg.isAudience?'<span class="aud-tag">Pyetje audiencë</span>':''}
       </div>
-      <div class="${isTyping?'msg-typing':'msg-text'}" id="text-${msg.agentId}">${isTyping?'Duke folur...':msg.text}</div>
+      <div class="${typing?'msg-typing':'msg-text'}" id="txt-${msg.agentId}">${typing?'Duke folur...':msg.text}</div>
     </div>`;
-  stream.appendChild(el);
-  stream.scrollTop = stream.scrollHeight;
+  feed.appendChild(el);
+  feed.scrollTop = feed.scrollHeight;
   return el;
 }
 
-socket.on('init', data => {
-  agents = data.agents;
+function updateTensionUI(matrix) {
+  tensionData = matrix;
+  let maxT = 0;
+  Object.values(matrix).forEach(v => { if (v > maxT) maxT = v; });
+  const bars = document.querySelectorAll('.t-bar');
+  bars.forEach((b,i) => b.classList.toggle('active', i < maxT));
+}
+
+socket.on('init', d => {
+  agents = d.agents;
   renderAgents(agents);
-  if (data.state.messages.length) {
-    data.state.messages.forEach(m => addMessage(m));
-  }
+  if (d.state.messages.length) d.state.messages.forEach(m=>addMsg(m));
   loadQR();
+  loadQuestions();
 });
 
 socket.on('topicSet', ({topic}) => {
-  document.getElementById('topicInput').value = topic;
-  document.getElementById('debateStream').innerHTML = '';
-  document.getElementById('roundIndicator').textContent = 'Rundi 1 — Debat i hapur';
+  document.getElementById('topicInp').value = topic;
+  document.getElementById('phaseBadge').textContent = 'Intro';
+  document.getElementById('phaseBadge').classList.add('active');
 });
 
-socket.on('roundStart', ({round}) => {
+socket.on('clearMessages', () => {
+  document.getElementById('feed').innerHTML = '';
+  document.getElementById('audMsgs').innerHTML = '';
+  currentTokens = {};
+  agents.forEach(a => currentTokens[a.id]='');
+});
+
+socket.on('roundStart', ({round, phase}) => {
   document.getElementById('nextBtn').disabled = true;
-  document.getElementById('roundIndicator').textContent = `Rundi ${round} — Debat aktiv`;
-  showRoundBadge(`Rundi ${round}`);
+  document.getElementById('roundBadge').textContent = 'Rundi '+round;
+  document.getElementById('phaseBadge').textContent = {opening:'Fjalime hapëse',debate:'Debat',response:'Kundërpërgjigje',closing:'Fjalime mbyllëse',audience:'Pyetje audiencë'}[phase]||phase;
+  document.getElementById('phaseBadge').classList.add('active');
+  showBanner('Rundi '+round+' — '+(phase==='opening'?'Fjalime hapëse':phase==='closing'?'Fjalime mbyllëse':'Debat i hapur'));
 });
 
 socket.on('roundEnd', () => {
   document.getElementById('nextBtn').disabled = false;
-  document.getElementById('roundIndicator').textContent = 'Rundi i mbaroi — Fillo raundin tjetër';
+  document.getElementById('phaseBadge').classList.remove('active');
 });
 
-socket.on('speaking', ({agentId, start}) => {
-  const card = document.getElementById('agent-'+agentId);
-  if (!card) return;
+socket.on('speaking', ({agentId, start, msgId}) => {
+  const card = document.getElementById('ag-'+agentId);
+  if (card) card.classList.toggle('speaking', start);
   if (start) {
-    card.classList.add('speaking');
     currentTokens[agentId] = '';
-    const tempMsg = { agentId, timestamp: Date.now() };
-    const el = addMessage(tempMsg, true);
-    el.id = 'live-'+agentId;
-  } else {
-    card.classList.remove('speaking');
+    addMsg({agentId, msgId, phase:null}, true);
   }
 });
 
-socket.on('token', ({agentId, token}) => {
+socket.on('token', ({agentId, token, msgId}) => {
   currentTokens[agentId] = (currentTokens[agentId]||'') + token;
-  const textEl = document.getElementById('text-'+agentId);
-  if (textEl) {
-    textEl.className = 'msg-text';
-    textEl.textContent = currentTokens[agentId];
-    const stream = document.getElementById('debateStream');
-    stream.scrollTop = stream.scrollHeight;
-  }
+  const el = document.getElementById('txt-'+agentId);
+  if (el) { el.className='msg-text'; el.textContent=currentTokens[agentId]; }
+  const feed = document.getElementById('feed');
+  feed.scrollTop = feed.scrollHeight;
 });
 
-socket.on('audienceQuestion', ({question, targetAgent}) => {
+socket.on('message', msg => {
+  const el = document.getElementById('txt-'+msg.agentId);
+  if (el) el.textContent = msg.text;
+});
+
+socket.on('audienceQuestion', ({question, targetAgent, timestamp}) => {
+  const a = agents.find(x=>x.id===targetAgent);
   const el = document.createElement('div');
-  el.className = 'audience-msg';
-  el.innerHTML = `"${question}"<div class="audience-msg-meta">Pyetje për ${targetAgent||'parlamentin'}</div>`;
-  document.getElementById('audienceMessages').prepend(el);
+  el.className = 'aud-msg';
+  el.innerHTML = `"${question}"<div class="aud-msg-meta">→ ${a?a.name:'Parlamenti'}</div>`;
+  document.getElementById('audMsgs').prepend(el);
 });
 
-socket.on('voteUpdate', votes => renderVotes(votes));
+socket.on('voteUpdate', v => renderVotes(v));
+socket.on('tensionUpdate', m => updateTensionUI(m));
+socket.on('challenge', ({challengerId, targetId}) => {
+  const c = agents.find(a=>a.id===challengerId), t = agents.find(a=>a.id===targetId);
+  if (c&&t) showBanner(`⚡ ${c.name} sfidon ${t.name}`);
+});
+
+socket.on('injectedQuestion', ({question}) => {
+  showBanner(`💬 "${question.substring(0,60)}..."`);
+});
 
 function startDebate() {
-  const topic = document.getElementById('topicInput').value.trim();
-  if (!topic) return;
+  const t = document.getElementById('topicInp').value.trim();
+  if (!t) return;
   document.getElementById('startBtn').disabled = true;
-  socket.emit('setTopic', {topic});
-  setTimeout(()=>document.getElementById('startBtn').disabled=false, 5000);
+  socket.emit('setTopic', {topic: t});
+  setTimeout(()=>document.getElementById('startBtn').disabled=false, 8000);
 }
 
-function nextRound() {
-  document.getElementById('nextBtn').disabled = true;
-  socket.emit('nextRound');
+function nextRound() { socket.emit('nextRound'); }
+
+let challengeStep = 1;
+function showChallenge() {
+  challengeStep = 1; challengerSel = null;
+  const debate = agents.filter(a=>a.id!=='moderatori');
+  document.getElementById('ch1').innerHTML = debate.map(a=>`<div class="ch-agent" onclick="selectChallenger('${a.id}')" style="color:${a.color};border-color:${a.color}30">${a.name.split(' ')[0]}</div>`).join('');
+  document.getElementById('chStep1').style.display='block';
+  document.getElementById('chStep2').style.display='none';
+  document.getElementById('challengeOverlay').classList.add('show');
+}
+function hideChallenge() { document.getElementById('challengeOverlay').classList.remove('show'); }
+function selectChallenger(id) {
+  challengerSel = id;
+  const debate = agents.filter(a=>a.id!=='moderatori'&&a.id!==id);
+  document.getElementById('ch2').innerHTML = debate.map(a=>`<div class="ch-agent" onclick="executeChallenge('${a.id}')" style="color:${a.color};border-color:${a.color}30">${a.name.split(' ')[0]}</div>`).join('');
+  document.getElementById('chStep1').style.display='none';
+  document.getElementById('chStep2').style.display='block';
+}
+function executeChallenge(targetId) {
+  hideChallenge();
+  socket.emit('challengeAgent', {challengerId: challengerSel, targetId});
 }
 
-function askAgent(agentId) {
-  const q = prompt('Pyetja jote për ' + (agents.find(a=>a.id===agentId)?.name||agentId) + ':');
-  if (q) socket.emit('audienceQuestion', {question: q, targetAgent: agentId});
+async function loadQuestions() {
+  try { const r = await fetch('/questions'); questions = await r.json(); } catch(e){}
 }
 
-function showRoundBadge(text) {
-  const old = document.querySelector('.round-badge');
-  if (old) old.remove();
-  const badge = document.createElement('div');
-  badge.className = 'round-badge';
-  badge.textContent = text;
-  document.body.appendChild(badge);
-  setTimeout(()=>badge.remove(), 3000);
+function injectRandom() {
+  if (!questions.length) return;
+  const q = questions[Math.floor(Math.random()*questions.length)];
+  socket.emit('injectQuestion', {question: q});
+}
+
+function showBanner(text) {
+  document.querySelectorAll('.round-banner').forEach(b=>b.remove());
+  const b = document.createElement('div');
+  b.className = 'round-banner';
+  b.textContent = text;
+  document.body.appendChild(b);
+  setTimeout(()=>b.remove(), 3800);
 }
 
 async function loadQR() {
   try {
-    const r = await fetch('/qr');
-    const d = await r.json();
+    const r = await fetch('/qr'); const d = await r.json();
     document.getElementById('qrImg').src = d.qr;
     document.getElementById('qrUrl').textContent = d.url;
-  } catch(e) {}
+  } catch(e){}
 }
 
-document.getElementById('topicInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') startDebate();
-});
+document.getElementById('topicInp').addEventListener('keydown', e => { if (e.key==='Enter') startDebate(); });
 </script>
 </body>
 </html>

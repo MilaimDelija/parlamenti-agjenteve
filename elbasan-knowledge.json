@@ -1,0 +1,117 @@
+{
+  "qyteti": {
+    "emri": "Elbasani",
+    "titujt": "Qyteti i Punës, Qyteti i Tregtarëve, Zemra e Shqipërisë",
+    "pozita": "Qendër e Shqipërisë së Mesme, 54 km nga Tirana, në luginën e lumit Shkumbin",
+    "popullsia": {
+      "bashkia": "220,000 banorë (bashkia)",
+      "qyteti": "rreth 87,000 banorë (zona urbane)",
+      "trendi": "Rënie e vazhdueshme — nga 130,000 (1990) në 87,000 (2023), kryesisht nga emigracioni"
+    }
+  },
+  "historia": {
+    "themelimi": "Themeluar nga Sulltan Mehmeti II në vitin 1466 mbi rrënojat e një fortese më të vjetër",
+    "periu_otoman": "Qendër administrative dhe tregtare e rëndësishme e Perandorisë Osmane për mbi 400 vjet. Pazari i Elbasanit ishte njëri nga më të mëdhenjtë në Ballkan.",
+    "rilindja": "Qendër e Rilindjes Kombëtare Shqiptare. Kongresi i Elbasanit (1909) standardizoi alfabetin shqip dhe themeloi shkollën e parë normale laike.",
+    "shekulli_20": "Industrializim masiv nën regjimin komunist (1945-1990). Ndërtimi i Kombinatit Metalurgjik 'Çeliku i Partisë' (1974) e shndërroi qytetin në qendër industriale.",
+    "pas_1990": "Kolaps ekonomik pas rënies së komunizmit. Shkatërrimi i industrisë, papunësia masive, emigracioni i madh. Protestat e 1997 goditën rënd qytetin."
+  },
+  "industria_dhe_ekonomia": {
+    "celiku": {
+      "historia": "Kombinati Metalurgjik 'Çeliku i Partisë' — dikur punëdhënësi kryesor me 10,000 punëtorë, prodhonte çelik dhe produkte metalurgjike",
+      "gjendja_sot": "Mbyllur plotësisht pas 1990. Rrënojat industriale zënë 400 hektarë në jug të qytetit. Ndotje e rëndë e tokës dhe ujërave nëntokësore me metale të rënda.",
+      "kosto_sociale": "Mijëra familje humbën punën njëherësh. Depresioni, alkooli, emigracioni — efekte që ndihen ende sot."
+    },
+    "ekonomia_sot": {
+      "papunesia": "Rreth 18-22% (zyrtarisht), realiteti është më i lartë",
+      "sektoret": "Tregti, shërbime, ndërtim, bujqësi periferike, industri e vogël tekstile",
+      "te_rinjte": "Mbi 60% e të rinjve 18-30 vjeç deklarojnë dëshirë për emigrim",
+      "remitancat": "Rreth 30% e familjeve jetojnë kryesisht nga remitancat e diasporës"
+    }
+  },
+  "infrastruktura": {
+    "transporti": {
+      "rruga": "Autostrada Tiranë-Elbasan (A3) e përfunduar — 45 minuta nga Tirana, ndryshim i madh ekonomik",
+      "autobusat": "8 linja urbane, shërbim i pamjaftueshëm, orar jo i rregullt, flota e vjetër",
+      "hekurudha": "Linja hekurudhore ekziston por shërbim minimal dhe i pasigurt",
+      "problemi": "Shumica e qytetarëve varen nga makina private ose minibusët privatë"
+    },
+    "ujesjellesi": {
+      "mbulimi": "85% e zonës urbane — 15% pa ujë të rrjedhshëm të rregullt",
+      "presioni": "Ndërprerje të shpeshta, presion i ulët veçanërisht në lagjet periferike",
+      "humjet": "Rreth 40% e ujit humbet nga rrjeti i vjetër i tubacioneve",
+      "investimi": "Projekt BE-ja 12 milionë euro për rehabilitimin e rrjetit — në zbatim"
+    },
+    "kanalizimi": {
+      "problemi": "Sistemi i kanalizimit datë nga vitet 1970, kapacitet i pamjaftueshëm",
+      "ndotja": "Lumi Shkumbin merr ujëra të patrajtuar — problem mjedisor serioz",
+      "projekti": "Stacion i ri i trajtimit të ujërave të ndotura — financim i siguruar, ndërtim i vonuar"
+    },
+    "energjia": "Ndërprerje të shpeshta, rrjet i vjetër shpërndarjeje, humbje të larta teknike"
+  },
+  "arsimi": {
+    "universiteti": {
+      "emri": "Universiteti 'Aleksandër Xhuvani' — themeluar 1971",
+      "studentet": "Rreth 8,000 studentë aktiv",
+      "fakultetet": "Shkenca natyrore, shoqërore, ekonomike, juridike, edukimi, infermieri",
+      "sfidat": "Ikja e trurit — profesorë dhe studentë emigrojnë, financim i pamjaftueshëm, infrastrukturë e vjetër",
+      "potenciali": "Motor i mundshëm inovacioni dhe zhvillimi nëse investohet seriozisht"
+    },
+    "shkollat": "68 shkolla fillore dhe të mesme, probleme me infrastrukturën, mësues të paguar keq"
+  },
+  "mjedisi": {
+    "ndotja_industriale": "Zona e ish-Kombinatit — tokë e ndotur rëndë me krom, nikel, plumb. Kancer dhe sëmundje respiratore mbi mesataren kombëtare.",
+    "lumi_shkumbin": "Ndotje nga industria, bujqësia dhe ujërat urbane të patrajtuar",
+    "ajri": "Kalime të normave të pluhurit dhe NO2, kryesisht nga trafiku dhe industria e vogël",
+    "pyjet": "Shpyllëzim i konsiderueshëm në zonën periurbane dhe malore",
+    "potenciali_gjelber": "Planet e bashkisë për 5 parqe të reja — vetëm 1 i përfunduar"
+  },
+  "kultura_dhe_trashegimia": {
+    "kalaja": "Kalaja e Elbasanit — e ndërtuar 1466, një nga më të ruajtuarat osmane në Shqipëri. Brenda mureve — qyteti i vjetër me xhaminë e Nazirehanës dhe kisha.",
+    "pazari": "Pazari i vjetër — pjesërisht i restauruar, potencial turistik i pa shfrytëzuar",
+    "muzika": "Elbasani ka traditë të fortë muzikore — iso-polifonia, lahuta, shtjellimi i epikës",
+    "gastronomia": "Qofte të Elbasanit — identitet kulinar kombëtar. Tavë Elbasani — pjatë kombëtare.",
+    "kongresi_1909": "Kongresi i Elbasanit 1909 — moment historik i identitetit kombëtar shqiptar",
+    "diaspora": "Komunitet i madh shqiptarësh nga Elbasani në Itali, Greqi, SHBA, Gjermani, Norvegji"
+  },
+  "bashkia_dhe_politika": {
+    "kryetari": "Gledian Llatja — kryetar bashkie (PS), i rizgjedhur",
+    "keshilli": "Këshill bashkiak me 41 anëtarë, mazhorancë PS",
+    "buxheti": "Rreth 3.2 miliardë lekë buxhet vjetor (~28 milionë euro)",
+    "projektet_ne_zbatim": [
+      "Rehabilitimi i rrjetit të ujësjellësit (BE, 12M euro)",
+      "Rikonstruksioni i Bulevardit Qemal Stafa",
+      "Ndërtimi i Sheshit të Ri Qendror",
+      "Park industrial në zonën e ish-Kombinatit",
+      "Shtëpia e Kulturës — restaurim"
+    ],
+    "sfidat_kryesore": [
+      "Dekontaminimi i tokës së Kombinatit (kosto e lartë)",
+      "Papunësia e të rinjve",
+      "Emigracioni",
+      "Financim i pamjaftueshëm nga qeveria qendrore",
+      "Infrastrukturë e vjetruar"
+    ]
+  },
+  "norvegjia_dhe_bashkepunimi": {
+    "diaspora": "Rreth 5,000-8,000 shqiptarë me origjinë nga Elbasani dhe rajoni jetojnë në Norvegji",
+    "bashkepunimi": "Projekte të ndryshme zhvillimi dhe demokratizimi të financuara nga Norvegjia përmes UNDP dhe organizatave civile",
+    "java_demokracise": "Iniciativë e financuar pjesërisht nga fondet norvegjeze — model nordik i demokracisë lokale",
+    "modeli_nordik": "Norvegjia — model botëror i transparencës, pjesëmarrjes qytetare dhe e-governance"
+  },
+  "te_dhenat_demografike": {
+    "moshat": "Popullsi e re relativisht — 35% nën 30 vjeç, por trendi i plakjes po rritet",
+    "arsimimi": "67% e popullsisë 25-64 ka arsim të mesëm ose më të lartë",
+    "te_papunë": "Papunësia e të rinjve 18-29 vjeç — rreth 35%",
+    "familjet": "Madhësia mesatare e familjes 3.4 persona, ulje nga 4.8 në 1990"
+  },
+  "sfidat_2025_2030": [
+    "Si të stopen emigrimi dhe ikja e trurit",
+    "Çfarë të bëhet me 400 hektarët e ish-Kombinatit",
+    "Si të aktivizohet potenciali turistik i Kalasë dhe Pazarit",
+    "Integrimi dixhital i shërbimeve bashkiake",
+    "Krijimi i vendeve të punës për të rinjtë",
+    "Rehabilitimi mjedisor i zonës industriale",
+    "Forcimi i rolit të Universitetit si motor inovacioni"
+  ]
+}

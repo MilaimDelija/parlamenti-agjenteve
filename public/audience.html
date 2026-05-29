@@ -3,226 +3,142 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Parlamenti i Agjentëve · Audienca</title>
+<title>Parlamenti · Audienca</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <style>
-:root {
-  --bg: #0c0f14; --surface: #141820; --surface2: #1c2230;
-  --border: rgba(255,255,255,0.08); --text: #e8e6e0; --muted: rgba(232,230,224,0.45); --accent: #c9a84c;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; min-height: 100vh; padding-bottom: env(safe-area-inset-bottom); }
-
-.top { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
-.app-name { font-size: 14px; font-weight: 500; color: var(--text); }
-.app-sub { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 3px; }
-
-.topic-section { padding: 16px 20px; background: var(--surface); border-bottom: 1px solid var(--border); }
-.topic-label { font-size: 9px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
-.topic-text { font-size: 14px; color: var(--text); line-height: 1.5; }
-.no-topic { font-size: 13px; color: var(--muted); font-style: italic; }
-
-.tabs { display: flex; border-bottom: 1px solid var(--border); }
-.tab { flex: 1; padding: 12px; text-align: center; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; }
-.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-.tab-content { display: none; padding: 20px; }
-.tab-content.active { display: block; }
-
-.agents-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-.agent-btn {
-  padding: 14px 10px; border: 1px solid var(--border);
-  background: var(--surface); cursor: pointer; text-align: center;
-  transition: all 0.2s; -webkit-tap-highlight-color: transparent;
-}
-.agent-btn.selected { border-color: var(--agent-color); background: var(--agent-bg); }
-.agent-btn-name { font-size: 11px; font-weight: 500; margin-top: 6px; }
-.agent-btn-role { font-size: 9px; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 2px; }
-.agent-btn-avatar { font-size: 24px; }
-
-.all-btn {
-  width: 100%; padding: 12px; border: 1px solid var(--border);
-  background: var(--surface); color: var(--muted); cursor: pointer;
-  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
-  margin-bottom: 16px; transition: all 0.2s;
-}
-.all-btn.selected { border-color: var(--accent); color: var(--accent); }
-
-.input-area {
-  width: 100%; background: var(--surface2); border: 1px solid var(--border);
-  color: var(--text); font-family: inherit; font-size: 14px;
-  padding: 12px; resize: none; outline: none; line-height: 1.6;
-  margin-bottom: 12px;
-}
-.input-area::placeholder { color: var(--muted); }
-
-.send-btn {
-  width: 100%; padding: 14px; background: var(--accent); color: #0c0f14;
-  border: none; font-size: 12px; font-weight: 500; cursor: pointer;
-  letter-spacing: 0.1em; text-transform: uppercase; transition: opacity 0.2s;
-}
-.send-btn:disabled { opacity: 0.4; }
-.send-btn:active { opacity: 0.8; }
-
-.sent-confirm {
-  display: none; text-align: center; padding: 20px;
-  font-size: 13px; color: var(--accent);
-}
-
-.vote-agents { display: flex; flex-direction: column; gap: 10px; }
-.vote-agent-btn {
-  display: flex; align-items: center; gap: 12px;
-  padding: 14px; border: 1px solid var(--border);
-  background: var(--surface); cursor: pointer; transition: all 0.2s;
-}
-.vote-agent-btn:active { opacity: 0.7; }
-.vote-agent-btn.voted { border-color: var(--agent-color); }
-.va-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; flex-shrink: 0; }
-.va-info { flex: 1; }
-.va-name { font-size: 13px; font-weight: 500; }
-.va-role { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
-.va-count { font-size: 12px; color: var(--muted); }
-.vote-track { height: 2px; background: rgba(255,255,255,0.06); margin-top: 6px; }
-.vote-fill { height: 100%; transition: width 0.8s; }
-
-.voted-badge { font-size: 9px; color: var(--accent); letter-spacing: 0.08em; text-transform: uppercase; }
+:root{--bg:#0c0f14;--s1:#141820;--s2:#1c2230;--border:rgba(255,255,255,0.08);--text:#e8e6e0;--muted:rgba(232,230,224,0.45);--accent:#c9a84c}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'IBM Plex Sans',sans-serif;min-height:100vh;padding-bottom:env(safe-area-inset-bottom)}
+.top{padding:16px 18px 14px;border-bottom:1px solid var(--border)}
+.app-n{font-size:14px;font-weight:500}
+.app-s{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.topic-bar{padding:12px 18px;background:var(--s1);border-bottom:1px solid var(--border)}
+.t-lbl{font-size:9px;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px}
+.t-txt{font-size:13px;line-height:1.5}
+.no-topic{font-size:12px;color:var(--muted);font-style:italic}
+.tabs{display:flex;border-bottom:1px solid var(--border)}
+.tab{flex:1;padding:12px;text-align:center;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.pane{display:none;padding:18px}
+.pane.active{display:block}
+.sec-lbl{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.agents-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.ag-btn{padding:12px 8px;border:1px solid var(--border);background:var(--s1);cursor:pointer;text-align:center;transition:all .2s}
+.ag-btn.sel{border-color:var(--c);background:var(--bg2)}
+.ag-n{font-size:11px;font-weight:500;margin-top:5px;color:var(--c)}
+.ag-r{font-size:9px;color:var(--muted);text-transform:uppercase;margin-top:2px}
+.all-btn{width:100%;padding:10px;border:1px solid var(--border);background:var(--s1);color:var(--muted);cursor:pointer;font-size:10px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;transition:all .2s;font-family:inherit}
+.all-btn.sel{border-color:var(--accent);color:var(--accent)}
+textarea{width:100%;background:var(--s2);border:1px solid var(--border);color:var(--text);font-family:inherit;font-size:14px;padding:12px;resize:none;outline:none;line-height:1.6;margin-bottom:12px}
+textarea::placeholder{color:var(--muted)}
+.send-btn{width:100%;padding:14px;background:var(--accent);color:#0c0f14;border:none;font-size:11px;font-weight:600;cursor:pointer;letter-spacing:.1em;text-transform:uppercase;transition:opacity .2s;font-family:inherit}
+.send-btn:active{opacity:.8}
+.send-btn:disabled{opacity:.4}
+.confirm{display:none;text-align:center;padding:16px;font-size:13px;color:var(--accent)}
+.va-list{display:flex;flex-direction:column;gap:8px}
+.va-btn{display:flex;align-items:center;gap:10px;padding:14px;border:1px solid var(--border);background:var(--s1);cursor:pointer;transition:all .2s}
+.va-btn.voted{border-color:var(--c)}
+.va-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;flex-shrink:0}
+.va-info{flex:1}
+.va-n{font-size:12px;font-weight:500}
+.va-r{font-size:9px;color:var(--muted);text-transform:uppercase;margin-top:2px}
+.va-track{height:2px;background:rgba(255,255,255,0.06);margin-top:5px}
+.va-fill{height:100%;transition:width .8s}
+.va-cnt{font-size:11px;color:var(--muted)}
+.voted-tag{font-size:8px;color:var(--accent);letter-spacing:.06em;text-transform:uppercase}
 </style>
 </head>
 <body>
-<div class="top">
-  <div class="app-name">Parlamenti i Agjentëve</div>
-  <div class="app-sub">Java e Demokracisë · Elbasan 2026</div>
+<div class="top"><div class="app-n">Parlamenti i Agjentëve</div><div class="app-s">Java e Demokracisë · Elbasan 2026</div></div>
+<div class="topic-bar">
+  <div class="t-lbl">Tema aktuale</div>
+  <div id="topicTxt" class="no-topic">Duke pritur temën...</div>
 </div>
-
-<div class="topic-section">
-  <div class="topic-label">Tema aktuale</div>
-  <div id="topicDisplay" class="no-topic">Duke pritur temën...</div>
-</div>
-
 <div class="tabs">
   <div class="tab active" onclick="showTab('ask')">Pyet</div>
   <div class="tab" onclick="showTab('vote')">Voto</div>
 </div>
-
-<div class="tab-content active" id="tab-ask">
-  <div id="targetSection">
-    <div style="font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">Kë do të pyesësh?</div>
-    <button class="all-btn selected" id="btn-all" onclick="selectTarget(null)">Të gjithë parlamentarët</button>
-    <div class="agents-grid" id="agentBtns"></div>
-  </div>
-  <textarea class="input-area" id="questionInput" rows="3" placeholder="Shkruaj pyetjen tënde..."></textarea>
-  <button class="send-btn" id="sendBtn" onclick="sendQuestion()">Dërgo Pyetjen</button>
-  <div class="sent-confirm" id="sentConfirm">✓ Pyetja u dërgua — shiko ekranin kryesor</div>
+<div class="pane active" id="pask">
+  <div class="sec-lbl" style="margin-bottom:10px">Kë do të pyesësh?</div>
+  <button class="all-btn sel" id="btn-all" onclick="selTarget(null)">Të gjithë parlamentarët</button>
+  <div class="agents-grid" id="agBtns"></div>
+  <textarea id="qInp" rows="3" placeholder="Pyetja jote drejtuar parlamentit..."></textarea>
+  <button class="send-btn" id="sendBtn" onclick="sendQ()">Dërgo Pyetjen →</button>
+  <div class="confirm" id="conf">✓ Pyetja u dërgua — shiko ekranin kryesor</div>
 </div>
-
-<div class="tab-content" id="tab-vote">
-  <div style="font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px;">Kush ka argumentet më të forta?</div>
-  <div class="vote-agents" id="voteAgents"></div>
+<div class="pane" id="pvote">
+  <div class="sec-lbl">Kush të ka bindur më shumë?</div>
+  <div class="va-list" id="vaList"></div>
 </div>
 
 <script>
 const socket = io();
-let agents = [];
-let selectedTarget = null;
-let myVote = null;
-let votes = {};
+let agents=[], myVote=null, votes={}, selTargetId=null;
 
 function showTab(t) {
-  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active', ['ask','vote'][i]===t));
-  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
-  document.getElementById('tab-'+t).classList.add('active');
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['ask','vote'][i]===t));
+  document.querySelectorAll('.pane').forEach(el=>el.classList.remove('active'));
+  document.getElementById('p'+t).classList.add('active');
 }
 
-function selectTarget(agentId) {
-  selectedTarget = agentId;
-  document.getElementById('btn-all').classList.toggle('selected', agentId===null);
-  document.querySelectorAll('.agent-btn').forEach(b => {
-    b.classList.toggle('selected', b.dataset.id === agentId);
+function selTarget(id) {
+  selTargetId = id;
+  document.getElementById('btn-all').classList.toggle('sel', id===null);
+  document.querySelectorAll('.ag-btn').forEach(b=>b.classList.toggle('sel', b.dataset.id===id));
+}
+
+function renderAgBtns() {
+  const g = document.getElementById('agBtns');
+  g.innerHTML='';
+  agents.filter(a=>a.id!=='moderatori').forEach(a=>{
+    const init = a.name.split(' ').map(w=>w[0]).join('');
+    const b = document.createElement('button');
+    b.className='ag-btn'; b.dataset.id=a.id;
+    b.style.setProperty('--c', a.color);
+    b.style.setProperty('--bg2', a.bg+'40');
+    b.innerHTML=`<div style="width:28px;height:28px;border-radius:50%;background:${a.bg};color:${a.color};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;margin:0 auto">${init}</div><div class="ag-n">${a.name.split(' ')[0]}</div><div class="ag-r">${a.role}</div>`;
+    b.onclick=()=>selTarget(a.id);
+    g.appendChild(b);
   });
 }
 
-function renderAgentBtns() {
-  const grid = document.getElementById('agentBtns');
-  grid.innerHTML = '';
-  agents.forEach(a => {
-    const initials = a.name.split(' ').map(w=>w[0]).join('');
-    const btn = document.createElement('button');
-    btn.className = 'agent-btn';
-    btn.dataset.id = a.id;
-    btn.style.setProperty('--agent-color', a.color);
-    btn.style.setProperty('--agent-bg', a.bg + '40');
-    btn.innerHTML = `<div class="agent-btn-avatar" style="width:32px;height:32px;border-radius:50%;background:${a.bg};color:${a.color};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;margin:0 auto">${initials}</div>
-      <div class="agent-btn-name" style="color:${a.color}">${a.name.split(' ')[0]}</div>
-      <div class="agent-btn-role">${a.role}</div>`;
-    btn.onclick = () => selectTarget(a.id);
-    grid.appendChild(btn);
-  });
-}
-
-function renderVoteAgents() {
+function renderVA() {
   const total = Object.values(votes).reduce((a,b)=>a+b,0)||1;
-  const container = document.getElementById('voteAgents');
-  container.innerHTML = '';
-  agents.forEach(a => {
-    const count = votes[a.id]||0;
-    const pct = Math.round((count/total)*100);
-    const initials = a.name.split(' ').map(w=>w[0]).join('');
-    const div = document.createElement('div');
-    div.className = 'vote-agent-btn' + (myVote===a.id?' voted':'');
-    div.style.setProperty('--agent-color', a.color);
-    div.innerHTML = `
-      <div class="va-avatar" style="background:${a.bg};color:${a.color}">${initials}</div>
-      <div class="va-info">
-        <div class="va-name">${a.name}</div>
-        <div class="va-role">${a.role}</div>
-        <div class="vote-track"><div class="vote-fill" style="width:${pct}%;background:${a.color}"></div></div>
-      </div>
-      <div style="text-align:right">
-        <div class="va-count">${count}</div>
-        ${myVote===a.id?'<div class="voted-badge">votova</div>':''}
-      </div>`;
-    if (!myVote) {
-      div.onclick = () => {
-        myVote = a.id;
-        socket.emit('vote', {agentId: a.id});
-        renderVoteAgents();
-      };
-    }
-    container.appendChild(div);
+  const c = document.getElementById('vaList');
+  c.innerHTML='';
+  agents.filter(a=>a.id!=='moderatori').forEach(a=>{
+    const cnt=votes[a.id]||0, pct=Math.round(cnt/total*100);
+    const init=a.name.split(' ').map(w=>w[0]).join('');
+    const d=document.createElement('div');
+    d.className='va-btn'+(myVote===a.id?' voted':'');
+    d.style.setProperty('--c', a.color);
+    d.innerHTML=`<div class="va-av" style="background:${a.bg};color:${a.color}">${init}</div>
+      <div class="va-info"><div class="va-n" style="color:${a.color}">${a.name}</div><div class="va-r">${a.role}</div>
+      <div class="va-track"><div class="va-fill" style="width:${pct}%;background:${a.color}"></div></div></div>
+      <div style="text-align:right"><div class="va-cnt">${cnt}</div>${myVote===a.id?'<div class="voted-tag">votova</div>':''}</div>`;
+    if (!myVote) d.onclick=()=>{ myVote=a.id; socket.emit('vote',{agentId:a.id}); renderVA(); };
+    c.appendChild(d);
   });
 }
 
-function sendQuestion() {
-  const q = document.getElementById('questionInput').value.trim();
+function sendQ() {
+  const q = document.getElementById('qInp').value.trim();
   if (!q) return;
-  socket.emit('audienceQuestion', {question: q, targetAgent: selectedTarget});
-  document.getElementById('questionInput').value = '';
-  document.getElementById('sendBtn').style.display = 'none';
-  document.getElementById('sentConfirm').style.display = 'block';
-  setTimeout(()=>{
-    document.getElementById('sendBtn').style.display = 'block';
-    document.getElementById('sentConfirm').style.display = 'none';
-  }, 3000);
+  socket.emit('audienceQuestion', {question:q, targetAgent:selTargetId});
+  document.getElementById('qInp').value='';
+  document.getElementById('sendBtn').style.display='none';
+  document.getElementById('conf').style.display='block';
+  setTimeout(()=>{ document.getElementById('sendBtn').style.display='block'; document.getElementById('conf').style.display='none'; }, 3500);
 }
 
-socket.on('init', data => {
-  agents = data.agents;
-  renderAgentBtns();
-  renderVoteAgents();
-  if (data.state.topic) document.getElementById('topicDisplay').textContent = data.state.topic;
-  document.getElementById('topicDisplay').className = 'topic-text';
+socket.on('init', d=>{
+  agents=d.agents; renderAgBtns(); renderVA();
+  if (d.state.topic) { document.getElementById('topicTxt').textContent=d.state.topic; document.getElementById('topicTxt').className='t-txt'; }
+  votes=d.state.audienceVotes||{};
 });
-
-socket.on('topicSet', ({topic}) => {
-  document.getElementById('topicDisplay').textContent = topic;
-  document.getElementById('topicDisplay').className = 'topic-text';
-});
-
-socket.on('voteUpdate', v => {
-  votes = v;
-  renderVoteAgents();
-});
+socket.on('topicSet', ({topic})=>{ document.getElementById('topicTxt').textContent=topic; document.getElementById('topicTxt').className='t-txt'; });
+socket.on('voteUpdate', v=>{ votes=v; renderVA(); });
 </script>
 </body>
 </html>
