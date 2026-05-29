@@ -6,178 +6,218 @@
 <title>Parlamenti i Agjentëve · Elbasan 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#080b10;--s1:#0e1520;--s2:#141d2e;
-  --border:rgba(255,255,255,0.08);--text:#e8e4d8;
-  --muted:rgba(232,228,216,0.4);--gold:#c9a84c;--red:#d94f4f
+  --bg:#07090e;--s1:#0d1220;--s2:#131b2c;--s3:#1a2438;
+  --border:rgba(255,255,255,0.07);--text:#e8e4d8;
+  --muted:rgba(232,228,216,0.42);--gold:#c9a84c;--red:#d94f4f
 }
 html,body{height:100%;overflow:hidden;font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text)}
 
-/* ══════════════════ ENTRANCE ══════════════════════════════════════════ */
+/* ══════════ ENTRANCE ════════════════════════════════════════════════════ */
 #entrance{
   position:fixed;inset:0;z-index:100;overflow-y:auto;
-  background:radial-gradient(ellipse at 50% 20%,#111d35 0%,#080b10 65%);
-  transition:opacity .7s,transform .7s
+  background:radial-gradient(ellipse at 50% 15%,#0f1d38 0%,#07090e 65%);
+  transition:opacity .6s,transform .6s
 }
-#entrance.out{opacity:0;transform:scale(1.04);pointer-events:none}
-.ent-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:linear-gradient(rgba(201,168,76,.03) 1px,transparent 1px),
-  linear-gradient(90deg,rgba(201,168,76,.03) 1px,transparent 1px);
-  background-size:70px 70px}
+#entrance.out{opacity:0;transform:scale(1.03);pointer-events:none}
+.eg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(201,168,76,.025) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(201,168,76,.025) 1px,transparent 1px);
+  background-size:72px 72px}
+
+.ehdr{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+  padding:13px 32px;border-bottom:1px solid var(--border);
+  background:rgba(7,9,14,.94);backdrop-filter:blur(10px)}
+.elogo{display:flex;align-items:center;gap:11px}
+.eseal{width:36px;height:36px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;color:var(--gold);font-size:16px}
+.ebrand{font-family:'Playfair Display',serif;font-size:14px}
+.esub{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
+.elive{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--gold);
+  letter-spacing:.1em;text-transform:uppercase;padding:4px 11px;border:1px solid rgba(201,168,76,.3)}
+.edot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite}
+
+.ebody{position:relative;z-index:10;display:grid;grid-template-columns:1fr 300px 1fr;min-height:calc(100vh - 55px)}
+
+.eleft,.eright{padding:24px 28px;overflow-y:auto;display:flex;flex-direction:column;gap:18px}
+.eleft{border-right:1px solid var(--border)}
+.eright{border-left:1px solid var(--border)}
+.slbl{font-size:9px;color:var(--gold);letter-spacing:.13em;text-transform:uppercase;margin-bottom:9px}
+.city-h{font-family:'Playfair Display',serif;font-size:24px;line-height:1.2}
+.city-d{font-size:11px;color:var(--muted);line-height:1.7;margin-top:5px}
+.fr{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.fi{width:24px;height:24px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.fl{font-size:9px;color:var(--muted);text-transform:uppercase;margin-bottom:2px}
+.fv{font-size:11px;color:var(--text);line-height:1.4}
+.hr{padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.hy{font-size:9px;color:var(--gold);font-family:'Playfair Display',serif;margin-bottom:2px}
+.ht{font-size:11px;color:rgba(232,228,216,.73);line-height:1.55}
+.cr{padding:6px 0;font-size:10px;color:var(--muted);line-height:1.5;border-bottom:1px solid rgba(255,255,255,.03)}
+.cr::before{content:'→ ';color:var(--gold)}
+.nc{padding:11px 13px;background:var(--s1);border-left:2px solid var(--gold);margin-bottom:10px}
+.nc:last-child{margin-bottom:0}
+.nd{font-size:9px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px}
+.nt{font-family:'Playfair Display',serif;font-size:12px;color:var(--text);line-height:1.4;margin-bottom:4px}
+.nb{font-size:10px;color:var(--muted);line-height:1.55}
+.ntag{display:inline-block;margin-top:6px;padding:1px 7px;font-size:8px;letter-spacing:.05em;text-transform:uppercase}
+
+.egate{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;position:relative}
+.arch{position:absolute;bottom:0;left:50%;transform:translateX(-50%);border-radius:50% 50% 0 0/60% 60% 0 0;border:1px solid rgba(201,168,76,.15);border-bottom:none;pointer-events:none}
+.gi{display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;max-width:270px;position:relative;z-index:2}
+.gt{font-family:'Playfair Display',serif;font-size:19px;text-align:center;line-height:1.3}
+.gh{font-size:10px;color:var(--muted);text-align:center;letter-spacing:.06em;text-transform:uppercase;line-height:1.6}
+.tl{font-size:9px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase;margin-bottom:6px;text-align:center}
+.ti{width:100%;background:var(--s1);border:1px solid var(--border);color:var(--text);
+  font-family:'Playfair Display',serif;font-size:13px;padding:10px 13px;outline:none;resize:none;
+  line-height:1.5;text-align:center;transition:border-color .2s}
+.ti::placeholder{color:var(--muted)}
+.ti:focus{border-color:rgba(201,168,76,.4)}
+.adots{display:flex;gap:6px;justify-content:center}
+.adot{width:8px;height:8px;border-radius:50%;border:1.5px solid}
+.ebtn{width:100%;padding:13px;background:transparent;border:1px solid var(--gold);
+  color:var(--gold);font-size:10px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;
+  cursor:pointer;position:relative;overflow:hidden;transition:color .22s}
+.ebtn::after{content:'';position:absolute;inset:0;background:var(--gold);
+  transform:translateX(-101%);transition:transform .22s}
+.ebtn:hover{color:#07090e}
+.ebtn:hover::after{transform:translateX(0)}
+.ebtn span{position:relative;z-index:1}
+.ebtn:disabled{opacity:.35;cursor:not-allowed}
+.ebtn:disabled::after,.ebtn:disabled:hover{color:var(--gold)}
+.ebtn:disabled:hover::after{transform:translateX(-101%)}
+
+/* ══════════ PARLIAMENT ══════════════════════════════════════════════════ */
+#parliament{position:fixed;inset:0;z-index:50;display:none;flex-direction:column;background:var(--bg)}
+#parliament.show{display:flex}
 
 /* Header */
-.e-hdr{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
-  padding:14px 36px;border-bottom:1px solid var(--border);
-  background:rgba(8,11,16,.92);backdrop-filter:blur(10px)}
-.e-logo{display:flex;align-items:center;gap:12px}
-.e-seal{width:38px;height:38px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;
-  font-family:'Playfair Display',serif;color:var(--gold);font-size:17px}
-.e-brand{font-family:'Playfair Display',serif;font-size:15px}
-.e-sub{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
-.e-live{display:flex;align-items:center;gap:5px;font-size:9px;color:var(--gold);
-  letter-spacing:.1em;text-transform:uppercase;padding:4px 12px;
-  border:1px solid rgba(201,168,76,.3)}
-.e-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite}
-
-/* Main 3-col */
-.e-body{position:relative;z-index:10;display:grid;grid-template-columns:1fr 340px 1fr;min-height:calc(100vh - 57px)}
-
-/* Left — Qyteti */
-.e-left{padding:28px 30px;border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;gap:22px}
-.sec-ttl{font-size:9px;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:10px}
-.city-title{font-family:'Playfair Display',serif;font-size:26px;line-height:1.2}
-.city-desc{font-size:12px;color:var(--muted);line-height:1.7;margin-top:6px}
-.fact-row{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04)}
-.fact-ico{width:26px;height:26px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
-.fact-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
-.fact-val{font-size:11px;color:var(--text);line-height:1.4}
-.hist-row{padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04)}
-.hist-yr{font-size:10px;color:var(--gold);font-family:'Playfair Display',serif;margin-bottom:3px}
-.hist-txt{font-size:11px;color:rgba(232,228,216,.75);line-height:1.55}
-.challenge-row{padding:7px 0;font-size:11px;color:var(--muted);line-height:1.5;border-bottom:1px solid rgba(255,255,255,.03)}
-.challenge-row::before{content:'→ ';color:var(--gold)}
-
-/* Center — Gate */
-.e-gate{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;position:relative}
-.arch{position:absolute;bottom:0;left:50%;transform:translateX(-50%);border-radius:50% 50% 0 0 / 60% 60% 0 0;border:1px solid rgba(201,168,76,.18);border-bottom:none;pointer-events:none}
-.gate-inner{display:flex;flex-direction:column;align-items:center;gap:18px;width:100%;max-width:290px;position:relative;z-index:2}
-.gate-ttl{font-family:'Playfair Display',serif;font-size:20px;text-align:center;line-height:1.3}
-.gate-hint{font-size:10px;color:var(--muted);text-align:center;letter-spacing:.06em;text-transform:uppercase;line-height:1.6}
-.topic-area{width:100%}
-.topic-lbl{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px;text-align:center}
-.topic-inp{width:100%;background:var(--s1);border:1px solid var(--border);color:var(--text);
-  font-family:'Playfair Display',serif;font-size:13px;padding:11px 14px;outline:none;resize:none;
-  line-height:1.5;text-align:center;transition:border-color .2s}
-.topic-inp::placeholder{color:var(--muted)}
-.topic-inp:focus{border-color:rgba(201,168,76,.4)}
-.agents-dots{display:flex;gap:7px;justify-content:center}
-.a-dot{width:9px;height:9px;border-radius:50%;border:1.5px solid}
-.enter-btn{width:100%;padding:14px;background:transparent;border:1px solid var(--gold);
-  color:var(--gold);font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
-  cursor:pointer;position:relative;overflow:hidden;transition:color .25s}
-.enter-btn::after{content:'';position:absolute;inset:0;background:var(--gold);
-  transform:translateX(-101%);transition:transform .25s}
-.enter-btn:hover{color:#080b10}
-.enter-btn:hover::after{transform:translateX(0)}
-.enter-btn span{position:relative;z-index:1}
-.enter-btn:disabled{opacity:.35;cursor:not-allowed}
-.enter-btn:disabled::after{display:none}
-.enter-btn:disabled:hover{color:var(--gold)}
-
-/* Right — Njoftime */
-.e-right{padding:28px 30px;border-left:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;gap:14px}
-.news-card{padding:12px 14px;background:var(--s1);border-left:2px solid var(--gold);transition:background .2s;cursor:default}
-.news-card:hover{background:var(--s2)}
-.nc-date{font-size:9px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;margin-bottom:5px}
-.nc-title{font-family:'Playfair Display',serif;font-size:13px;color:var(--text);line-height:1.4;margin-bottom:5px}
-.nc-body{font-size:11px;color:var(--muted);line-height:1.6}
-.nc-tag{display:inline-block;margin-top:7px;padding:2px 7px;font-size:9px;letter-spacing:.05em;text-transform:uppercase}
-
-/* ══════════════════ PARLIAMENT ════════════════════════════════════════ */
-#parliament{position:fixed;inset:0;z-index:50;display:none}
-#parliament.show{display:grid;grid-template-columns:55% 45%;grid-template-rows:auto 1fr auto}
-#p3d-wrap{position:relative;grid-column:1;grid-row:1/4;overflow:hidden}
-#c3d{position:absolute;inset:0;z-index:0;width:100%;height:100%}
-
-/* Slim header */
-.p-hdr{position:relative;z-index:30;display:flex;align-items:center;gap:12px;
-  padding:10px 20px;background:rgba(8,11,16,.88);border-bottom:1px solid var(--border);
-  backdrop-filter:blur(8px);grid-column:1/3;grid-row:1}
-.p-seal{width:28px;height:28px;border:1px solid var(--gold);display:flex;align-items:center;
-  justify-content:center;font-family:'Playfair Display',serif;color:var(--gold);font-size:13px;flex-shrink:0}
-.p-title{font-family:'Playfair Display',serif;font-size:14px}
-.p-sep{width:1px;height:16px;background:var(--border)}
-.p-topic{font-size:12px;color:var(--muted);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.p-tag{padding:3px 9px;border:1px solid var(--border);font-size:9px;color:var(--muted);
+.phdr{display:flex;align-items:center;gap:10px;padding:9px 18px;
+  background:rgba(7,9,14,.96);border-bottom:1px solid var(--border);flex-shrink:0}
+.phdr .eseal{width:26px;height:26px;font-size:12px}
+.ptitle{font-family:'Playfair Display',serif;font-size:13px}
+.psep{width:1px;height:14px;background:var(--border)}
+.ptopic{font-size:11px;color:var(--muted);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ptag{padding:3px 8px;border:1px solid var(--border);font-size:8px;color:var(--muted);
   letter-spacing:.07em;text-transform:uppercase;flex-shrink:0}
-.p-tag.on{border-color:var(--gold);color:var(--gold)}
-.p-back{padding:5px 12px;border:1px solid var(--border);background:transparent;color:var(--muted);
-  font-size:9px;cursor:pointer;letter-spacing:.07em;text-transform:uppercase;font-family:inherit;
-  transition:all .2s;flex-shrink:0}
-.p-back:hover{border-color:var(--gold);color:var(--gold)}
+.ptag.on{border-color:var(--gold);color:var(--gold)}
+.pbk{padding:4px 11px;border:1px solid var(--border);background:transparent;color:var(--muted);
+  font-size:9px;cursor:pointer;letter-spacing:.07em;text-transform:uppercase;font-family:inherit;transition:all .2s}
+.pbk:hover{border-color:var(--gold);color:var(--gold)}
 
-/* Speech bubble — appears above speaking agent in 3D */
-#bubble{position:absolute;z-index:25;background:rgba(8,11,16,.93);border:1px solid var(--gold);
-  padding:10px 14px;max-width:240px;pointer-events:none;display:none;
-  backdrop-filter:blur(6px);transition:left .2s,top .2s}
-#bubble.show{display:block}
-#bubble::after{content:'';position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);
-  width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;
-  border-top:7px solid var(--gold)}
-.bub-name{font-size:10px;font-weight:500;margin-bottom:1px}
-.bub-role{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
-.bub-wave{display:flex;gap:2px;align-items:center;height:12px}
-.bub-bar{width:2px;background:var(--gold);border-radius:1px;animation:sw .5s ease-in-out infinite}
-.bub-bar:nth-child(1){animation-delay:0s;height:4px}
-.bub-bar:nth-child(2){animation-delay:.1s;height:10px}
-.bub-bar:nth-child(3){animation-delay:.2s;height:6px}
-.bub-bar:nth-child(4){animation-delay:.15s;height:9px}
-.bub-bar:nth-child(5){animation-delay:.05s;height:4px}
+/* STAGE — top half */
+.pstage{
+  flex:0 0 42%;position:relative;
+  background:radial-gradient(ellipse at 50% 110%,#0f1e38 0%,#07090e 65%);
+  border-bottom:1px solid var(--border);overflow:hidden
+}
+/* Stage floor lines */
+.pstage::before{
+  content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:90%;height:60%;
+  border:1px solid rgba(201,168,76,.08);
+  border-bottom:none;border-radius:50% 50% 0 0/40% 40% 0 0
+}
+.pstage::after{
+  content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:65%;height:45%;
+  border:1px solid rgba(201,168,76,.12);
+  border-bottom:none;border-radius:50% 50% 0 0/40% 40% 0 0
+}
 
-/* Bottom message strip */
-.p-strip{display:none}
-.strip-msgs{flex:1;overflow-y:auto;padding:8px 16px;display:flex;flex-direction:column;gap:6px}
-.strip-msgs::-webkit-scrollbar{width:2px}
-.strip-msgs::-webkit-scrollbar-thumb{background:var(--border)}
-.smsg{display:flex;gap:8px;animation:fu .3s}
-.sm-av{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+/* Agent cards in stage */
+.stage-agents{
+  position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;
+  padding-bottom:10px;gap:0
+}
+.agent-seat{
+  display:flex;flex-direction:column;align-items:center;gap:0;
+  position:absolute;bottom:12px;transition:all .3s;cursor:default
+}
+.agent-seat.speaking{filter:drop-shadow(0 0 12px var(--ac))}
+
+/* Avatar figure */
+.av-fig{position:relative;width:56px;height:78px;flex-shrink:0}
+.av-body{position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:32px;height:42px;border-radius:6px 6px 0 0}
+.av-head{position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:28px;height:28px;border-radius:50%}
+.av-hair{position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:29px;height:16px;border-radius:14px 14px 0 0;overflow:hidden}
+.av-eyes{position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  display:flex;gap:7px}
+.av-eye{width:5px;height:5px;border-radius:50%;background:#111}
+.av-desk{width:52px;height:6px;background:var(--s2);border:1px solid var(--s3);margin-top:1px;border-radius:2px}
+.av-name{font-size:9px;font-weight:500;text-align:center;margin-top:3px;line-height:1.2;
+  white-space:nowrap;max-width:72px;overflow:hidden;text-overflow:ellipsis}
+.av-role{font-size:8px;text-align:center;letter-spacing:.04em;text-transform:uppercase;
+  opacity:.7;white-space:nowrap}
+.av-wave{display:none;align-items:center;gap:1px;height:10px;margin-top:2px}
+.agent-seat.speaking .av-wave{display:flex}
+.wbar{width:2px;border-radius:1px;animation:wv .5s ease-in-out infinite}
+.wbar:nth-child(1){animation-delay:0s;height:3px}
+.wbar:nth-child(2){animation-delay:.1s;height:9px}
+.wbar:nth-child(3){animation-delay:.2s;height:5px}
+.wbar:nth-child(4){animation-delay:.15s;height:8px}
+.wbar:nth-child(5){animation-delay:.05s;height:3px}
+
+/* Podium center for moderator */
+.mod-podium{
+  position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center
+}
+.podium-base{width:70px;height:14px;background:var(--s2);border:1px solid rgba(201,168,76,.3);
+  border-bottom:none;border-radius:4px 4px 0 0}
+.podium-top{width:56px;height:5px;background:var(--gold);opacity:.5}
+
+/* Speaking info bar */
+.speak-bar{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  background:rgba(7,9,14,.88);border:1px solid var(--gold);
+  padding:5px 16px;font-size:11px;color:var(--gold);
+  display:none;white-space:nowrap;backdrop-filter:blur(4px)
+}
+.speak-bar.show{display:block;animation:fu .3s}
+
+/* Stage QR (small, top right) */
+.stage-qr{position:absolute;top:10px;right:12px;
+  display:flex;flex-direction:column;align-items:center;gap:4px}
+.sqrbox{width:56px;height:56px;background:#fff;display:flex;align-items:center;justify-content:center}
+.sqrbox img{width:52px;height:52px}
+.sqrlbl{font-size:8px;color:var(--muted);letter-spacing:.07em;text-transform:uppercase;text-align:center}
+
+/* Audience pop - top left stage */
+.aud-pop{position:absolute;top:10px;left:12px;max-width:200px;display:flex;flex-direction:column;gap:4px}
+.ap{background:rgba(7,9,14,.9);border-left:2px solid var(--gold);padding:6px 9px;
+  font-size:10px;line-height:1.45;animation:fu .3s}
+.apm{font-size:8px;color:var(--muted);margin-top:2px}
+
+/* DEBATE — bottom half */
+.pdebate{
+  flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0
+}
+.dhead{display:flex;align-items:center;justify-content:space-between;
+  padding:7px 16px;border-bottom:1px solid var(--border);flex-shrink:0;
+  background:var(--s1)}
+.dhead-l{display:flex;align-items:center;gap:8px}
+.dh-lbl{font-size:9px;color:var(--muted);letter-spacing:.09em;text-transform:uppercase}
+.dh-round{font-size:10px;color:var(--gold)}
+.votes-mini{display:flex;gap:6px;align-items:center}
+.vm{display:flex;align-items:center;gap:4px}
+.vm-dot{width:6px;height:6px;border-radius:50%}
+.vm-n{font-size:9px;color:var(--muted)}
+.feed{flex:1;overflow-y:auto;padding:10px 16px;display:flex;flex-direction:column;gap:2px}
+.feed::-webkit-scrollbar{width:2px}
+.feed::-webkit-scrollbar-thumb{background:var(--border)}
+.msg{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.03);animation:fu .35s}
+.mav{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   font-size:8px;font-weight:600;flex-shrink:0;margin-top:2px}
-.sm-body{flex:1;min-width:0}
-.sm-name{font-size:9px;font-weight:500;margin-bottom:2px}
-.sm-text{font-size:11px;line-height:1.65;color:rgba(232,228,216,.82);white-space:pre-wrap;word-break:break-word}
-.sm-typing{font-size:11px;color:var(--muted);font-style:italic}
-
-/* Right sidebar — QR + votes, slim */
-.p-sidebar{grid-column:2;grid-row:2;background:rgba(8,11,16,.95);border-left:1px solid var(--border);
-  display:flex;flex-direction:column;overflow:hidden;min-height:0}
-.sb-qr{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0}
-.sb-feed{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:5px}
-.sb-feed::-webkit-scrollbar{width:2px}
-.sb-feed::-webkit-scrollbar-thumb{background:var(--border)}
-.sb-qlbl{font-size:8px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase}
-.sb-qbox{width:80px;height:80px;background:#fff;display:flex;align-items:center;justify-content:center}
-.sb-qbox img{width:76px;height:76px}
-.sb-qurl{font-size:8px;color:var(--muted);text-align:center;word-break:break-all}
-.sb-votes{padding:10px 12px;flex:1;overflow-y:auto}
-.sv-ttl{font-size:8px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
-.vr{display:flex;align-items:center;gap:6px;margin-bottom:5px}
-.vr-n{font-size:9px;width:52px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vr-t{flex:1;height:2px;background:rgba(255,255,255,.06)}
-.vr-f{height:100%;transition:width .7s}
-.vr-c{font-size:8px;color:var(--muted);width:14px;text-align:right}
-
-/* Audience questions pop */
-.aud-pop{position:absolute;left:16px;top:70px;z-index:30;width:220px;display:flex;flex-direction:column;gap:5px;pointer-events:none}
-.ap-msg{background:rgba(8,11,16,.92);border-left:2px solid var(--gold);
-  padding:7px 10px;font-size:10px;color:var(--text);line-height:1.5;animation:fu .3s}
-.ap-meta{font-size:8px;color:var(--muted);margin-top:3px}
-
-/* Bottom controls */
-.p-ctrl{grid-column:2;grid-row:3;display:flex;gap:6px;padding:8px 12px;
-  background:rgba(8,11,16,.95);border-top:1px solid var(--border);border-left:1px solid var(--border)}
+.mbody{}
+.mname{font-size:9px;font-weight:500;margin-bottom:3px}
+.mtext{font-size:12px;line-height:1.75;color:rgba(232,228,216,.85);white-space:pre-wrap;word-break:break-word}
+.mtyp{font-size:11px;color:var(--muted);font-style:italic}
+.dctrl{display:flex;gap:6px;padding:8px 14px;border-top:1px solid var(--border);flex-shrink:0;background:var(--s1)}
 .cb{flex:1;padding:7px 4px;background:transparent;border:1px solid var(--border);color:var(--muted);
   font-size:9px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;
   font-family:inherit;transition:all .2s}
@@ -185,182 +225,174 @@ html,body{height:100%;overflow:hidden;font-family:'IBM Plex Sans',sans-serif;bac
 .cb:disabled{opacity:.28;cursor:not-allowed}
 .cb.gold{border-color:var(--gold);color:var(--gold)}
 
-/* Challenge modal */
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;align-items:center;justify-content:center}
+/* Modal */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:300;align-items:center;justify-content:center}
 .modal.show{display:flex}
-.mbox{background:var(--s1);border:1px solid var(--border);padding:22px;width:340px}
-.mttl{font-size:13px;font-weight:500;margin-bottom:14px;color:var(--text)}
-.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px}
-.magent{padding:10px 8px;border:1px solid var(--border);cursor:pointer;text-align:center;
-  font-size:11px;transition:all .2s;color:var(--muted)}
-.magent:hover{border-color:var(--gold);color:var(--gold)}
-.mcancel{width:100%;padding:7px;background:transparent;border:1px solid var(--border);
-  color:var(--muted);cursor:pointer;font-size:9px;font-family:inherit;transition:all .2s}
-.mcancel:hover{border-color:var(--red);color:var(--red)}
+.mbox{background:var(--s1);border:1px solid var(--border);padding:20px;width:320px}
+.mttl{font-size:12px;font-weight:500;margin-bottom:13px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px}
+.mag{padding:9px 7px;border:1px solid var(--border);cursor:pointer;text-align:center;
+  font-size:10px;transition:all .2s}
+.mag:hover{border-color:var(--gold);color:var(--gold)}
+.mcan{width:100%;padding:7px;background:transparent;border:1px solid var(--border);
+  color:var(--muted);cursor:pointer;font-size:9px;font-family:inherit}
+.mcan:hover{border-color:var(--red);color:var(--red)}
 
-/* Banner */
-#banner{position:fixed;top:60px;left:50%;transform:translateX(-50%);
-  background:var(--s1);border:1px solid var(--gold);padding:7px 22px;
-  font-size:10px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;
+#banner{position:fixed;top:52px;left:50%;transform:translateX(-50%);
+  background:var(--s1);border:1px solid var(--gold);padding:6px 20px;
+  font-size:10px;color:var(--gold);letter-spacing:.09em;text-transform:uppercase;
   z-index:400;pointer-events:none;opacity:0;transition:opacity .3s;white-space:nowrap}
 
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
-@keyframes sw{0%,100%{transform:scaleY(1)}50%{transform:scaleY(2.4)}}
+@keyframes wv{0%,100%{transform:scaleY(1)}50%{transform:scaleY(2.4)}}
 @keyframes fu{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-3px)}}
 </style>
 </head>
 <body>
 <div id="banner"></div>
 
-<!-- ════════════════ ENTRANCE ══════════════════════════════════════════ -->
+<!-- ══════════════════════ ENTRANCE ═══════════════════════════════════ -->
 <div id="entrance">
-<div class="ent-grid"></div>
-
-<header class="e-hdr">
-  <div class="e-logo">
-    <div class="e-seal">P</div>
-    <div><div class="e-brand">Parlamenti i Agjentëve</div><div class="e-sub">Java e Demokracisë · Elbasan 2026</div></div>
+<div class="eg"></div>
+<header class="ehdr">
+  <div class="elogo">
+    <div class="eseal">P</div>
+    <div><div class="ebrand">Parlamenti i Agjentëve</div><div class="esub">Java e Demokracisë · Elbasan 2026</div></div>
   </div>
-  <div class="e-live"><span class="e-dot"></span>Sistem aktiv</div>
+  <div class="elive"><span class="edot"></span>Sistem aktiv</div>
 </header>
-
-<div class="e-body">
-
-  <div class="e-left" id="eLeft">
+<div class="ebody">
+  <div class="eleft">
     <div>
-      <div class="sec-ttl">Qyteti</div>
-      <div class="city-title">Elbasani</div>
-      <div class="city-desc">Themeluar si Scampis romake, qendër e Rilindjes Kombëtare, zemra gjeografike e Shqipërisë — qytet me histori të çmueshme dhe sfida reale sot.</div>
+      <div class="slbl">Qyteti</div>
+      <div class="city-h">Elbasani</div>
+      <div class="city-d">Themeluar si Scampis romake, qendër e Rilindjes Kombëtare, zemra gjeografike e Shqipërisë — histori e çmueshme, sfida reale sot.</div>
     </div>
     <div>
-      <div class="sec-ttl">Shifrat kryesore</div>
-      <div class="fact-row"><div class="fact-ico">👥</div><div><div class="fact-lbl">Popullsia</div><div class="fact-val">~206,000 (Regjistri Civil) · ~80,000 zona urbane</div></div></div>
-      <div class="fact-row"><div class="fact-ico">🏛️</div><div><div class="fact-lbl">Bashkia</div><div class="fact-val">13 njësi administrative · Buxhet ~3 mld lekë</div></div></div>
-      <div class="fact-row"><div class="fact-ico">🎓</div><div><div class="fact-lbl">Universiteti</div><div class="fact-val">Aleksandër Xhuvani · 97 programe · ~1,100 studentë të rinj 2024-25</div></div></div>
-      <div class="fact-row"><div class="fact-ico">⚠️</div><div><div class="fact-lbl">Mjedisi</div><div class="fact-val">1.5 mln ton mbetje industriale · Operacioni Metalurgjiku 2025</div></div></div>
-      <div class="fact-row"><div class="fact-ico">🛣️</div><div><div class="fact-lbl">Lidhja</div><div class="fact-val">Autostrada A3 — 45 min nga Tirana</div></div></div>
+      <div class="slbl">Shifrat kryesore</div>
+      <div class="fr"><div class="fi">👥</div><div><div class="fl">Popullsia</div><div class="fv">~206,000 (Regjistri Civil) · ~80,000 urbane</div></div></div>
+      <div class="fr"><div class="fi">🏛️</div><div><div class="fl">Bashkia</div><div class="fv">13 njësi · Buxhet ~3 mld lekë vjetor</div></div></div>
+      <div class="fr"><div class="fi">🎓</div><div><div class="fl">Universiteti</div><div class="fv">Aleksandër Xhuvani · 97 programe · ~1,100 studentë të rinj 2024-25</div></div></div>
+      <div class="fr"><div class="fi">⚠️</div><div><div class="fl">Mjedisi</div><div class="fv">1.5 mln ton mbetje industriale · Operacioni Metalurgjiku 2025</div></div></div>
+      <div class="fr"><div class="fi">🛣️</div><div><div class="fl">Lidhja</div><div class="fv">Autostrada A3 — 45 min nga Tirana</div></div></div>
     </div>
     <div>
-      <div class="sec-ttl">Piketa historike</div>
-      <div class="hist-row"><div class="hist-yr">Shek. II p.k.</div><div class="hist-txt">Scampis — stacion i rrugës romake Egnatia, urë midis Adriatikut dhe Kostandinopojës.</div></div>
-      <div class="hist-row"><div class="hist-yr">1466</div><div class="hist-txt">Sulltan Mehmeti II ndërton kalanë e re. Qendër tregtare me 900 dyqane zejesh.</div></div>
-      <div class="hist-row"><div class="hist-yr">Shek. XVI</div><div class="hist-txt">Onufri i Elbasanit — piktor i madh postbizantin. Afresket e tij ruhen deri sot.</div></div>
-      <div class="hist-row"><div class="hist-yr">1909</div><div class="hist-txt">Kongresi i Elbasanit standardizon alfabetin shqip. Shkolla Normale — e para laike shqiptare.</div></div>
-      <div class="hist-row"><div class="hist-yr">1966–1990</div><div class="hist-txt">Kombinati Metalurgjik — industrializim masiv, çmim mjedisor i pa-shlyer ende sot.</div></div>
-      <div class="hist-row"><div class="hist-yr">Sot</div><div class="hist-txt">Kryqëzim: rënia demografike vs potenciali akademik, kulturor dhe dixhital.</div></div>
+      <div class="slbl">Piketa historike</div>
+      <div class="hr"><div class="hy">Shek. II p.k.</div><div class="ht">Scampis romake — stacion i rrugës Egnatia, urë midis Adriatikut dhe Kostandinopojës.</div></div>
+      <div class="hr"><div class="hy">1466</div><div class="ht">Sulltan Mehmeti II ndërton kalanë. Qendër tregtare me 900 dyqane zejesh.</div></div>
+      <div class="hr"><div class="hy">Shek. XVI</div><div class="ht">Onufri i Elbasanit — piktor i madh postbizantin. Afresket e tij ruhen deri sot.</div></div>
+      <div class="hr"><div class="hy">1909</div><div class="ht">Kongresi i Elbasanit standardizon alfabetin shqip. Shkolla Normale — e para laike shqiptare.</div></div>
+      <div class="hr"><div class="hy">1966–1990</div><div class="ht">Kombinati Metalurgjik — industrializim masiv, çmim mjedisor i pa-shlyer ende sot.</div></div>
+      <div class="hr"><div class="hy">Sot</div><div class="ht">Kryqëzim: rënia demografike vs potenciali akademik dhe kulturor.</div></div>
     </div>
     <div>
-      <div class="sec-ttl">Sfidat 2025–2030</div>
+      <div class="slbl">Sfidat 2025–2030</div>
       <div id="sChallenges"></div>
     </div>
   </div>
 
-  <div class="e-gate">
-    <div class="arch" style="width:260px;height:340px"></div>
-    <div class="arch" style="width:200px;height:270px;border-color:rgba(201,168,76,.1)"></div>
-    <div class="gate-inner">
-      <div class="gate-ttl">Hyr në Parlament</div>
-      <div class="gate-hint">Debat demokratik live me AI<br>Java e Demokracisë 2026</div>
-      <div class="topic-area">
-        <div class="topic-lbl">Tema e debatit</div>
-        <textarea class="topic-inp" id="topicInp" rows="2" placeholder="Shkruaj temën...&#10;p.sh. Si ta ndalim emigracionin?"></textarea>
+  <div class="egate">
+    <div class="arch" style="width:240px;height:310px"></div>
+    <div class="arch" style="width:180px;height:250px;border-color:rgba(201,168,76,.09)"></div>
+    <div class="gi">
+      <div class="gt">Hyr në Parlament</div>
+      <div class="gh">Debat demokratik live me AI<br>Java e Demokracisë 2026</div>
+      <div style="width:100%">
+        <div class="tl">Tema e debatit</div>
+        <textarea class="ti" id="topicInp" rows="2" placeholder="Shkruaj temën...&#10;p.sh. Si ta ndalim emigracionin?"></textarea>
       </div>
-      <div class="agents-dots" id="agentsDots"></div>
-      <button class="enter-btn" id="enterBtn" onclick="enterParliament()"><span>Hyr në Parlament →</span></button>
+      <div class="adots" id="adots"></div>
+      <button class="ebtn" id="enterBtn" onclick="enterParl()"><span>Hyr në Parlament →</span></button>
       <div style="font-size:9px;color:var(--muted);text-align:center;line-height:1.6">
-        5 agjentë AI debatojnë · QR kod për audiencën live
+        5 agjentë AI debatojnë · Audienca komunikon live me QR
       </div>
     </div>
   </div>
 
-  <div class="e-right" id="eRight">
-    <div class="sec-ttl">Njoftime Bashkie</div>
-    <div class="news-card" style="border-left-color:#1a6fb5">
-      <div class="nc-date">Maj 2026</div><div class="nc-title">Rehabilitimi i ujësjellësit vazhdon</div>
-      <div class="nc-body">Projekti i financuar nga BE në fazën e dytë — rikonstruksion i tubacioneve kryesore të qytetit.</div>
-      <div class="nc-tag" style="background:#1a6fb520;color:#1a6fb5">Infrastrukturë</div>
+  <div class="eright">
+    <div class="slbl">Njoftime Bashkie</div>
+    <div class="nc" style="border-left-color:#1a6fb5">
+      <div class="nd">Maj 2026</div><div class="nt">Rehabilitimi i ujësjellësit vazhdon</div>
+      <div class="nb">Projekti BE në fazën e dytë — rikonstruksion i tubacioneve kryesore.</div>
+      <div class="ntag" style="background:#1a6fb520;color:#1a6fb5">Infrastrukturë</div>
     </div>
-    <div class="news-card" style="border-left-color:#a03318">
-      <div class="nc-date">Prill 2026</div><div class="nc-title">Alarmi mjedisor — Zona e Metalurgjikut</div>
-      <div class="nc-body">Banorët ngritën alarm për tym toksik. Dy kompani nën hetim penal — Operacioni "Metalurgjiku".</div>
-      <div class="nc-tag" style="background:#a0331820;color:#a03318">Mjedis</div>
+    <div class="nc" style="border-left-color:#a03318">
+      <div class="nd">Prill 2026</div><div class="nt">Alarmi mjedisor — Zona e Metalurgjikut</div>
+      <div class="nb">Dy kompani nën hetim penal — Operacioni "Metalurgjiku". Banorët kërkojnë emergjencë.</div>
+      <div class="ntag" style="background:#a0331820;color:#a03318">Mjedis</div>
     </div>
-    <div class="news-card" style="border-left-color:#0a7a50">
-      <div class="nc-date">Mars 2026</div><div class="nc-title">Universiteti hap Qendrën EIT Raw Materials</div>
-      <div class="nc-body">Nismë rajonale për inovacion pranë Universitetit Aleksandër Xhuvani — hap strategjik.</div>
-      <div class="nc-tag" style="background:#0a7a5020;color:#0a7a50">Arsim</div>
+    <div class="nc" style="border-left-color:#0a7a50">
+      <div class="nd">Mars 2026</div><div class="nt">Universiteti hap Qendrën EIT Raw Materials</div>
+      <div class="nb">Nismë rajonale inovacioni pranë Universitetit Aleksandër Xhuvani.</div>
+      <div class="ntag" style="background:#0a7a5020;color:#0a7a50">Arsim</div>
     </div>
-    <div class="news-card" style="border-left-color:#7a4f08">
-      <div class="nc-date">Shkurt 2026</div><div class="nc-title">Buxheti 2026 — prioritetet e reja</div>
-      <div class="nc-body">Këshilli Bashkiak miraton buxhetin: infrastrukturë, hapësira të gjelbra dhe dixhitalizim shërbimesh.</div>
-      <div class="nc-tag" style="background:#7a4f0820;color:#7a4f08">Qeverisje</div>
+    <div class="nc" style="border-left-color:#3d2ea0">
+      <div class="nd">Shkurt 2026</div><div class="nt">Buxheti 2026 — prioritetet e reja</div>
+      <div class="nb">Infrastrukturë, hapësira të gjelbra dhe dixhitalizim shërbimesh bashkie.</div>
+      <div class="ntag" style="background:#3d2ea020;color:#3d2ea0">Qeverisje</div>
     </div>
-    <div class="news-card" style="border-left-color:#3d2ea0">
-      <div class="nc-date">Janar 2026</div><div class="nc-title">Emergjenca mjedisore e Bradasheshit</div>
-      <div class="nc-body">Këshilli Bashkiak kërkon shpallje zyrtare emergjence për zonën industriale.</div>
-      <div class="nc-tag" style="background:#3d2ea020;color:#3d2ea0">Mjedis</div>
+    <div class="nc" style="border-left-color:#7a4f08">
+      <div class="nd">Janar 2026</div><div class="nt">Emergjenca mjedisore e Bradasheshit</div>
+      <div class="nb">Këshilli Bashkiak kërkon shpallje zyrtare emergjence për zonën industriale.</div>
+      <div class="ntag" style="background:#7a4f0820;color:#7a4f08">Mjedis</div>
     </div>
-    <div class="sec-ttl" style="margin-top:6px">Aktualitet</div>
-    <div class="news-card">
-      <div class="nc-date">Sot</div><div class="nc-title">Java e Demokracisë Elbasan 2026</div>
-      <div class="nc-body">Aktivitet i organizuar nga bashkia, organizatat civile dhe partnerët norvegjezë. Universiteti — partner kryesor.</div>
+    <div class="slbl" style="margin-top:4px">Aktualitet</div>
+    <div class="nc">
+      <div class="nd">Sot</div><div class="nt">Java e Demokracisë Elbasan 2026</div>
+      <div class="nb">Aktivitet i organizuar nga bashkia dhe organizata civile, me mbështetje norvegjeze.</div>
     </div>
-    <div class="news-card">
-      <div class="nc-date">Maj 2026</div><div class="nc-title">48,000 shqiptarë morën shtetësi BE në 2024</div>
-      <div class="nc-body">Shqipëria e treta në botë. Italia 66%, Greqia 22%, Gjermania 6.6%. Fenomen demografik historik.</div>
+    <div class="nc">
+      <div class="nd">Maj 2026</div><div class="nt">48,000 shqiptarë morën shtetësi BE në 2024</div>
+      <div class="nb">Shqipëria e treta në botë. Italia 66%, Greqia 22%, Gjermania 6.6%.</div>
     </div>
   </div>
-
 </div>
 </div>
 
-<!-- ════════════════ PARLIAMENT ══════════════════════════════════════════ -->
+<!-- ══════════════════════ PARLIAMENT ════════════════════════════════ -->
 <div id="parliament">
-  <div id="p3d-wrap">
-    <canvas id="c3d"></canvas>
-  </div>
 
-  <header class="p-hdr">
-    <div class="p-seal">P</div>
-    <div class="p-title">Parlamenti</div>
-    <div class="p-sep"></div>
-    <div class="p-topic" id="pTopicTxt">—</div>
-    <div class="p-tag" id="phaseTag">Pritje</div>
-    <div class="p-tag" id="roundTag">R.0</div>
-    <div class="p-back" onclick="leaveParliament()">← Kthehu</div>
+  <header class="phdr">
+    <div class="eseal" style="width:26px;height:26px;font-size:12px">P</div>
+    <div class="ptitle">Parlamenti</div>
+    <div class="psep"></div>
+    <div class="ptopic" id="ptopic">—</div>
+    <div class="ptag" id="ptag">Pritje</div>
+    <div class="ptag" id="pround">R.0</div>
+    <div class="pbk" onclick="leaveParl()">← Kthehu</div>
   </header>
 
-  <div id="bubble">
-    <div class="bub-name" id="bubName"></div>
-    <div class="bub-role" id="bubRole"></div>
-    <div class="bub-wave">
-      <div class="bub-bar"></div><div class="bub-bar"></div>
-      <div class="bub-bar"></div><div class="bub-bar"></div>
-      <div class="bub-bar"></div>
+  <!-- STAGE: agents visible always -->
+  <div class="pstage" id="stage">
+    <div class="speak-bar" id="speakBar"></div>
+    <div class="aud-pop" id="audPop"></div>
+    <div class="stage-qr">
+      <div class="sqrbox"><img id="qrImg" src="" alt="QR"></div>
+      <div class="sqrlbl">Audienca</div>
     </div>
+    <div class="mod-podium">
+      <div class="podium-top"></div>
+      <div class="podium-base"></div>
+    </div>
+    <div class="stage-agents" id="stageAgents"></div>
   </div>
 
-  <div class="aud-pop" id="audPop"></div>
-
-  <div class="p-sidebar">
-    <div class="sb-qr">
-      <div class="sb-qbox"><img id="qrImg" src="" alt="QR"></div>
-      <div>
-        <div class="sb-qlbl">Audienca — skanoni</div>
-        <div class="sb-qurl" id="qrUrl">Duke ngarkuar...</div>
+  <!-- DEBATE: bottom -->
+  <div class="pdebate">
+    <div class="dhead">
+      <div class="dhead-l">
+        <span class="dh-lbl">Debati Live</span>
+        <span class="dh-round" id="roundInfo">—</span>
       </div>
+      <div class="votes-mini" id="votesMini"></div>
     </div>
-    <div class="sb-feed" id="stripMsgs"></div>
-    <div class="sb-votes">
-      <div class="sv-ttl">Votat e audiencës</div>
-      <div id="votesDisp"></div>
+    <div class="feed" id="feed"></div>
+    <div class="dctrl">
+      <button class="cb" id="nextBtn" onclick="doNext()" disabled>Rundi tjetër →</button>
+      <button class="cb" onclick="doChallenge()">Sfidë ⚡</button>
+      <button class="cb gold" onclick="doInject()">Pyetje e befasishme ✦</button>
     </div>
-  </div>
-
-  <div class="p-ctrl">
-    <button class="cb" id="nextBtn" onclick="doNextRound()" disabled>Rundi tjetër →</button>
-    <button class="cb" id="challengeBtn" onclick="doShowChallenge()">Sfidë ⚡</button>
-    <button class="cb gold" id="injectBtn" onclick="doInjectQ()">Pyetje e befasishme ✦</button>
   </div>
 </div>
 
@@ -369,28 +401,92 @@ html,body{height:100%;overflow:hidden;font-family:'IBM Plex Sans',sans-serif;bac
   <div class="mbox">
     <div class="mttl" id="mttl">Zgjidh sfiduesin:</div>
     <div class="mgrid" id="mgrid"></div>
-    <button class="mcancel" onclick="doHideChallenge()">Anulo</button>
+    <button class="mcan" onclick="hideModal()">Anulo</button>
   </div>
 </div>
 
 <script>
-/* ── globals ── */
 const socket = io();
-let agents=[], votes={}, questions=[], currentTokens={};
-let challengerSel=null, challengeStep=1;
-let scene, camera, renderer, meshes={}, lights={}, animId;
-let clock;
+let agents=[], votes={}, questions=[], currentTokens={}, cSel=null, cStep=1;
 
-/* ── ENTRANCE ─────────────────────────────────────────────────────────── */
+/* ── SEAT POSITIONS (semicircle) ── */
+function seatPos(i, total, stageW, stageH) {
+  // Semicircle: from left to right at bottom
+  const t = total <= 1 ? 0.5 : i/(total-1);
+  const angle = Math.PI * 0.08 + t * Math.PI * 0.84; // ~15° to ~165°
+  const rx = stageW * 0.44, ry = stageH * 0.52;
+  const cx = stageW/2, cy = stageH + ry * 0.12;
+  return {
+    x: cx - Math.cos(angle)*rx,
+    y: cy - Math.sin(angle)*ry
+  };
+}
+
+/* ── DRAW AGENT ── */
+function makeAgentEl(ag, x, y) {
+  const SKINS=['#f0c090','#e8a870','#d49060','#c07848','#a06438'];
+  const HAIRS=['#241008','#1a1830','#3c2818','#5a3a10','#1a1a1a'];
+  const ai = agents.indexOf(ag);
+  const skin = SKINS[ai%SKINS.length];
+  const hair = HAIRS[ai%HAIRS.length];
+  const init = ag.name.split(' ').map(w=>w[0]).join('');
+
+  const el = document.createElement('div');
+  el.className = 'agent-seat';
+  el.id = 'seat-'+ag.id;
+  el.style.cssText = `left:${x}px;top:${y}px;--ac:${ag.color}`;
+
+  el.innerHTML = `
+    <div class="av-fig">
+      <div class="av-hair" style="background:${hair}"></div>
+      <div class="av-head" style="background:${skin}"></div>
+      <div class="av-eyes"><div class="av-eye"></div><div class="av-eye"></div></div>
+      <div class="av-body" style="background:${ag.color}"></div>
+    </div>
+    <div class="av-desk" style="border-color:${ag.color}40"></div>
+    <div class="av-name" style="color:${ag.color}">${ag.name.split(' ')[0]}</div>
+    <div class="av-role" style="color:${ag.color}">${ag.role}</div>
+    <div class="av-wave">
+      <div class="wbar" style="background:${ag.color}"></div>
+      <div class="wbar" style="background:${ag.color}"></div>
+      <div class="wbar" style="background:${ag.color}"></div>
+      <div class="wbar" style="background:${ag.color}"></div>
+      <div class="wbar" style="background:${ag.color}"></div>
+    </div>`;
+
+  return el;
+}
+
+function renderStage() {
+  const stage = document.getElementById('stage');
+  const container = document.getElementById('stageAgents');
+  container.innerHTML = '';
+  const W = stage.offsetWidth, H = stage.offsetHeight;
+  const debaters = agents.filter(a=>a.id!=='moderatori');
+  const mod = agents.find(a=>a.id==='moderatori');
+
+  debaters.forEach((ag,i) => {
+    const {x,y} = seatPos(i, debaters.length, W, H);
+    const el = makeAgentEl(ag, x-36, y-90);
+    container.appendChild(el);
+  });
+
+  // Moderator at center bottom
+  if (mod) {
+    const el = makeAgentEl(mod, W/2-36, H-108);
+    el.style.zIndex = '5';
+    container.appendChild(el);
+  }
+}
+
+/* ── ENTRANCE ── */
 socket.on('init', ({agents:a, kb}) => {
   agents = a;
   // dots
-  const dots = document.getElementById('agentsDots');
-  dots.innerHTML = '';
+  const dots = document.getElementById('adots');
   agents.filter(x=>x.id!=='moderatori').forEach(ag=>{
     const d=document.createElement('div');
-    d.className='a-dot';
-    d.title=ag.name+' — '+ag.role;
+    d.className='adot'; d.title=ag.name;
     d.style.cssText=`background:${ag.bg};border-color:${ag.color}`;
     dots.appendChild(d);
   });
@@ -398,424 +494,172 @@ socket.on('init', ({agents:a, kb}) => {
   if(kb?.sfidat_2025_2030){
     const c=document.getElementById('sChallenges');
     kb.sfidat_2025_2030.forEach(s=>{
-      const d=document.createElement('div');
-      d.className='challenge-row';
-      d.textContent=s;
-      c.appendChild(d);
+      const d=document.createElement('div'); d.className='cr'; d.textContent=s; c.appendChild(d);
     });
   }
-  fetchQuestions();
-  renderVotes({});
+  fetchQ(); renderVotesMini({});
 });
 
-function enterParliament(){
-  const topic=document.getElementById('topicInp').value.trim();
-  if(!topic){document.getElementById('topicInp').focus();return;}
-  const btn=document.getElementById('enterBtn');
-  btn.disabled=true;
+function enterParl(){
+  const t=document.getElementById('topicInp').value.trim();
+  if(!t){document.getElementById('topicInp').focus();return;}
+  document.getElementById('enterBtn').disabled=true;
   document.getElementById('entrance').classList.add('out');
   setTimeout(()=>{
     document.getElementById('parliament').classList.add('show');
-    initThree();
+    setTimeout(renderStage, 50);
     loadQR();
-    socket.emit('setTopic',{topic});
-    document.getElementById('pTopicTxt').textContent=topic;
-  },700);
+    socket.emit('setTopic',{topic:t});
+    document.getElementById('ptopic').textContent=t;
+  },650);
 }
 
-function leaveParliament(){
+function leaveParl(){
   document.getElementById('parliament').classList.remove('show');
   document.getElementById('entrance').classList.remove('out');
   document.getElementById('enterBtn').disabled=false;
   document.getElementById('topicInp').value='';
-  document.getElementById('stripMsgs').innerHTML='';
+  document.getElementById('feed').innerHTML='';
   document.getElementById('audPop').innerHTML='';
-  document.getElementById('votesDisp').innerHTML='';
   currentTokens={};
-  if(renderer){cancelAnimationFrame(animId);renderer.dispose();renderer=null;scene=null;}
 }
 
-/* ── THREE.JS 3D PARLIAMENT ───────────────────────────────────────────── */
-function initThree(){
-  const wrap=document.getElementById('p3d-wrap');
-  const canvas=document.getElementById('c3d');
-  renderer=new THREE.WebGLRenderer({canvas,antialias:true});
-  renderer.setSize(wrap.offsetWidth,wrap.offsetHeight);
-  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-  renderer.shadowMap.enabled=true;
-  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-
-  scene=new THREE.Scene();
-  scene.background=new THREE.Color(0x07090f);
-  scene.fog=new THREE.FogExp2(0x07090f,0.045);
-  clock=new THREE.Clock();
-
-  const wrap2=document.getElementById('p3d-wrap');
-  camera=new THREE.PerspectiveCamera(48,wrap2.offsetWidth/wrap2.offsetHeight,.1,80);
-  camera.position.set(0,5.5,12);
-  camera.lookAt(0,1.0,0);
-
-  buildRoom();
-  buildAgents();
-  addLights();
-  loopRender();
-
-  window.addEventListener('resize',()=>{
-    const w=wrap.offsetWidth, h=wrap.offsetHeight;
-    camera.aspect=w/h;
-    camera.updateProjectionMatrix();
-    renderer.setSize(w,h);
-  });
-}
-
-function buildRoom(){
-  // Floor with stone texture feel
-  const fMat=new THREE.MeshLambertMaterial({color:0x0c1220});
-  const floor=new THREE.Mesh(new THREE.CircleGeometry(11,64),fMat);
-  floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor);
-
-  // Concentric floor rings
-  const ringCols=[0xc9a84c,0x1a2a46,0x1a2a46];
-  [2.8,5,7.5].forEach((r,i)=>{
-    const rg=new THREE.RingGeometry(r-.025,r+.025,64);
-    const rm=new THREE.MeshBasicMaterial({color:ringCols[i],side:THREE.DoubleSide});
-    const ring=new THREE.Mesh(rg,rm);
-    ring.rotation.x=-Math.PI/2;ring.position.y=.001;scene.add(ring);
-  });
-
-  // Back wall (semicircle)
-  const wallPts=[];
-  for(let i=0;i<=32;i++){
-    const a=Math.PI*i/32;
-    wallPts.push(new THREE.Vector2(Math.cos(a)*10,Math.sin(a)*10));
-  }
-  wallPts.push(new THREE.Vector2(-10,0),new THREE.Vector2(10,0));
-  const wallShape=new THREE.Shape(wallPts);
-  const wallGeo=new THREE.ExtrudeGeometry(wallShape,{depth:.3,bevelEnabled:false});
-  const wallMat=new THREE.MeshLambertMaterial({color:0x0d1626});
-  const wall=new THREE.Mesh(wallGeo,wallMat);
-  wall.rotation.x=Math.PI/2; wall.position.set(0,5,0); scene.add(wall);
-
-  // Wall paneling columns
-  for(let i=0;i<7;i++){
-    const ang=(i/6)*Math.PI;
-    const x=-Math.cos(ang)*9.5, z=-Math.sin(ang)*9.5;
-    const pGeo=new THREE.BoxGeometry(.12,4.5,.12);
-    const pMat=new THREE.MeshLambertMaterial({color:0x1c2e4a});
-    const col=new THREE.Mesh(pGeo,pMat); col.position.set(x,2.25,z); scene.add(col);
-    // gold cap
-    const cGeo=new THREE.BoxGeometry(.2,.08,.2);
-    const cMat=new THREE.MeshBasicMaterial({color:0xc9a84c});
-    const cap=new THREE.Mesh(cGeo,cMat); cap.position.set(x,4.55,z); scene.add(cap);
-  }
-
-  // Stepped floor platforms (like a real parliament)
-  [1,2].forEach(level=>{
-    const r=level===1?5.2:7.8, w=1.4, h=.15*level;
-    const geo=new THREE.CylinderGeometry(r,r+.15,h,64,1,false,Math.PI*.05,Math.PI*.9);
-    const mat=new THREE.MeshLambertMaterial({color:0x0e1828});
-    const step=new THREE.Mesh(geo,mat);
-    step.position.y=h/2; scene.add(step);
-  });
-
-  // Central podium (moderator)
-  const podGeo=new THREE.CylinderGeometry(.65,.8,.35,8);
-  const podMat=new THREE.MeshLambertMaterial({color:0x1a2d4a});
-  const pod=new THREE.Mesh(podGeo,podMat); pod.position.y=.175; scene.add(pod);
-  // gold ring on podium
-  const prGeo=new THREE.TorusGeometry(.65,.025,8,48);
-  const prMat=new THREE.MeshBasicMaterial({color:0xc9a84c});
-  const pr=new THREE.Mesh(prGeo,prMat); pr.rotation.x=Math.PI/2; pr.position.y=.355; scene.add(pr);
-}
-
-function buildAgents(){
-  meshes={}; lights={};
-  const debaters=agents.filter(a=>a.id!=='moderatori');
-  const mod=agents.find(a=>a.id==='moderatori');
-
-  // Semicircle positions
-  debaters.forEach((ag,i)=>{
-    const t=i/(debaters.length-1);
-    const angle=Math.PI*.12+t*Math.PI*.76;
-    const r=4.4;
-    const x=-Math.cos(angle)*r, z=-Math.sin(angle)*r;
-    buildFigure(ag,x,z,Math.atan2(z,x)+Math.PI,false);
-  });
-  if(mod) buildFigure(mod,0,0,0,true);
-}
-
-function buildFigure(ag,x,z,rot,isMod){
-  const g=new THREE.Group();
-  g.position.set(x,0,z);
-  g.rotation.y=rot;
-
-  const aColor=parseInt(ag.color.replace('#',''),16);
-  const skinTones=[0xf0c090,0xe8a870,0xd49060,0xc07848,0xa06438];
-  const hairCols=[0x241008,0x1a1830,0x3c2818,0x684c10,0x1a1a1a];
-  const ai=agents.indexOf(ag);
-  const skin=skinTones[ai%skinTones.length];
-  const hair=hairCols[ai%hairCols.length];
-
-  if(!isMod){
-    // Seat
-    const sGeo=new THREE.CylinderGeometry(.42,.46,.1,8);
-    const sMat=new THREE.MeshLambertMaterial({color:0x131e30});
-    const seat=new THREE.Mesh(sGeo,sMat); seat.position.y=.05; g.add(seat);
-    // Seat ring gold
-    const srGeo=new THREE.TorusGeometry(.42,.018,8,32);
-    const srMat=new THREE.MeshBasicMaterial({color:0xc9a84c});
-    const sr=new THREE.Mesh(srGeo,srMat); sr.rotation.x=Math.PI/2; sr.position.y=.11; g.add(sr);
-    // Desk in front
-    const dGeo=new THREE.BoxGeometry(.7,.06,.35);
-    const dMat=new THREE.MeshLambertMaterial({color:0x1a2d46});
-    const desk=new THREE.Mesh(dGeo,dMat); desk.position.set(0,.38,.5); g.add(desk);
-  }
-
-  // Torso
-  const torsoGeo=new THREE.CylinderGeometry(.15,.19,.65,12);
-  const torsoMat=new THREE.MeshLambertMaterial({color:aColor});
-  const torso=new THREE.Mesh(torsoGeo,torsoMat);
-  torso.position.y=isMod?.72:.78; torso.castShadow=true; g.add(torso);
-
-  // Neck
-  const neckGeo=new THREE.CylinderGeometry(.065,.075,.12,10);
-  const neckMat=new THREE.MeshLambertMaterial({color:skin});
-  const neck=new THREE.Mesh(neckGeo,neckMat); neck.position.y=isMod?1.43:1.49; g.add(neck);
-
-  // Head
-  const headGeo=new THREE.SphereGeometry(.155,16,16);
-  const headMat=new THREE.MeshLambertMaterial({color:skin});
-  const head=new THREE.Mesh(headGeo,headMat);
-  head.position.y=isMod?1.62:1.68; head.castShadow=true; g.add(head);
-
-  // Hair cap
-  const hairGeo=new THREE.SphereGeometry(.158,16,12,0,Math.PI*2,0,Math.PI*.5);
-  const hairMat=new THREE.MeshLambertMaterial({color:hair});
-  const hairMesh=new THREE.Mesh(hairGeo,hairMat); hairMesh.position.y=isMod?1.63:1.69; g.add(hairMesh);
-
-  // Eyes (small dark spheres)
-  [-0.06,0.06].forEach(ex=>{
-    const eGeo=new THREE.SphereGeometry(.018,6,6);
-    const eMat=new THREE.MeshBasicMaterial({color:0x111111});
-    const eye=new THREE.Mesh(eGeo,eMat);
-    eye.position.set(ex,isMod?1.645:1.705,.145); g.add(eye);
-  });
-
-  // Glow disc (hidden by default)
-  const glowGeo=new THREE.CircleGeometry(.48,32);
-  const glowMat=new THREE.MeshBasicMaterial({color:aColor,transparent:true,opacity:0,side:THREE.DoubleSide});
-  const glow=new THREE.Mesh(glowGeo,glowMat); glow.rotation.x=-Math.PI/2; glow.position.y=.015; g.add(glow);
-
-  g.userData={ag,glow,head,headBaseY:isMod?1.62:1.68,isMod};
-  scene.add(g);
-  meshes[ag.id]=g;
-
-  // Spotlight above each agent
-  const sl=new THREE.SpotLight(aColor,0,8,Math.PI/6,.6);
-  sl.position.set(x,5.5,z); sl.target.position.set(x,0,z);
-  scene.add(sl); scene.add(sl.target);
-  lights[ag.id]=sl;
-}
-
-function addLights(){
-  scene.add(new THREE.AmbientLight(0x101826,4));
-  const dir=new THREE.DirectionalLight(0xc9a84c,.5);
-  dir.position.set(0,8,0); dir.castShadow=true; scene.add(dir);
-  const pod=new THREE.PointLight(0xc9a84c,2,5); pod.position.set(0,2,0); scene.add(pod);
-  scene.add(new THREE.PointLight(0x1a3a6a,1.5,15));
-}
-
-function setSpeaking(agentId,active){
-  Object.entries(lights).forEach(([id,l])=>{
-    l.intensity=0;
-    if(meshes[id]) meshes[id].userData.glow.material.opacity=0;
-  });
-  if(active&&lights[agentId]){
-    lights[agentId].intensity=5;
-    if(meshes[agentId]) meshes[agentId].userData.glow.material.opacity=.3;
-    // Position bubble over agent
-    const ag=meshes[agentId];
-    if(ag){
-      const wp=new THREE.Vector3();
-      ag.getWorldPosition(wp); wp.y+=2.2;
-      const sc=wp.project(camera);
-      const w3=document.getElementById('p3d-wrap');
-      const bub=document.getElementById('bubble');
-      const cx=(sc.x*.5+.5)*w3.offsetWidth;
-      const cy=(-sc.y*.5+.5)*w3.offsetHeight;
-      bub.style.left=Math.max(10,Math.min(cx-120,w3.offsetWidth-260))+'px';
-      bub.style.top=Math.max(55,cy-110)+'px';
-    }
-  }
-}
-
-function loopRender(){
-  animId=requestAnimationFrame(loopRender);
-  const t=clock.getElapsedTime();
-  camera.position.x=Math.sin(t*.04)*.8;
-  camera.lookAt(0,1.0,0);
-  // Head bob
-  Object.entries(meshes).forEach(([id,g])=>{
-    if(!g.userData.head)return;
-    const spk=lights[id]?.intensity>0;
-    const bob=spk?Math.sin(t*3.5)*.035:Math.sin(t*.7+agents.findIndex(a=>a.id===id))*.008;
-    g.userData.head.position.y=g.userData.headBaseY+bob;
-  });
-  renderer.render(scene,camera);
-}
-
-/* ── SOCKET ─────────────────────────────────────────────────────────────── */
-socket.on('topicSet',({topic})=>{
-  document.getElementById('pTopicTxt').textContent=topic;
-});
-socket.on('clearMessages',()=>{
-  document.getElementById('stripMsgs').innerHTML='';
-  currentTokens={};
-});
+/* ── SOCKET ── */
+socket.on('topicSet',({topic})=>{document.getElementById('ptopic').textContent=topic;});
+socket.on('clearMessages',()=>{document.getElementById('feed').innerHTML='';currentTokens={};});
 socket.on('roundStart',({round,phase})=>{
   document.getElementById('nextBtn').disabled=true;
-  document.getElementById('roundTag').textContent='R.'+round;
+  document.getElementById('pround').textContent='R.'+round;
+  document.getElementById('roundInfo').textContent='Rundi '+round;
   const lbl={opening:'Fjalime hapëse',debate:'Debat',closing:'Mbyllje',audience:'Audiencë',response:'Sfidë',moderation:'Moderim'};
-  document.getElementById('phaseTag').textContent=lbl[phase]||phase;
-  document.getElementById('phaseTag').classList.add('on');
+  document.getElementById('ptag').textContent=lbl[phase]||phase;
+  document.getElementById('ptag').classList.add('on');
 });
 socket.on('roundEnd',()=>{
   document.getElementById('nextBtn').disabled=false;
-  document.getElementById('phaseTag').classList.remove('on');
-  hideBubble();
+  document.getElementById('ptag').classList.remove('on');
+  hideSpeakBar();
+  // Clear all speaking states
+  document.querySelectorAll('.agent-seat.speaking').forEach(s=>s.classList.remove('speaking'));
 });
 socket.on('speaking',({agentId,start,agentName,agentRole,agentColor})=>{
-  setSpeaking(agentId,start);
+  const seat=document.getElementById('seat-'+agentId);
+  if(seat) seat.classList.toggle('speaking',start);
   if(start){
-    showBubble(agentName,agentRole,agentColor);
+    showSpeakBar(agentName,agentRole,agentColor);
     currentTokens[agentId]='';
-    addStripMsg({agentId,agentName,agentRole,agentColor,msgId:agentId+'-live'},true);
-  } else hideBubble();
+    addMsg({agentId,agentName,agentRole,agentColor,msgId:agentId+'-live'},true);
+  } else hideSpeakBar();
 });
 socket.on('token',({agentId,token})=>{
   currentTokens[agentId]=(currentTokens[agentId]||'')+token;
-  const el=document.getElementById('stxt-'+agentId);
-  if(el){el.className='sm-text';el.textContent=currentTokens[agentId];}
-  const sm=document.getElementById('stripMsgs');
-  sm.scrollTop=sm.scrollHeight;
+  const el=document.getElementById('ftxt-'+agentId);
+  if(el){el.className='mtext';el.textContent=currentTokens[agentId];}
+  const f=document.getElementById('feed'); f.scrollTop=f.scrollHeight;
 });
 socket.on('message',msg=>{
-  const el=document.getElementById('stxt-'+msg.agentId);
+  const el=document.getElementById('ftxt-'+msg.agentId);
   if(el) el.textContent=msg.text;
 });
 socket.on('audienceQuestion',({question,targetName})=>{
-  const d=document.createElement('div');
-  d.className='ap-msg';
-  d.innerHTML=`"${question}"<div class="ap-meta">→ ${targetName||'Parlamenti'}</div>`;
-  const p=document.getElementById('audPop');
-  p.prepend(d);
-  setTimeout(()=>{try{p.removeChild(d)}catch(e){}},12000);
+  const d=document.createElement('div'); d.className='ap';
+  d.innerHTML=`"${question}"<div class="apm">→ ${targetName||'Parlamenti'}</div>`;
+  const p=document.getElementById('audPop'); p.prepend(d);
+  setTimeout(()=>{try{p.removeChild(d)}catch(e){}},10000);
 });
-socket.on('voteUpdate',v=>renderVotes(v));
-socket.on('challenge',({challengerName,targetName})=>showBanner(`⚡ ${challengerName} sfidon ${targetName}`));
-socket.on('injectedQuestion',({question})=>showBanner(`💬 ${question.substring(0,50)}…`));
+socket.on('voteUpdate',v=>{votes=v;renderVotesMini(v);});
+socket.on('challenge',({challengerName,targetName})=>showBanner(`⚡ ${challengerName} → ${targetName}`));
+socket.on('injectedQuestion',({question})=>showBanner(`💬 ${question.substring(0,48)}…`));
 
-/* ── UI helpers ─────────────────────────────────────────────────────────── */
-function showBubble(name,role,color){
-  document.getElementById('bubName').textContent=name;
-  document.getElementById('bubName').style.color=color;
-  document.getElementById('bubRole').textContent=role;
-  document.getElementById('bubble').classList.add('show');
+/* ── UI ── */
+function showSpeakBar(name,role,color){
+  const b=document.getElementById('speakBar');
+  b.textContent=name+' — '+role;
+  b.style.color=color; b.style.borderColor=color;
+  b.classList.add('show');
 }
-function hideBubble(){document.getElementById('bubble').classList.remove('show');}
+function hideSpeakBar(){document.getElementById('speakBar').classList.remove('show');}
 
-function addStripMsg(msg,typing=false){
-  const ag=agents.find(a=>a.id===msg.agentId);
-  if(!ag)return;
-  const sm=document.getElementById('stripMsgs');
+function addMsg(msg,typing=false){
+  const ag=agents.find(a=>a.id===msg.agentId); if(!ag)return;
+  const f=document.getElementById('feed');
   const init=ag.name.split(' ').map(w=>w[0]).join('');
-  const el=document.createElement('div');
-  el.className='smsg';
+  const el=document.createElement('div'); el.className='msg';
   el.innerHTML=`
-    <div class="sm-av" style="background:${ag.bg};color:${ag.color}">${init}</div>
-    <div class="sm-body">
-      <div class="sm-name" style="color:${ag.color}">${ag.name}</div>
-      <div class="${typing?'sm-typing':'sm-text'}" id="stxt-${ag.id}">${typing?'…':msg.text}</div>
+    <div class="mav" style="background:${ag.bg};color:${ag.color}">${init}</div>
+    <div class="mbody">
+      <div class="mname" style="color:${ag.color}">${ag.name}</div>
+      <div class="${typing?'mtyp':'mtext'}" id="ftxt-${ag.id}">${typing?'…':msg.text}</div>
     </div>`;
-  sm.appendChild(el);
-  sm.scrollTop=sm.scrollHeight;
+  f.appendChild(el); f.scrollTop=f.scrollHeight;
 }
 
-function renderVotes(v){
-  votes=v;
-  const tot=Object.values(v).reduce((a,b)=>a+b,0)||1;
-  const d=document.getElementById('votesDisp');
-  d.innerHTML='';
+function renderVotesMini(v){
+  const vm=document.getElementById('votesMini'); vm.innerHTML='';
   agents.filter(a=>a.id!=='moderatori').forEach(a=>{
-    const c=v[a.id]||0, pct=Math.round(c/tot*100);
-    d.innerHTML+=`<div class="vr"><div class="vr-n" style="color:${a.color}">${a.name.split(' ')[0]}</div><div class="vr-t"><div class="vr-f" style="width:${pct}%;background:${a.color}"></div></div><div class="vr-c">${c}</div></div>`;
+    const c=v[a.id]||0;
+    vm.innerHTML+=`<div class="vm"><div class="vm-dot" style="background:${a.color}"></div><div class="vm-n">${a.name.split(' ')[0].substring(0,4)} ${c}</div></div>`;
   });
 }
 
-/* ── CONTROLS ────────────────────────────────────────────────────────────── */
-function doNextRound(){
-  console.log('nextRound clicked');
-  socket.emit('nextRound');
-}
+/* ── CONTROLS ── */
+function doNext(){console.log('next');socket.emit('nextRound');}
 
-function doInjectQ(){
-  console.log('injectQ clicked, questions:', questions.length);
-  if(!questions.length){fetchQuestions().then(()=>doInjectQ());return;}
+function doInject(){
+  console.log('inject, questions:',questions.length);
+  if(!questions.length){fetchQ().then(doInject);return;}
   const q=questions[Math.floor(Math.random()*questions.length)];
   socket.emit('injectQuestion',{question:q});
-  showBanner('💬 Pyetje e injektuar');
 }
 
-let cStep=1, cSel=null;
-function doShowChallenge(){
-  console.log('challenge clicked');
-  cStep=1; cSel=null;
+let cS=1;
+function doChallenge(){
+  console.log('challenge');
+  cS=1; cSel=null;
   document.getElementById('mttl').textContent='Zgjidh sfiduesin:';
-  renderCGrid(agents.filter(a=>a.id!=='moderatori'), a=>{
-    cSel=a.id; cStep=2;
-    document.getElementById('mttl').textContent='Kë sfidon '+a.name.split(' ')[0]+'?';
-    renderCGrid(agents.filter(x=>x.id!=='moderatori'&&x.id!==a.id), b=>{
-      doHideChallenge();
-      socket.emit('challengeAgent',{challengerId:cSel,targetId:b.id});
+  fillCGrid(agents.filter(a=>a.id!=='moderatori'), ag=>{
+    cSel=ag.id; cS=2;
+    document.getElementById('mttl').textContent='Kë sfidon '+ag.name.split(' ')[0]+'?';
+    fillCGrid(agents.filter(x=>x.id!=='moderatori'&&x.id!==ag.id), tg=>{
+      hideModal(); socket.emit('challengeAgent',{challengerId:cSel,targetId:tg.id});
     });
   });
   document.getElementById('cModal').classList.add('show');
 }
-function renderCGrid(list,cb){
-  const g=document.getElementById('mgrid');
-  g.innerHTML='';
+function fillCGrid(list,cb){
+  const g=document.getElementById('mgrid'); g.innerHTML='';
   list.forEach(a=>{
-    const b=document.createElement('div');
-    b.className='magent';
+    const b=document.createElement('div'); b.className='mag';
     b.textContent=a.name.split(' ')[0]+' · '+a.role;
-    b.style.color=a.color;
-    b.style.borderColor=a.color+'40';
-    b.onclick=()=>cb(a);
-    g.appendChild(b);
+    b.style.color=a.color; b.style.borderColor=a.color+'40';
+    b.onclick=()=>cb(a); g.appendChild(b);
   });
 }
-function doHideChallenge(){document.getElementById('cModal').classList.remove('show');}
+function hideModal(){document.getElementById('cModal').classList.remove('show');}
 
-async function fetchQuestions(){
-  try{const r=await fetch('/questions');questions=await r.json();}catch(e){console.error(e);}
+async function fetchQ(){
+  try{const r=await fetch('/questions');questions=await r.json();}catch(e){}
 }
-
 async function loadQR(){
   try{const r=await fetch('/qr');const d=await r.json();
     document.getElementById('qrImg').src=d.qr;
-    document.getElementById('qrUrl').textContent=d.url;}catch(e){}
+  }catch(e){}
 }
 
-let bannerTO;
+let bTO;
 function showBanner(txt){
-  clearTimeout(bannerTO);
+  clearTimeout(bTO);
   const b=document.getElementById('banner');
   b.textContent=txt; b.style.opacity='1';
-  bannerTO=setTimeout(()=>b.style.opacity='0',4000);
+  bTO=setTimeout(()=>b.style.opacity='0',4200);
 }
 
 document.getElementById('topicInp').addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();enterParliament();}
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();enterParl();}
+});
+
+window.addEventListener('resize',()=>{
+  if(document.getElementById('parliament').classList.contains('show')) renderStage();
 });
 </script>
 </body>
