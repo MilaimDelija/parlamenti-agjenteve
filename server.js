@@ -110,7 +110,19 @@ let state = {
   votes: {}, phase: 'idle'
 };
 
-// ─── AGENT SPEAK — me retry dhe prompt të shkurtër ──────────────────────────
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Personalitete të shkurtuara për të kursyer tokens
+const SHORT_PERSONA = {
+  ekonomisti: `Je Artan Dervishi, ekonomist urban. Beson në investime strategjike dhe kthim financiar. Ke shifra: buxheti bashkisë 3 mld lekë, papunësia ~18%. Kundërshton Mirelën kur vë mjedisin mbi gjithçka.`,
+  ekolologu:  `Je Mirela Kodra, ekologe. Di: 1.5 mln ton mbetje industriale, KURUM ndaloi 2024, Operacioni Metalurgjiku 2025. Kundërshton Artanin kur injoron mjedisin.`,
+  historiani: `Je Prof. Skënder Hoxha, historian. Elbasani: Scampis romake, Kongresi 1909, Onufri shek.XVI, Kombinati 1966. Çdo vendim e sheh historikisht.`,
+  qytetarja:  `Je Fatmira Shehu, nënë 3 fëmijësh, dy punë, burri në Gjermani. Flet nga jeta e përditshme. Pyet: "Ne qytetarët çfarë marrim konkretisht?"`,
+  avokatja:   `Je Arta Gjiknuri, avokate e drejtës administrative. Vë transparencën, procedurën ligjore dhe llogaridhënien mbi gjithçka.`,
+  moderatori: `Je Ada Berisha, moderatore televizive. Prezanto, ndërli, bëj pyetje provokuese. Maksimum 3 fjali.`
+};
+
+// ─── AGENT SPEAK — me exponential backoff dhe fallback model ────────────────
 async function agentSpeak(agentId, trigger, phase) {
   const agent = agentId === 'moderatori'
     ? MODERATOR
@@ -121,43 +133,50 @@ async function agentSpeak(agentId, trigger, phase) {
   state.currentSpeaker = agentId;
   io.emit('speaking', { agentId, start: true, msgId, agentName: agent.name, agentRole: agent.role, agentColor: agent.color });
 
-  // Historik i shkurtër — vetëm 5 mesazhet e fundit, max 100 karaktere secili
-  const history = state.messages.slice(-5)
-    .map(m => `${m.agentName}: ${m.text.substring(0, 100)}`)
+  const history = state.messages.slice(-4)
+    .map(m => `${m.agentName}: ${m.text.substring(0, 80)}`)
     .join('\n');
 
-  // System prompt kompakt
-  const sysPrompt = `${agent.personality}
+  const persona = SHORT_PERSONA[agentId] || agent.personality.substring(0, 200);
 
-KONTEKST I ELBASANIT (fakte kyçe):
-- Popullsia ~206k; qytet i tretë i Shqipërisë
-- Ish-Kombinati Metalurgjik: 1.5 mln ton mbetje, Operacioni Metalurgjiku 2025, KURUM ndaloi 2024
-- Diaspora: 1.6 mln shqiptarë jashtë, kryesisht Itali/Greqi/Gjermani; jo Norvegji si destinacion kryesor
-- Universiteti Aleksandër Xhuvani: 97 programe, ~1100 studentë të rinj 2024-25, EIT Raw Materials
-- Buxheti bashkisë ~3 mld lekë; Autostrada A3 lidh me Tiranën 45 min
-- Kongresi 1909 standardizoi alfabetin shqip; Onufri (shek.XVI) piktor i madh
+  const instruksion = {
+    moderation: 'Modero: 2-3 fjali.',
+    opening:    'Fjalim hapës: qëndrimi yt + 2 argumente me fakte nga Elbasani. 2 paragrafë.',
+    closing:    'Fjalim mbyllës: sinteza + propozim. 2 paragrafë.',
+    audience:   'Foli publikut drejtpërdrejt. 2 paragrafë.',
+    response:   'Kundërpërgjigje: mbroje qëndrimin. 2 paragrafë.',
+    debate:     'Reago ndaj çfarë u tha. Cito me emër. 2 paragrafë.'
+  }[phase] || 'Reago ndaj çfarë u tha. 2 paragrafë.';
 
-TEMA: "${state.topic}"
-HISTORIA E FUNDIT: ${history || 'Debati sapo ka filluar.'}
+  const sysPrompt = `${persona}
 
-INSTRUKSION: ${phase === 'moderation' ? 'Modero shkurt, 3-4 fjali.' : phase === 'opening' ? 'Fjalim hapës: qëndrimi yt + 3 argumente konkrete. 3 paragrafë.' : phase === 'closing' ? 'Fjalim mbyllës: sinteza + propozim konkret. 3 paragrafë.' : 'Reagoji çfarë u tha. Cito me emër. 3 paragrafë.'}
+Tema: "${state.topic}"
+${history ? 'U tha: ' + history : ''}
+
+${instruksion}
 Fol VETËM shqip. Fjali të plota. Mos u prezanto. Mos thuaj "Si [roli]...".`;
 
+  const MODELS = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant'];
   let fullText = '';
-  let attempts = 0;
 
-  while (attempts < 2) {
-    attempts++;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const model = attempt < 2 ? MODELS[0] : MODELS[1]; // fallback te 8b në tentativën 3
+    const waitMs = attempt === 0 ? 0 : attempt === 1 ? 3000 : 6000;
+    if (waitMs > 0) {
+      console.log(`[${agentId}] waiting ${waitMs}ms before attempt ${attempt+1}...`);
+      await sleep(waitMs);
+    }
+
     try {
       const stream = await groq.chat.completions.create({
-        model: 'llama-3.3-70b-versatile',
+        model,
         messages: [
           { role: 'system', content: sysPrompt },
           { role: 'user', content: trigger }
         ],
         stream: true,
-        max_tokens: phase === 'moderation' ? 200 : 500,
-        temperature: 0.8
+        max_tokens: phase === 'moderation' ? 150 : 350,
+        temperature: 0.78
       });
 
       for await (const chunk of stream) {
@@ -167,16 +186,13 @@ Fol VETËM shqip. Fjali të plota. Mos u prezanto. Mos thuaj "Si [roli]...".`;
           io.emit('token', { agentId, token: delta, msgId });
         }
       }
-      break; // sukses, dil nga loop
+      console.log(`[${agentId}] OK (attempt ${attempt+1}, model: ${model})`);
+      break;
 
     } catch (err) {
-      console.error(`[${agentId}] attempt ${attempts} error:`, err.status, err.message?.substring(0, 80));
-      if (attempts < 2) {
-        await sleep(2000); // prit 2s para retry
-        fullText = '';
-      } else {
-        console.error(`[${agentId}] giving up after ${attempts} attempts`);
-      }
+      const status = err.status || err.statusCode || '?';
+      console.error(`[${agentId}] attempt ${attempt+1} failed: status=${status} ${err.message?.substring(0,60)}`);
+      fullText = '';
     }
   }
 
@@ -185,18 +201,17 @@ Fol VETËM shqip. Fjali të plota. Mos u prezanto. Mos thuaj "Si [roli]...".`;
     state.messages.push(msg);
     io.emit('message', msg);
   } else {
-    io.emit('token', { agentId, token: '[ Problem teknik — debati vazhdon ]', msgId });
+    const errMsg = `[ ${agent.name} nuk u përgjigj — problema teknike ]`;
+    io.emit('token', { agentId, token: errMsg, msgId });
   }
 
   state.currentSpeaker = null;
   io.emit('speaking', { agentId, start: false, msgId });
-  await sleep(600);
+  await sleep(1500); // 1.5s mes agjentëve — kjo parandalon rate limiting
   return fullText;
 }
 
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-// ─── DEBATE ORCHESTRATION — sekuenciale dhe e garantuar ─────────────────────
+// ─── DEBATE ORCHESTRATION ────────────────────────────────────────────────────
 async function runFullRound(phase) {
   state.round++;
   state.phase = phase;
@@ -205,34 +220,25 @@ async function runFullRound(phase) {
 
   for (let i = 0; i < DEBATE_AGENTS.length; i++) {
     const agent = DEBATE_AGENTS[i];
-    const prev = state.messages.slice(-4).map(m => `${m.agentName}: ${m.text.substring(0, 150)}`).join('\n');
+    const prev = state.messages.slice(-3).map(m => `${m.agentName}: ${m.text.substring(0, 120)}`).join('\n');
 
-    let trigger;
-    if (phase === 'opening') {
-      trigger = `Tema e debatit është: "${state.topic}". Ky është fjalimi yt hapës. Çfarë mendon ti?`;
-    } else if (phase === 'closing') {
-      trigger = `Debati po mbyllet. Jep fjalimin tënd mbyllës për temën: "${state.topic}".`;
-    } else {
-      trigger = `Reagoji atyre që u thanë. Merr qëndrimin tënd të qartë.\n\nÇfarë u tha kohët e fundit:\n${prev}`;
-    }
+    const trigger = phase === 'opening'
+      ? `Tema: "${state.topic}". Fjalimi yt hapës.`
+      : phase === 'closing'
+      ? `Tema: "${state.topic}". Fjalimi yt mbyllës.`
+      : `Reagoji çfarë u tha:\n${prev}\n\nMerr qëndrimin tënd.`;
 
-    try {
-      await agentSpeak(agent.id, trigger, phase);
-    } catch (e) {
-      console.error(`Skipped agent ${agent.id}:`, e.message);
-    }
-    await sleep(500);
+    await agentSpeak(agent.id, trigger, phase);
   }
 
   io.emit('roundEnd', { round: state.round });
   state.isRunning = false;
   console.log(`[Round ${state.round}] Completed.`);
 
-  // Moderator tranzicion pas çdo rundi
-  await sleep(1200);
+  await sleep(2000);
   const q = PROVOCATIVE_QUESTIONS[state.round % PROVOCATIVE_QUESTIONS.length];
   await agentSpeak('moderatori',
-    `Rundi ${state.round} mbaroi. Bëj sintezën e shkurtër të dy tensioneve kryesore (2 fjali) dhe bëji kësaj pyetjeje të re debatit: "${q}"`,
+    `Rundi ${state.round} mbaroi. Sintezë e shkurtër (1 fjali) + pyetje: "${q}"`,
     'moderation'
   );
 }
