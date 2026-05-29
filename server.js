@@ -110,7 +110,7 @@ let state = {
   votes: {}, phase: 'idle'
 };
 
-// ─── AGENT SPEAK — sekuencial dhe i sigurt ──────────────────────────────────
+// ─── AGENT SPEAK — me retry dhe prompt të shkurtër ──────────────────────────
 async function agentSpeak(agentId, trigger, phase) {
   const agent = agentId === 'moderatori'
     ? MODERATOR
@@ -121,77 +121,77 @@ async function agentSpeak(agentId, trigger, phase) {
   state.currentSpeaker = agentId;
   io.emit('speaking', { agentId, start: true, msgId, agentName: agent.name, agentRole: agent.role, agentColor: agent.color });
 
-  // Ndërtojmë historikun e debatit
-  const history = state.messages.slice(-10).map(m =>
-    `[${m.agentRole}] ${m.agentName}: ${m.text}`
-  ).join('\n\n');
+  // Historik i shkurtër — vetëm 5 mesazhet e fundit, max 100 karaktere secili
+  const history = state.messages.slice(-5)
+    .map(m => `${m.agentName}: ${m.text.substring(0, 100)}`)
+    .join('\n');
 
-  const phaseGuide = {
-    opening: 'FJALIM HAPËS: Prezanto qartë qëndrimin tënd. Jep 3-4 argumente konkrete me shifra dhe fakte nga realiteti i Elbasanit. Shkruaj 4-5 paragrafë të plotë dhe koherentë.',
-    debate: 'DEBAT: DETYRIMISHT cito me emër atë me të cilin bie dakord ose nuk bie dakord. Zhvillo argumentin me fakte konkrete. Shkruaj 3-5 paragrafë.',
-    response: 'KUNDËRPËRGJIGJE: Dikush të ka sfiduar — përgjigju me argumente të forta. 3-4 paragrafë.',
-    audience: 'PYETJE NGA AUDIENCA: Foli drejtpërdrejt publikut. Bëji lidhjen me jetën e përditshme. 3-4 paragrafë.',
-    closing: 'FJALIM MBYLLËS: Sintetizo qëndrimin, çfarë ke mësuar nga debati, çfarë do bëje konkretisht. 4-5 paragrafë.',
-    moderation: 'MODERIM: Prezanto, ndërli, bëj pyetje provokuese. 2-4 fjali maksimum.'
-  };
+  // System prompt kompakt
+  const sysPrompt = `${agent.personality}
 
-  const systemPrompt = `${agent.personality}
-
-${CITY_CONTEXT}
-
-HISTORIA E DEBATIT:
-${history || '(Debati sapo ka filluar)'}
+KONTEKST I ELBASANIT (fakte kyçe):
+- Popullsia ~206k; qytet i tretë i Shqipërisë
+- Ish-Kombinati Metalurgjik: 1.5 mln ton mbetje, Operacioni Metalurgjiku 2025, KURUM ndaloi 2024
+- Diaspora: 1.6 mln shqiptarë jashtë, kryesisht Itali/Greqi/Gjermani; jo Norvegji si destinacion kryesor
+- Universiteti Aleksandër Xhuvani: 97 programe, ~1100 studentë të rinj 2024-25, EIT Raw Materials
+- Buxheti bashkisë ~3 mld lekë; Autostrada A3 lidh me Tiranën 45 min
+- Kongresi 1909 standardizoi alfabetin shqip; Onufri (shek.XVI) piktor i madh
 
 TEMA: "${state.topic}"
+HISTORIA E FUNDIT: ${history || 'Debati sapo ka filluar.'}
 
-UDHËZIM PËR KËTË NDËRHYRJE:
-${phaseGuide[phase] || phaseGuide.debate}
-
-RREGULLA ABSOLUTE:
-- Shkruaj VETËM në shqip standard. Asnjë fjalë angleze.
-- Fjali të plota me kryefjalë, kallëzues dhe kundrinë — mos lër fjali të prera.
-- Mos u prezanto me emër në fillim.
-- Mos thuaj "Si [roli yt]..." — jeto rolin drejtpërdrejt.
-- Refero gjithmonë fakte konkrete nga Elbasani — mos fol në abstrakt.
-- Nëse dikush ka thënë diçka të gabuar, kundërshtoje me emër dhe argument.`;
+INSTRUKSION: ${phase === 'moderation' ? 'Modero shkurt, 3-4 fjali.' : phase === 'opening' ? 'Fjalim hapës: qëndrimi yt + 3 argumente konkrete. 3 paragrafë.' : phase === 'closing' ? 'Fjalim mbyllës: sinteza + propozim konkret. 3 paragrafë.' : 'Reagoji çfarë u tha. Cito me emër. 3 paragrafë.'}
+Fol VETËM shqip. Fjali të plota. Mos u prezanto. Mos thuaj "Si [roli]...".`;
 
   let fullText = '';
-  try {
-    const stream = await groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: trigger }
-      ],
-      stream: true,
-      max_tokens: phase === 'moderation' ? 250 : 700,
-      temperature: 0.82,
-      top_p: 0.93
-    });
+  let attempts = 0;
 
-    for await (const chunk of stream) {
-      const delta = chunk.choices[0]?.delta?.content || '';
-      if (delta) {
-        fullText += delta;
-        io.emit('token', { agentId, token: delta, msgId });
+  while (attempts < 2) {
+    attempts++;
+    try {
+      const stream = await groq.chat.completions.create({
+        model: 'llama-3.3-70b-versatile',
+        messages: [
+          { role: 'system', content: sysPrompt },
+          { role: 'user', content: trigger }
+        ],
+        stream: true,
+        max_tokens: phase === 'moderation' ? 200 : 500,
+        temperature: 0.8
+      });
+
+      for await (const chunk of stream) {
+        const delta = chunk.choices[0]?.delta?.content || '';
+        if (delta) {
+          fullText += delta;
+          io.emit('token', { agentId, token: delta, msgId });
+        }
+      }
+      break; // sukses, dil nga loop
+
+    } catch (err) {
+      console.error(`[${agentId}] attempt ${attempts} error:`, err.status, err.message?.substring(0, 80));
+      if (attempts < 2) {
+        await sleep(2000); // prit 2s para retry
+        fullText = '';
+      } else {
+        console.error(`[${agentId}] giving up after ${attempts} attempts`);
       }
     }
+  }
 
+  if (fullText) {
     const msg = { agentId, agentName: agent.name, agentRole: agent.role, agentColor: agent.color, text: fullText, phase, msgId, timestamp: Date.now() };
     state.messages.push(msg);
     io.emit('message', msg);
-    return fullText;
-
-  } catch (err) {
-    console.error(`[${agentId}] error:`, err.message);
-    const errText = 'Ndodhi një problem teknik. Po vazhdon debati...';
-    io.emit('token', { agentId, token: errText, msgId });
-    return errText;
-  } finally {
-    state.currentSpeaker = null;
-    io.emit('speaking', { agentId, start: false, msgId });
-    await sleep(700);
+  } else {
+    io.emit('token', { agentId, token: '[ Problem teknik — debati vazhdon ]', msgId });
   }
+
+  state.currentSpeaker = null;
+  io.emit('speaking', { agentId, start: false, msgId });
+  await sleep(600);
+  return fullText;
 }
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
