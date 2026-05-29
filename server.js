@@ -287,28 +287,19 @@ io.on('connection', socket => {
   socket.on('audienceQuestion', async ({ question, targetAgent }) => {
     if (state.isRunning) return;
     state.isRunning = true;
+    io.emit('roundStart', { round: state.round, phase: 'audience' });
 
     const target = DEBATE_AGENTS.find(a => a.id === targetAgent) || DEBATE_AGENTS[Math.floor(Math.random() * DEBATE_AGENTS.length)];
     io.emit('audienceQuestion', { question, targetAgent: target.id, targetName: target.name });
 
-    // Moderatori e prezanton
-    await agentSpeak('moderatori',
-      `Një qytetar nga audienca ka pyetur ${target.name}: "${question}". Thirre ${target.name} të përgjigjet.`,
-      'moderation'
-    );
-    await sleep(500);
-
-    // Agjenti i adresuar përgjigjet
     await agentSpeak(target.id,
-      `Një qytetar nga audienca të pyet drejtpërdrejt: "${question}". Përgjigju qartë, me fakte konkrete dhe me respekt për qytetarin.`,
+      `Një qytetar nga audienca të pyet: "${question}". Përgjigju qartë me fakte konkrete.`,
       'audience'
     );
 
-    // Një agjent tjetër reagon
     const reactor = DEBATE_AGENTS.filter(a => a.id !== target.id)[Math.floor(Math.random() * 4)];
-    await sleep(400);
     await agentSpeak(reactor.id,
-      `${target.name} u përgjigj pyetjes. Ke diçka të rëndësishme për të shtuar ose kundërshtuar?`,
+      `${target.name} u përgjigj pyetjes së audiencës. Ke diçka për të shtuar?`,
       'debate'
     );
 
@@ -324,16 +315,16 @@ io.on('connection', socket => {
     const target = DEBATE_AGENTS.find(a => a.id === targetId);
     if (!challenger || !target) { state.isRunning = false; return; }
 
+    io.emit('roundStart', { round: state.round, phase: 'response' });
     io.emit('challenge', { challengerId, targetId, challengerName: challenger.name, targetName: target.name });
-    const lastMsg = state.messages.filter(m => m.agentId === targetId).pop();
 
+    const lastMsg = state.messages.filter(m => m.agentId === targetId).pop();
     await agentSpeak(challengerId,
-      `Sfidon drejtpërdrejt ${target.name} për qëndrimin e tyre: "${lastMsg?.text?.substring(0, 200) || 'qëndrimin e tyre të fundit'}". Kundërshto me argumente konkrete.`,
+      `Sfidon ${target.name}: "${lastMsg?.text?.substring(0, 150) || 'qëndrimin e tyre'}". Kundërshto me argumente.`,
       'response'
     );
-    await sleep(500);
     await agentSpeak(targetId,
-      `${challenger.name} të ka sfiduar drejtpërdrejt. Mbroj qëndrimin tënd me argumente solide.`,
+      `${challenger.name} të ka sfiduar. Mbroj qëndrimin tënd.`,
       'response'
     );
 
@@ -348,10 +339,26 @@ io.on('connection', socket => {
 
   socket.on('injectQuestion', async ({ question }) => {
     if (state.isRunning) return;
-    io.emit('injectedQuestion', { question });
     state.isRunning = true;
-    await agentSpeak('moderatori', `Ndërhy në debat me këtë pyetje të papritur për të gjithë: "${question}"`, 'moderation');
+    io.emit('roundStart', { round: state.round, phase: 'moderation' });
+    io.emit('injectedQuestion', { question });
+
+    // Moderatori bën pyetjen, pastaj dy agjentë reagojnë
+    await agentSpeak('moderatori',
+      `Pyetje e re për debatantët: "${question}"`,
+      'moderation'
+    );
+
+    const shuffled = [...DEBATE_AGENTS].sort(() => Math.random() - 0.5).slice(0, 2);
+    for (const ag of shuffled) {
+      await agentSpeak(ag.id,
+        `Moderatorja bëri pyetjen: "${question}". Çfarë mendon ti?`,
+        'debate'
+      );
+    }
+
     state.isRunning = false;
+    io.emit('roundEnd', { round: state.round });
   });
 
   socket.on('disconnect', () => console.log('Disconnected:', socket.id));
