@@ -129,14 +129,15 @@ body{font-family:'IBM Plex Sans',sans-serif;background:#08090f;color:#e8e4d8;hei
 .p-feed{
   overflow-y:auto;
   padding:10px 14px;
-  background:#08090f
+  background:#08090f;
+  width:100%
 }
 .p-feed::-webkit-scrollbar{width:2px}
 .p-feed::-webkit-scrollbar-thumb{background:var(--border)}
 .p-msg{display:flex;gap:9px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)}
 .p-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0;margin-top:1px}
 .p-mn{font-size:10px;font-weight:500;margin-bottom:4px}
-.p-tx{font-size:13px;line-height:1.75;color:rgba(232,228,216,.88);word-break:break-word;white-space:pre-wrap}
+.p-tx{font-size:13px;line-height:1.75;color:rgba(232,228,216,.88);word-break:break-word;white-space:normal}
 .p-ty{font-size:12px;color:rgba(232,228,216,.4);font-style:italic}
 
 /* Audience pop */
@@ -410,7 +411,7 @@ socket.on('speaking',({agentId,start,agentName,agentRole,agentColor,msgId})=>{
       textDiv.className='p-ty';
       textDiv.textContent='…';
       row.innerHTML=`<div class="p-av" style="background:${ag.bg};color:${ag.color}">${init}</div><div style="flex:1;min-width:0"><div class="p-mn" style="color:${ag.color}">${ag.name}</div></div>`;
-      row.querySelector('div[style]').appendChild(textDiv);
+      const td=row.querySelector('div[style]'); td.style.cssText='flex:1;min-width:0;width:100%'; td.appendChild(textDiv);
       feed.appendChild(row);
       activeEls[msgId]=textDiv;
       scrollFeed();
