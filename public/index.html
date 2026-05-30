@@ -8,160 +8,155 @@
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'IBM Plex Sans',sans-serif;background:#08090f;color:#e8e4d8;height:100vh;overflow:hidden;display:flex;flex-direction:column}
-:root{--gold:#c9a84c;--border:rgba(255,255,255,0.08);--s1:#0e1420;--s2:#141c2c}
+:root{--gold:#c9a84c;--b:rgba(255,255,255,0.08);--s1:#0e1420;--s2:#141c2c}
+body{font-family:'IBM Plex Sans',sans-serif;background:#08090f;color:#e8e4d8;overflow:hidden;height:100vh}
 
-/* ── ENTRANCE ── */
-#entrance{position:fixed;inset:0;z-index:100;background:#08090f;display:flex;flex-direction:column;transition:opacity .5s}
-#entrance.out{opacity:0;pointer-events:none}
-.e-top{padding:14px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:#08090f}
-.e-logo{display:flex;align-items:center;gap:10px}
-.e-seal{width:34px;height:34px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;color:var(--gold);font-size:15px}
-.e-brand{font-family:'Playfair Display',serif;font-size:14px}
-.e-sub{font-size:9px;color:rgba(232,228,216,.4);letter-spacing:.1em;text-transform:uppercase;margin-top:1px}
-.e-body{flex:1;display:grid;grid-template-columns:1fr 270px 1fr;overflow:hidden}
-.e-col{padding:22px 24px;overflow-y:auto}
-.e-col::-webkit-scrollbar{width:2px}
-.e-col::-webkit-scrollbar-thumb{background:var(--border)}
-.e-col-l{border-right:1px solid var(--border)}
-.e-col-r{border-left:1px solid var(--border)}
-.e-col-c{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:22px 18px}
-.sec{font-size:9px;color:var(--gold);letter-spacing:.13em;text-transform:uppercase;margin-bottom:8px}
-.city-name{font-family:'Playfair Display',serif;font-size:22px}
-.city-desc{font-size:11px;color:rgba(232,228,216,.5);line-height:1.65;margin-top:5px}
-.fact{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
-.fact-ico{font-size:12px;width:20px;flex-shrink:0;margin-top:1px}
-.fact-lbl{font-size:9px;color:rgba(232,228,216,.4);text-transform:uppercase;margin-bottom:1px}
-.fact-val{font-size:11px}
-.hist{padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
-.hist-yr{font-size:9px;color:var(--gold);margin-bottom:2px}
-.hist-tx{font-size:11px;color:rgba(232,228,216,.65);line-height:1.5}
-.news{padding:10px 12px;border-left:2px solid var(--gold);background:var(--s1);margin-bottom:8px}
-.news-d{font-size:9px;color:rgba(232,228,216,.4);text-transform:uppercase;margin-bottom:3px}
-.news-t{font-size:12px;font-family:'Playfair Display',serif;line-height:1.35;margin-bottom:3px}
-.news-b{font-size:10px;color:rgba(232,228,216,.5);line-height:1.5}
-.sfida{font-size:10px;color:rgba(232,228,216,.55);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.03);line-height:1.4}
-.sfida::before{content:'→ ';color:var(--gold)}
-.gate-title{font-family:'Playfair Display',serif;font-size:18px;text-align:center}
-.gate-hint{font-size:10px;color:rgba(232,228,216,.45);text-align:center;letter-spacing:.06em;text-transform:uppercase;line-height:1.6}
-.gate-label{font-size:9px;color:rgba(232,228,216,.4);letter-spacing:.09em;text-transform:uppercase;margin-bottom:6px;text-align:center}
-.gate-inp{width:250px;background:var(--s1);border:1px solid var(--border);color:#e8e4d8;font-family:'Playfair Display',serif;font-size:13px;padding:10px 13px;outline:none;resize:none;line-height:1.5;text-align:center}
-.gate-inp::placeholder{color:rgba(232,228,216,.3)}
-.gate-inp:focus{border-color:rgba(201,168,76,.4)}
+/* ──────── ENTRANCE ──────── */
+#ent{position:fixed;inset:0;z-index:100;background:#08090f;display:flex;flex-direction:column;transition:opacity .5s}
+#ent.out{opacity:0;pointer-events:none}
+.et{padding:13px 28px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between}
+.elogo{display:flex;align-items:center;gap:10px}
+.eseal{width:34px;height:34px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;color:var(--gold);font-size:16px}
+.ebrand{font-family:'Playfair Display',serif;font-size:14px}
+.esub{font-size:9px;color:rgba(232,228,216,.38);letter-spacing:.1em;text-transform:uppercase;margin-top:1px}
+.eb{display:grid;grid-template-columns:1fr 260px 1fr;flex:1;overflow:hidden}
+.ec{padding:20px 22px;overflow-y:auto}
+.ec::-webkit-scrollbar{width:2px}.ec::-webkit-scrollbar-thumb{background:var(--b)}
+.ecl{border-right:1px solid var(--b)}
+.ecr{border-left:1px solid var(--b)}
+.ecc{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px 16px}
+.slbl{font-size:9px;color:var(--gold);letter-spacing:.13em;text-transform:uppercase;margin-bottom:7px}
+.city-n{font-family:'Playfair Display',serif;font-size:21px}
+.city-d{font-size:11px;color:rgba(232,228,216,.45);line-height:1.65;margin-top:5px}
+.fr{display:flex;gap:8px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.fi{font-size:12px;width:20px;flex-shrink:0;margin-top:1px}
+.fl{font-size:9px;color:rgba(232,228,216,.38);text-transform:uppercase;margin-bottom:1px}
+.fv{font-size:11px}
+.hr{padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.hy{font-size:9px;color:var(--gold);margin-bottom:2px}
+.ht{font-size:11px;color:rgba(232,228,216,.6);line-height:1.5}
+.nc{padding:10px 12px;border-left:2px solid var(--gold);background:var(--s1);margin-bottom:7px}
+.nd{font-size:9px;color:rgba(232,228,216,.38);text-transform:uppercase;margin-bottom:2px}
+.nt{font-size:12px;font-family:'Playfair Display',serif;line-height:1.35;margin-bottom:2px}
+.nb{font-size:10px;color:rgba(232,228,216,.48);line-height:1.5}
+.sf{font-size:10px;color:rgba(232,228,216,.5);padding:5px 0;border-bottom:1px solid rgba(255,255,255,.03);line-height:1.4}
+.sf::before{content:'→ ';color:var(--gold)}
+.gt{font-family:'Playfair Display',serif;font-size:17px;text-align:center}
+.gh{font-size:10px;color:rgba(232,228,216,.42);text-align:center;letter-spacing:.06em;text-transform:uppercase;line-height:1.6}
+.ti{width:250px;background:var(--s1);border:1px solid var(--b);color:#e8e4d8;font-family:'Playfair Display',serif;font-size:13px;padding:10px;outline:none;resize:none;line-height:1.5;text-align:center}
+.ti::placeholder{color:rgba(232,228,216,.28)}
+.ti:focus{border-color:rgba(201,168,76,.4)}
 .dots{display:flex;gap:6px;justify-content:center}
 .dot{width:8px;height:8px;border-radius:50%;border:1.5px solid}
-.gate-btn{width:250px;padding:13px;background:transparent;border:1px solid var(--gold);color:var(--gold);font-size:10px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;cursor:pointer;position:relative;overflow:hidden;transition:color .2s}
-.gate-btn::after{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-101%);transition:transform .2s}
-.gate-btn:hover{color:#08090f}
-.gate-btn:hover::after{transform:translateX(0)}
-.gate-btn span{position:relative;z-index:1}
-.gate-btn:disabled{opacity:.35;cursor:not-allowed}
-.gate-btn:disabled:hover{color:var(--gold)}
-.gate-btn:disabled:hover::after{transform:translateX(-101%)}
+.gbtn{width:250px;padding:13px;background:transparent;border:1px solid var(--gold);color:var(--gold);font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;position:relative;overflow:hidden;transition:color .2s}
+.gbtn::after{content:'';position:absolute;inset:0;background:var(--gold);transform:translateX(-101%);transition:transform .2s}
+.gbtn:hover{color:#08090f}.gbtn:hover::after{transform:translateX(0)}
+.gbtn span{position:relative;z-index:1}
+.gbtn:disabled{opacity:.32;cursor:not-allowed}
+.gbtn:disabled:hover{color:var(--gold)}.gbtn:disabled:hover::after{transform:translateX(-101%)}
 
-/* ── PARLIAMENT ── */
-#parl{
-  /* 5 fixed rows using grid */
-  display:none;
-  grid-template-rows:42px 210px 38px 1fr 42px;
-  height:100vh;
-  overflow:hidden
-}
-#parl.show{display:grid}
+/* ──────── PARLIAMENT ──────── */
+/* All rows use position:absolute with explicit top/bottom px */
+#parl{display:none;position:fixed;inset:0;z-index:50;background:#08090f}
+#parl.show{display:block}
 
-/* Row 1: header */
-.p-hdr{display:flex;align-items:center;gap:9px;padding:0 14px;background:rgba(8,9,15,.98);border-bottom:1px solid var(--border)}
-.p-seal{width:24px;height:24px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;color:var(--gold);font-size:11px;flex-shrink:0}
-.p-title{font-family:'Playfair Display',serif;font-size:12px;white-space:nowrap}
-.p-div{width:1px;height:12px;background:var(--border);flex-shrink:0}
-.p-topic{font-size:11px;color:rgba(232,228,216,.45);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.p-badge{padding:2px 7px;border:1px solid var(--border);font-size:8px;color:rgba(232,228,216,.4);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;transition:all .2s}
-.p-badge.on{border-color:var(--gold);color:var(--gold)}
-.p-back{padding:3px 10px;border:1px solid var(--border);background:transparent;color:rgba(232,228,216,.45);font-size:9px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;font-family:inherit;white-space:nowrap;transition:all .2s}
-.p-back:hover{border-color:var(--gold);color:var(--gold)}
+/* ROW 1: header — top:0, height:42px */
+#pH{position:absolute;top:0;left:0;right:0;height:42px;
+  display:flex;align-items:center;gap:9px;padding:0 14px;
+  background:rgba(8,9,15,.98);border-bottom:1px solid var(--b);z-index:10}
+.ps{width:24px;height:24px;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;color:var(--gold);font-size:11px;flex-shrink:0}
+.pt{font-family:'Playfair Display',serif;font-size:12px;white-space:nowrap}
+.pdiv{width:1px;height:12px;background:var(--b);flex-shrink:0}
+.ptop{font-size:11px;color:rgba(232,228,216,.4);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pbadge{padding:2px 7px;border:1px solid var(--b);font-size:8px;color:rgba(232,228,216,.38);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;transition:all .2s}
+.pbadge.on{border-color:var(--gold);color:var(--gold)}
+.pbk{padding:3px 10px;border:1px solid var(--b);background:transparent;color:rgba(232,228,216,.4);font-size:9px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;font-family:inherit;white-space:nowrap;transition:all .2s}
+.pbk:hover{border-color:var(--gold);color:var(--gold)}
 
-/* Row 2: stage */
-.p-stage{
-  position:relative;overflow:hidden;
-  background:radial-gradient(ellipse at 50% 120%,#0c1a30 0%,#08090f 70%);
-  border-bottom:1px solid var(--border)
-}
-.p-stage::before{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:82%;height:72%;border:1px solid rgba(201,168,76,.07);border-bottom:none;border-radius:50% 50% 0 0/40% 40% 0 0;pointer-events:none}
-.p-stage::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:52%;height:54%;border:1px solid rgba(201,168,76,.1);border-bottom:none;border-radius:50% 50% 0 0/40% 40% 0 0;pointer-events:none}
-.podium{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:56px;height:9px;background:var(--s2);border:1px solid rgba(201,168,76,.22);border-bottom:none;border-radius:3px 3px 0 0}
-.p-qr{position:absolute;top:8px;right:10px;display:flex;flex-direction:column;align-items:center;gap:3px}
-.p-qr-box{width:94px;height:94px;background:#fff;padding:2px}
-.p-qr-box img{width:90px;height:90px;display:block}
-.p-qr-lbl{font-size:8px;color:rgba(232,228,216,.4);text-transform:uppercase;letter-spacing:.06em}
-.a-seat{position:absolute;display:flex;flex-direction:column;align-items:center;gap:0;transition:filter .3s}
-.a-seat.spk{filter:drop-shadow(0 0 10px var(--c))}
-.a-fig{position:relative;width:40px;height:58px}
-.a-hair{position:absolute;top:0;left:50%;transform:translateX(-50%);width:21px;height:12px;border-radius:11px 11px 0 0}
-.a-head{position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:20px;border-radius:50%}
-.a-el{position:absolute;top:7px;width:3px;height:3px;border-radius:50%;background:#111}
-.a-er{position:absolute;top:7px;width:3px;height:3px;border-radius:50%;background:#111}
-.a-body{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:24px;height:32px;border-radius:4px 4px 0 0}
-.a-desk{width:44px;height:5px;background:var(--s2);border:1px solid rgba(255,255,255,.08);border-radius:1px}
-.a-name{font-size:8px;font-weight:500;text-align:center;margin-top:2px;white-space:nowrap}
-.a-role{font-size:7px;text-align:center;text-transform:uppercase;opacity:.6;white-space:nowrap}
-.a-wave{display:none;align-items:center;gap:1px;height:9px;margin-top:2px}
-.a-seat.spk .a-wave{display:flex}
+/* ROW 2: stage — top:42px, height:220px */
+#pS{position:absolute;top:42px;left:0;right:0;height:220px;
+  background:radial-gradient(ellipse at 50% 130%,#0c1a2e 0%,#08090f 65%);
+  border-bottom:1px solid var(--b);overflow:hidden}
+#pS::before{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:80%;height:80%;border:1px solid rgba(201,168,76,.07);border-bottom:none;border-radius:50% 50% 0 0/40% 40% 0 0;pointer-events:none}
+#pS::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:50%;height:60%;border:1px solid rgba(201,168,76,.1);border-bottom:none;border-radius:50% 50% 0 0/40% 40% 0 0;pointer-events:none}
+.pod{position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:52px;height:8px;background:var(--s2);border:1px solid rgba(201,168,76,.2);border-bottom:none;border-radius:3px 3px 0 0}
+.pqr{position:absolute;top:8px;right:10px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.pqrb{width:92px;height:92px;background:#fff;padding:2px;display:flex;align-items:center;justify-content:center}
+.pqrb img{width:88px;height:88px;display:block}
+.pqrl{font-size:8px;color:rgba(232,228,216,.38);text-transform:uppercase;letter-spacing:.06em}
+.apop{position:absolute;top:8px;left:8px;max-width:170px;z-index:5}
+.ap{background:rgba(8,9,15,.92);border-left:2px solid var(--gold);padding:5px 8px;font-size:10px;line-height:1.4;margin-bottom:3px}
+.apm{font-size:8px;color:rgba(232,228,216,.38);margin-top:2px}
+
+/* Agent seat */
+.aseat{position:absolute;display:flex;flex-direction:column;align-items:center;gap:0;transition:filter .3s}
+.aseat.spk{filter:drop-shadow(0 0 10px var(--c))}
+.afig{position:relative;width:38px;height:56px}
+.ahair{position:absolute;top:0;left:50%;transform:translateX(-50%);width:20px;height:11px;border-radius:10px 10px 0 0}
+.ahead{position:absolute;top:0;left:50%;transform:translateX(-50%);width:19px;height:19px;border-radius:50%}
+.ael{position:absolute;top:7px;left:calc(50% - 6px);width:3px;height:3px;border-radius:50%;background:#111}
+.aer{position:absolute;top:7px;left:calc(50% + 3px);width:3px;height:3px;border-radius:50%;background:#111}
+.abody{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:22px;height:31px;border-radius:4px 4px 0 0}
+.adesk{width:42px;height:4px;background:var(--s2);border:1px solid rgba(255,255,255,.07);border-radius:1px}
+.aname{font-size:8px;font-weight:500;text-align:center;margin-top:2px;white-space:nowrap;max-width:64px;overflow:hidden;text-overflow:ellipsis}
+.arole{font-size:7px;text-align:center;text-transform:uppercase;opacity:.55;white-space:nowrap;max-width:64px;overflow:hidden;text-overflow:ellipsis}
+.awave{display:none;align-items:center;gap:1px;height:8px;margin-top:2px}
+.aseat.spk .awave{display:flex}
 .wb{width:2px;border-radius:1px;background:var(--gold);animation:wv .45s ease-in-out infinite}
-.wb:nth-child(1){height:3px;animation-delay:0s}.wb:nth-child(2){height:9px;animation-delay:.1s}
-.wb:nth-child(3){height:5px;animation-delay:.2s}.wb:nth-child(4){height:8px;animation-delay:.15s}
+.wb:nth-child(1){height:3px}.wb:nth-child(2){height:8px;animation-delay:.1s}
+.wb:nth-child(3){height:5px;animation-delay:.2s}.wb:nth-child(4){height:7px;animation-delay:.15s}
 .wb:nth-child(5){height:3px;animation-delay:.05s}
 
-/* Row 3: speaking bar */
-.p-spk{display:flex;align-items:center;gap:10px;padding:0 14px;background:var(--s1);border-bottom:1px solid var(--border)}
-.p-spk-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;animation:blink 1s infinite}
-.p-spk-name{font-size:12px;font-weight:500}
-.p-spk-role{font-size:10px;color:rgba(232,228,216,.45)}
-.p-spk-wav{display:flex;gap:2px;align-items:center;margin-left:2px}
+/* ROW 3: speaking bar — top:262px, height:36px */
+#pSpk{position:absolute;top:262px;left:0;right:0;height:36px;
+  display:flex;align-items:center;gap:9px;padding:0 14px;
+  background:var(--s1);border-bottom:1px solid var(--b)}
+.spkdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;animation:blink 1s infinite}
+.spknm{font-size:12px;font-weight:500}
+.spkrl{font-size:10px;color:rgba(232,228,216,.42)}
+.spkwv{display:flex;gap:2px;align-items:center;margin-left:2px}
 .pw{width:2px;border-radius:1px;background:var(--gold);animation:wv .45s ease-in-out infinite}
-.pw:nth-child(1){height:4px}.pw:nth-child(2){height:12px;animation-delay:.1s}
-.pw:nth-child(3){height:7px;animation-delay:.2s}.pw:nth-child(4){height:10px;animation-delay:.15s}
+.pw:nth-child(1){height:4px}.pw:nth-child(2){height:11px;animation-delay:.1s}
+.pw:nth-child(3){height:6px;animation-delay:.2s}.pw:nth-child(4){height:9px;animation-delay:.15s}
 .pw:nth-child(5){height:4px;animation-delay:.05s}
-.p-spk-r{margin-left:auto;display:flex;gap:6px}
-.vd{display:flex;align-items:center;gap:3px;font-size:9px;color:rgba(232,228,216,.45)}
-.vc{width:5px;height:5px;border-radius:50%}
+.spkr{margin-left:auto;display:flex;gap:5px}
+.vd{display:flex;align-items:center;gap:3px;font-size:9px;color:rgba(232,228,216,.42)}
+.vc{width:5px;height:5px;border-radius:50%;flex-shrink:0}
 
-/* Row 4: feed — THE KEY ONE */
-.p-feed{
-  overflow-y:auto;
-  padding:10px 14px;
-  background:#08090f;
-  width:100%
-}
-.p-feed::-webkit-scrollbar{width:2px}
-.p-feed::-webkit-scrollbar-thumb{background:var(--border)}
-.p-msg{display:flex;gap:9px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)}
-.p-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0;margin-top:1px}
-.p-mn{font-size:10px;font-weight:500;margin-bottom:4px}
-.p-tx{font-size:13px;line-height:1.75;color:rgba(232,228,216,.88);word-break:break-word;white-space:normal}
-.p-ty{font-size:12px;color:rgba(232,228,216,.4);font-style:italic}
+/* ROW 4: feed — top:298px, bottom:42px  ← THE KEY */
+#pF{position:absolute;top:298px;left:0;right:0;bottom:42px;
+  overflow-y:auto;padding:10px 16px;background:#08090f}
+#pF::-webkit-scrollbar{width:2px}
+#pF::-webkit-scrollbar-thumb{background:var(--b)}
+.pmsg{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.pav{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;flex-shrink:0;margin-top:1px}
+.pbody{flex:1;min-width:0}
+.pnm{font-size:10px;font-weight:500;margin-bottom:4px}
+.ptx{font-size:13px;line-height:1.75;color:rgba(232,228,216,.88);word-wrap:break-word;overflow-wrap:break-word}
+.pty{font-size:12px;color:rgba(232,228,216,.38);font-style:italic}
 
-/* Audience pop */
-.a-pop{position:absolute;top:8px;left:8px;max-width:170px;display:flex;flex-direction:column;gap:3px;z-index:5}
-.ap{background:rgba(8,9,15,.93);border-left:2px solid var(--gold);padding:5px 8px;font-size:10px;line-height:1.4}
-.ap-m{font-size:8px;color:rgba(232,228,216,.4);margin-top:2px}
-
-/* Row 5: controls */
-.p-ctrl{display:flex;gap:5px;align-items:center;padding:0 10px;background:var(--s1);border-top:1px solid var(--border)}
-.btn{flex:1;height:26px;background:transparent;border:1px solid var(--border);color:rgba(232,228,216,.45);font-size:9px;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;font-family:inherit;transition:all .2s}
-.btn:hover:not(:disabled){border-color:var(--gold);color:var(--gold)}
-.btn:disabled{opacity:.22;cursor:not-allowed}
-.btn.g{border-color:rgba(201,168,76,.4);color:var(--gold)}
-.btn.g:hover{background:rgba(201,168,76,.07)}
+/* ROW 5: controls — bottom:0, height:42px */
+#pC{position:absolute;bottom:0;left:0;right:0;height:42px;
+  display:flex;gap:5px;align-items:center;padding:0 10px;
+  background:var(--s1);border-top:1px solid var(--b)}
+.cbtn{flex:1;height:26px;background:transparent;border:1px solid var(--b);color:rgba(232,228,216,.42);font-size:9px;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;font-family:inherit;transition:all .2s}
+.cbtn:hover:not(:disabled){border-color:var(--gold);color:var(--gold)}
+.cbtn:disabled{opacity:.2;cursor:not-allowed}
+.cbtn.g{border-color:rgba(201,168,76,.4);color:var(--gold)}
+.cbtn.g:hover{background:rgba(201,168,76,.07)}
 
 /* Modal */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:500;align-items:center;justify-content:center}
 .modal.show{display:flex}
-.m-box{background:var(--s1);border:1px solid var(--border);padding:18px;width:300px}
-.m-ttl{font-size:12px;font-weight:500;margin-bottom:12px}
-.m-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:10px}
-.m-ag{padding:8px 6px;border:1px solid var(--border);cursor:pointer;text-align:center;font-size:10px;line-height:1.3;transition:all .2s}
-.m-ag:hover{border-color:var(--gold);color:var(--gold)}
-.m-can{width:100%;padding:6px;background:transparent;border:1px solid var(--border);color:rgba(232,228,216,.4);cursor:pointer;font-size:9px;font-family:inherit}
+.mbox{background:var(--s1);border:1px solid var(--b);padding:18px;width:300px}
+.mttl{font-size:12px;font-weight:500;margin-bottom:11px}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:10px}
+.mag{padding:8px 5px;border:1px solid var(--b);cursor:pointer;text-align:center;font-size:10px;line-height:1.3;transition:all .2s}
+.mag:hover{border-color:var(--gold);color:var(--gold)}
+.mcan{width:100%;padding:6px;background:transparent;border:1px solid var(--b);color:rgba(232,228,216,.38);cursor:pointer;font-size:9px;font-family:inherit}
 
 #bnr{position:fixed;top:48px;left:50%;transform:translateX(-50%);background:var(--s1);border:1px solid var(--gold);padding:5px 16px;font-size:10px;color:var(--gold);letter-spacing:.07em;z-index:600;pointer-events:none;opacity:0;transition:opacity .3s;white-space:nowrap;text-transform:uppercase}
 
@@ -170,60 +165,60 @@ body{font-family:'IBM Plex Sans',sans-serif;background:#08090f;color:#e8e4d8;hei
 </style>
 </head>
 <body>
-
 <div id="bnr"></div>
 
 <!-- ENTRANCE -->
-<div id="entrance">
-  <div class="e-top">
-    <div class="e-logo">
-      <div class="e-seal">P</div>
-      <div><div class="e-brand">Parlamenti i Agjentëve</div><div class="e-sub">Java e Demokracisë · Elbasan 2026</div></div>
+<div id="ent">
+  <div class="et">
+    <div class="elogo">
+      <div class="eseal">P</div>
+      <div><div class="ebrand">Parlamenti i Agjentëve</div><div class="esub">Java e Demokracisë · Elbasan 2026</div></div>
     </div>
     <div style="display:flex;align-items:center;gap:5px;font-size:9px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border:1px solid rgba(201,168,76,.3)">
       <div style="width:5px;height:5px;border-radius:50%;background:var(--gold);animation:blink 1.5s infinite"></div>Aktiv
     </div>
   </div>
-  <div class="e-body">
-    <div class="e-col e-col-l">
-      <div class="sec">Qyteti</div>
-      <div class="city-name">Elbasani</div>
-      <div class="city-desc">Themeluar si Scampis romake · Qendër Rilindjes Kombëtare · Zemra gjeografike e Shqipërisë</div>
-      <div style="margin-top:14px"><div class="sec">Shifrat</div>
-        <div class="fact"><div class="fact-ico">👥</div><div><div class="fact-lbl">Popullsia</div><div class="fact-val">~206,000 · ~80,000 urbane</div></div></div>
-        <div class="fact"><div class="fact-ico">🏛️</div><div><div class="fact-lbl">Bashkia</div><div class="fact-val">13 njësi · Buxhet ~3 mld lekë</div></div></div>
-        <div class="fact"><div class="fact-ico">🎓</div><div><div class="fact-lbl">Universiteti</div><div class="fact-val">Aleksandër Xhuvani · 97 programe</div></div></div>
-        <div class="fact"><div class="fact-ico">⚠️</div><div><div class="fact-lbl">Mjedisi</div><div class="fact-val">1.5 mln ton mbetje · Operacioni Metalurgjiku 2025</div></div></div>
-        <div class="fact"><div class="fact-ico">🛣️</div><div><div class="fact-lbl">Lidhja</div><div class="fact-val">Autostrada A3 — 45 min nga Tirana</div></div></div>
+  <div class="eb">
+    <div class="ec ecl">
+      <div class="slbl">Qyteti</div>
+      <div class="city-n">Elbasani</div>
+      <div class="city-d">Themeluar si Scampis romake · Qendër Rilindjes Kombëtare · Zemra gjeografike e Shqipërisë</div>
+      <div style="margin-top:13px"><div class="slbl">Shifrat</div>
+        <div class="fr"><div class="fi">👥</div><div><div class="fl">Popullsia</div><div class="fv">~206,000 · ~80,000 urbane</div></div></div>
+        <div class="fr"><div class="fi">🏛️</div><div><div class="fl">Bashkia</div><div class="fv">13 njësi · Buxhet ~3 mld lekë</div></div></div>
+        <div class="fr"><div class="fi">🎓</div><div><div class="fl">Universiteti</div><div class="fv">Aleksandër Xhuvani · 97 programe</div></div></div>
+        <div class="fr"><div class="fi">⚠️</div><div><div class="fl">Mjedisi</div><div class="fv">1.5 mln ton mbetje · Operacioni Metalurgjiku 2025</div></div></div>
+        <div class="fr"><div class="fi">🛣️</div><div><div class="fl">Lidhja</div><div class="fv">Autostrada A3 — 45 min nga Tirana</div></div></div>
       </div>
-      <div style="margin-top:14px"><div class="sec">Historia</div>
-        <div class="hist"><div class="hist-yr">Shek. II p.k.</div><div class="hist-tx">Scampis — rruga romake Egnatia.</div></div>
-        <div class="hist"><div class="hist-yr">1466</div><div class="hist-tx">Sulltan Mehmeti II ndërton kalanë. Qendër me 900 dyqane.</div></div>
-        <div class="hist"><div class="hist-yr">1909</div><div class="hist-tx">Kongresi standardizon alfabetin shqip. Shkolla Normale.</div></div>
-        <div class="hist"><div class="hist-yr">1966–1990</div><div class="hist-tx">Kombinati Metalurgjik — pasoja mjedisore ende sot.</div></div>
+      <div style="margin-top:13px"><div class="slbl">Historia</div>
+        <div class="hr"><div class="hy">Shek. II p.k.</div><div class="ht">Scampis — rruga romake Egnatia.</div></div>
+        <div class="hr"><div class="hy">1466</div><div class="ht">Sulltan Mehmeti II ndërton kalanë. Qendër me 900 dyqane.</div></div>
+        <div class="hr"><div class="hy">1909</div><div class="ht">Kongresi standardizon alfabetin shqip.</div></div>
+        <div class="hr"><div class="hy">1966–1990</div><div class="ht">Kombinati Metalurgjik — pasoja mjedisore ende sot.</div></div>
       </div>
-      <div style="margin-top:14px"><div class="sec">Sfidat 2025–2030</div><div id="sfCont"></div></div>
+      <div style="margin-top:13px"><div class="slbl">Sfidat</div><div id="sfCont"></div></div>
     </div>
-    <div class="e-col e-col-c">
-      <div class="gate-title">Hyr në Parlament</div>
-      <div class="gate-hint">Debat demokratik live me AI<br>Java e Demokracisë 2026</div>
-      <div><div class="gate-label">Tema e debatit</div>
-        <textarea class="gate-inp" id="tInp" rows="2" placeholder="Shkruaj temën...&#10;p.sh. Si ta ndalim emigracionin?"></textarea>
+    <div class="ec ecc">
+      <div class="gt">Hyr në Parlament</div>
+      <div class="gh">Debat demokratik live me AI<br>Java e Demokracisë 2026</div>
+      <div>
+        <div style="font-size:9px;color:rgba(232,228,216,.38);letter-spacing:.09em;text-transform:uppercase;margin-bottom:6px;text-align:center">Tema e debatit</div>
+        <textarea class="ti" id="tInp" rows="2" placeholder="Shkruaj temën...&#10;p.sh. Si ta ndalim emigracionin?"></textarea>
       </div>
       <div class="dots" id="agDots"></div>
-      <button class="gate-btn" id="eBtn" onclick="enterParl()"><span>Hyr në Parlament →</span></button>
-      <div style="font-size:9px;color:rgba(232,228,216,.35);text-align:center;line-height:1.6">5 agjentë AI debatojnë · QR kod për audiencën</div>
+      <button class="gbtn" id="eBtn" onclick="enterParl()"><span>Hyr në Parlament →</span></button>
+      <div style="font-size:9px;color:rgba(232,228,216,.3);text-align:center;line-height:1.6">5 agjentë AI debatojnë · QR kod për audiencën</div>
     </div>
-    <div class="e-col e-col-r">
-      <div class="sec">Njoftime Bashkie</div>
-      <div class="news" style="border-left-color:#1a6fb5"><div class="news-d">Maj 2026</div><div class="news-t">Rehabilitimi i ujësjellësit</div><div class="news-b">Projekti BE në fazën e dytë.</div></div>
-      <div class="news" style="border-left-color:#a03318"><div class="news-d">Prill 2026</div><div class="news-t">Alarmi mjedisor — Metalurgjiku</div><div class="news-b">Dy kompani nën hetim penal. Banorët kërkojnë emergjencë.</div></div>
-      <div class="news" style="border-left-color:#0a7a50"><div class="news-d">Mars 2026</div><div class="news-t">Qendra EIT Raw Materials</div><div class="news-b">Nismë inovacioni pranë Universitetit Aleksandër Xhuvani.</div></div>
-      <div class="news" style="border-left-color:#3d2ea0"><div class="news-d">Shkurt 2026</div><div class="news-t">Buxheti 2026</div><div class="news-b">Prioritete: infrastrukturë, gjelbërim, dixhitalizim.</div></div>
-      <div class="news" style="border-left-color:#7a4f08"><div class="news-d">Janar 2026</div><div class="news-t">Emergjenca e Bradasheshit</div><div class="news-b">Këshilli Bashkiak kërkon shpallje zyrtare emergjence.</div></div>
-      <div style="margin-top:12px"><div class="sec">Aktualitet</div>
-        <div class="news"><div class="news-d">Sot</div><div class="news-t">Java e Demokracisë Elbasan 2026</div><div class="news-b">Bashkia, organizata civile dhe partnerë norvegjezë.</div></div>
-        <div class="news"><div class="news-d">Maj 2026</div><div class="news-t">48,000 shqiptarë morën shtetësi BE në 2024</div><div class="news-b">Italia 66%, Greqia 22%, Gjermania 6.6%.</div></div>
+    <div class="ec ecr">
+      <div class="slbl">Njoftime Bashkie</div>
+      <div class="nc" style="border-left-color:#1a6fb5"><div class="nd">Maj 2026</div><div class="nt">Rehabilitimi i ujësjellësit</div><div class="nb">Projekti BE në fazën e dytë.</div></div>
+      <div class="nc" style="border-left-color:#a03318"><div class="nd">Prill 2026</div><div class="nt">Alarmi mjedisor — Metalurgjiku</div><div class="nb">Dy kompani nën hetim penal.</div></div>
+      <div class="nc" style="border-left-color:#0a7a50"><div class="nd">Mars 2026</div><div class="nt">Qendra EIT Raw Materials</div><div class="nb">Nismë inovacioni pranë Universitetit.</div></div>
+      <div class="nc" style="border-left-color:#3d2ea0"><div class="nd">Shkurt 2026</div><div class="nt">Buxheti 2026</div><div class="nb">Infrastrukturë, gjelbërim, dixhitalizim.</div></div>
+      <div class="nc" style="border-left-color:#7a4f08"><div class="nd">Janar 2026</div><div class="nt">Emergjenca e Bradasheshit</div><div class="nb">Këshilli kërkon shpallje zyrtare.</div></div>
+      <div style="margin-top:12px"><div class="slbl">Aktualitet</div>
+        <div class="nc"><div class="nd">Sot</div><div class="nt">Java e Demokracisë Elbasan 2026</div><div class="nb">Bashkia dhe partnerë norvegjezë.</div></div>
+        <div class="nc"><div class="nd">Maj 2026</div><div class="nt">48,000 shqiptarë morën shtetësi BE</div><div class="nb">Italia 66%, Greqia 22%, Gjermania 6.6%.</div></div>
       </div>
     </div>
   </div>
@@ -231,59 +226,65 @@ body{font-family:'IBM Plex Sans',sans-serif;background:#08090f;color:#e8e4d8;hei
 
 <!-- PARLIAMENT -->
 <div id="parl">
-  <div class="p-hdr">
-    <div class="p-seal">P</div>
-    <div class="p-title">Parlamenti i Agjentëve</div>
-    <div class="p-div"></div>
-    <div class="p-topic" id="pTopic">—</div>
-    <div class="p-badge" id="pPhase">Pritje</div>
-    <div class="p-badge" id="pRound">R.0</div>
-    <div class="p-back" onclick="leaveParl()">← Kthehu</div>
+  <!-- Row 1: header -->
+  <div id="pH">
+    <div class="ps">P</div>
+    <div class="pt">Parlamenti i Agjentëve</div>
+    <div class="pdiv"></div>
+    <div class="ptop" id="pTop">—</div>
+    <div class="pbadge" id="pPh">Pritje</div>
+    <div class="pbadge" id="pRd">R.0</div>
+    <div class="pbk" onclick="leaveParl()">← Kthehu</div>
   </div>
 
-  <div class="p-stage" id="pStage">
-    <div class="podium"></div>
-    <div class="a-pop" id="aPop"></div>
-    <div class="p-qr">
-      <div class="p-qr-box"><img id="qrImg" src="" alt="QR"></div>
-      <div class="p-qr-lbl">Audienca</div>
+  <!-- Row 2: stage -->
+  <div id="pS">
+    <div class="pod"></div>
+    <div class="apop" id="aPop"></div>
+    <div class="pqr">
+      <div class="pqrb"><img id="qrImg" src="" alt="QR"></div>
+      <div class="pqrl">Audienca</div>
     </div>
   </div>
 
-  <div class="p-spk" id="pSpk">
-    <div class="p-spk-dot" id="spkDot" style="background:var(--gold)"></div>
-    <div class="p-spk-name" id="spkName" style="color:rgba(232,228,216,.4)">Duke pritur debatin...</div>
-    <div class="p-spk-role" id="spkRole"></div>
-    <div class="p-spk-wav"><div class="pw"></div><div class="pw"></div><div class="pw"></div><div class="pw"></div><div class="pw"></div></div>
-    <div class="p-spk-r"><div id="vRow"></div></div>
+  <!-- Row 3: speaking bar -->
+  <div id="pSpk">
+    <div class="spkdot" id="spkDot" style="background:var(--gold)"></div>
+    <div class="spknm" id="spkNm" style="color:rgba(232,228,216,.35)">Duke pritur debatin...</div>
+    <div class="spkrl" id="spkRl"></div>
+    <div class="spkwv"><div class="pw"></div><div class="pw"></div><div class="pw"></div><div class="pw"></div><div class="pw"></div></div>
+    <div class="spkr" id="vRow"></div>
   </div>
 
-  <div class="p-feed" id="pFeed"></div>
+  <!-- Row 4: feed -->
+  <div id="pF"></div>
 
-  <div class="p-ctrl">
-    <button class="btn" id="nextBtn" onclick="doNext()" disabled>Rundi tjetër →</button>
-    <button class="btn" onclick="doChallenge()">Sfidë ⚡</button>
-    <button class="btn g" onclick="doInject()">Pyetje e befasishme ✦</button>
+  <!-- Row 5: controls -->
+  <div id="pC">
+    <button class="cbtn" id="nextBtn" onclick="doNext()" disabled>Rundi tjetër →</button>
+    <button class="cbtn" onclick="doChallenge()">Sfidë ⚡</button>
+    <button class="cbtn g" onclick="doInject()">Pyetje e befasishme ✦</button>
   </div>
 </div>
 
+<!-- Challenge modal -->
 <div class="modal" id="cModal">
-  <div class="m-box">
-    <div class="m-ttl" id="mTtl">Zgjidh sfiduesin:</div>
-    <div class="m-grid" id="mGrid"></div>
-    <button class="m-can" onclick="document.getElementById('cModal').classList.remove('show')">Anulo</button>
+  <div class="mbox">
+    <div class="mttl" id="mTtl">Zgjidh sfiduesin:</div>
+    <div class="mgrid" id="mGrid"></div>
+    <button class="mcan" onclick="document.getElementById('cModal').classList.remove('show')">Anulo</button>
   </div>
 </div>
 
 <script>
 const socket = io();
-let agents=[], questions=[], cSel=null, cStep=1;
-// activeEl keeps track of the current live text element per msgId
+let agents = [], questions = [], cSel = null, cStep = 1;
+// activeEls[msgId] = DOM text element
 const activeEls = {};
 
-const SKINS=['#f0c090','#e8a870','#d49060','#c07848','#a06438','#e0b880'];
-const HAIRS=['#241008','#1a1830','#3c2818','#5a3a10','#1a1a1a','#8b4513'];
-const FALLBACK_Q=[
+const SKINS = ['#f0c090','#e8a870','#d49060','#c07848','#a06438','#e0b880'];
+const HAIRS = ['#241008','#1a1830','#3c2818','#5a3a10','#1a1a1a','#8b4513'];
+const FALLBACK_Q = [
   "Nëse do largoheshit nga Elbasani nesër, cili do ishte arsyeja?",
   "1.5 mln ton mbetje industriale — kush mban sot përgjegjësinë?",
   "10 milionë euro për Elbasanin — ku do i investonit?",
@@ -291,208 +292,279 @@ const FALLBACK_Q=[
   "Fëmijët e Elbasanit — ku do jenë pas 20 vjetësh?"
 ];
 
+/* ── Init ── */
 socket.on('init', ({agents:a, kb}) => {
   agents = a;
-  agents.filter(x=>x.id!=='moderatori').forEach(ag=>{
-    const d=document.createElement('div');
-    d.className='dot'; d.style.cssText=`background:${ag.bg};border-color:${ag.color}`;
+  agents.filter(x => x.id !== 'moderatori').forEach(ag => {
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.style.cssText = `background:${ag.bg};border-color:${ag.color}`;
     document.getElementById('agDots').appendChild(d);
   });
-  if(kb?.sfidat_2025_2030) kb.sfidat_2025_2030.forEach(s=>{
-    const d=document.createElement('div'); d.className='sfida'; d.textContent=s;
-    document.getElementById('sfCont').appendChild(d);
-  });
+  if (kb && kb.sfidat_2025_2030) {
+    kb.sfidat_2025_2030.forEach(s => {
+      const d = document.createElement('div');
+      d.className = 'sf';
+      d.textContent = s;
+      document.getElementById('sfCont').appendChild(d);
+    });
+  }
   fetchQ();
 });
 
-function enterParl(){
-  const t=document.getElementById('tInp').value.trim();
-  if(!t){document.getElementById('tInp').focus();return;}
-  document.getElementById('eBtn').disabled=true;
-  document.getElementById('entrance').classList.add('out');
-  setTimeout(()=>{
+/* ── Enter / Leave ── */
+function enterParl() {
+  const t = document.getElementById('tInp').value.trim();
+  if (!t) { document.getElementById('tInp').focus(); return; }
+  document.getElementById('eBtn').disabled = true;
+  document.getElementById('ent').classList.add('out');
+  setTimeout(() => {
     document.getElementById('parl').classList.add('show');
     buildStage();
     loadQR();
-    socket.emit('setTopic',{topic:t});
-    document.getElementById('pTopic').textContent=t;
-  },500);
+    socket.emit('setTopic', {topic: t});
+    document.getElementById('pTop').textContent = t;
+  }, 500);
 }
 
-function leaveParl(){
+function leaveParl() {
   document.getElementById('parl').classList.remove('show');
-  document.getElementById('entrance').classList.remove('out');
-  document.getElementById('eBtn').disabled=false;
-  document.getElementById('tInp').value='';
-  document.getElementById('pFeed').innerHTML='';
-  document.getElementById('aPop').innerHTML='';
-  for(const k in activeEls) delete activeEls[k];
+  document.getElementById('ent').classList.remove('out');
+  document.getElementById('eBtn').disabled = false;
+  document.getElementById('tInp').value = '';
+  document.getElementById('pF').innerHTML = '';
+  document.getElementById('aPop').innerHTML = '';
+  for (const k in activeEls) delete activeEls[k];
 }
 
-document.getElementById('tInp').addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();enterParl();}
+document.getElementById('tInp').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enterParl(); }
 });
 
-function buildStage(){
-  const stage=document.getElementById('pStage');
-  // Remove old seats
-  stage.querySelectorAll('.a-seat').forEach(s=>s.remove());
-  const W=stage.offsetWidth, H=stage.offsetHeight;
-  const deb=agents.filter(a=>a.id!=='moderatori');
-  const mod=agents.find(a=>a.id==='moderatori');
+/* ── Stage ── */
+function buildStage() {
+  const stage = document.getElementById('pS');
+  stage.querySelectorAll('.aseat').forEach(s => s.remove());
+  const W = stage.offsetWidth, H = stage.offsetHeight;
+  const deb = agents.filter(a => a.id !== 'moderatori');
+  const mod = agents.find(a => a.id === 'moderatori');
 
-  deb.forEach((ag,i)=>{
-    const t=i/(Math.max(deb.length-1,1));
-    const ang=Math.PI*0.1+t*Math.PI*0.8;
-    const rx=W*0.41, ry=H*0.56;
-    const x=W/2-Math.cos(ang)*rx, y=H+ry*0.06-Math.sin(ang)*ry;
-    stage.appendChild(makeSeat(ag,x-22,y-80,i));
+  deb.forEach((ag, i) => {
+    const t = i / Math.max(deb.length - 1, 1);
+    const ang = Math.PI * 0.1 + t * Math.PI * 0.8;
+    const rx = W * 0.40, ry = H * 0.58;
+    const x = W/2 - Math.cos(ang) * rx;
+    const y = H + ry * 0.05 - Math.sin(ang) * ry;
+    stage.appendChild(makeSeat(ag, x - 21, y - 82, i, false));
   });
-  if(mod) stage.appendChild(makeSeat(mod,W/2-22,H-86,agents.length-1,true));
+  if (mod) stage.appendChild(makeSeat(mod, W/2 - 21, H - 88, agents.length - 1, true));
 }
 
-function makeSeat(ag,x,y,idx,isMod=false){
-  const s=SKINS[idx%SKINS.length], h=HAIRS[idx%HAIRS.length];
-  const el=document.createElement('div');
-  el.className='a-seat'; el.id='seat-'+ag.id;
-  el.style.cssText=`left:${Math.round(x)}px;top:${Math.round(y)}px;--c:${ag.color}`;
-  el.innerHTML=`
-    <div class="a-fig">
-      <div class="a-hair" style="background:${h}"></div>
-      <div class="a-head" style="background:${s}"></div>
-      <div class="a-el" style="left:calc(50% - 7px)"></div>
-      <div class="a-er" style="left:calc(50% + 4px)"></div>
-      <div class="a-body" style="background:${ag.color}"></div>
+function makeSeat(ag, x, y, idx, isMod) {
+  const skin = SKINS[idx % SKINS.length];
+  const hair = HAIRS[idx % HAIRS.length];
+  const el = document.createElement('div');
+  el.className = 'aseat';
+  el.id = 'seat-' + ag.id;
+  el.style.cssText = `left:${Math.round(x)}px;top:${Math.round(y)}px;--c:${ag.color}`;
+  el.innerHTML = `
+    <div class="afig">
+      <div class="ahair" style="background:${hair}"></div>
+      <div class="ahead" style="background:${skin}"></div>
+      <div class="ael"></div><div class="aer"></div>
+      <div class="abody" style="background:${ag.color}"></div>
     </div>
-    ${isMod?'':'<div class="a-desk"></div>'}
-    <div class="a-name" style="color:${ag.color}">${ag.name.split(' ')[0]}</div>
-    <div class="a-role" style="color:${ag.color}">${ag.role}</div>
-    <div class="a-wave"><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div></div>`;
+    ${isMod ? '' : '<div class="adesk"></div>'}
+    <div class="aname" style="color:${ag.color}">${ag.name.split(' ')[0]}</div>
+    <div class="arole" style="color:${ag.color}">${ag.role}</div>
+    <div class="awave"><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div></div>`;
   return el;
 }
 
-/* Socket events */
-socket.on('topicSet',({topic})=>{ document.getElementById('pTopic').textContent=topic; });
-socket.on('clearMessages',()=>{ document.getElementById('pFeed').innerHTML=''; for(const k in activeEls) delete activeEls[k]; });
-
-socket.on('roundStart',({round,phase})=>{
-  document.getElementById('nextBtn').disabled=true;
-  document.getElementById('pRound').textContent='R.'+round;
-  const L={opening:'Hapëse',debate:'Debat',closing:'Mbyllje',audience:'Audiencë',response:'Sfidë',moderation:'Moderim'};
-  const ph=document.getElementById('pPhase');
-  ph.textContent=L[phase]||phase; ph.classList.add('on');
+/* ── Socket ── */
+socket.on('topicSet', ({topic}) => {
+  document.getElementById('pTop').textContent = topic;
 });
 
-socket.on('roundEnd',()=>{
-  document.getElementById('nextBtn').disabled=false;
-  document.getElementById('pPhase').classList.remove('on');
-  document.querySelectorAll('.a-seat.spk').forEach(s=>s.classList.remove('spk'));
-  scrollFeed();
+socket.on('clearMessages', () => {
+  document.getElementById('pF').innerHTML = '';
+  for (const k in activeEls) delete activeEls[k];
 });
 
-socket.on('speaking',({agentId,start,agentName,agentRole,agentColor,msgId})=>{
-  const seat=document.getElementById('seat-'+agentId);
-  if(seat) seat.classList.toggle('spk',start);
+socket.on('roundStart', ({round, phase}) => {
+  document.getElementById('nextBtn').disabled = true;
+  document.getElementById('pRd').textContent = 'R.' + round;
+  const L = {opening:'Hapëse', debate:'Debat', closing:'Mbyllje', audience:'Audiencë', response:'Sfidë', moderation:'Moderim'};
+  const ph = document.getElementById('pPh');
+  ph.textContent = L[phase] || phase;
+  ph.classList.add('on');
+});
 
-  document.getElementById('spkDot').style.background=agentColor||'var(--gold)';
-  document.getElementById('spkName').textContent=start?agentName:'Duke pritur...';
-  document.getElementById('spkName').style.color=start?agentColor:'rgba(232,228,216,.4)';
-  document.getElementById('spkRole').textContent=start?agentRole:'';
+socket.on('roundEnd', () => {
+  document.getElementById('nextBtn').disabled = false;
+  document.getElementById('pPh').classList.remove('on');
+  document.querySelectorAll('.aseat.spk').forEach(s => s.classList.remove('spk'));
+  scrollF();
+});
 
-  if(start && msgId){
-    // Create a new message row
-    const ag=agents.find(a=>a.id===agentId);
-    if(ag){
-      const feed=document.getElementById('pFeed');
-      const init=ag.name.split(' ').map(w=>w[0]).join('');
-      const row=document.createElement('div');
-      row.className='p-msg';
-      const textDiv=document.createElement('div');
-      textDiv.className='p-ty';
-      textDiv.textContent='…';
-      row.innerHTML=`<div class="p-av" style="background:${ag.bg};color:${ag.color}">${init}</div><div style="flex:1;min-width:0"><div class="p-mn" style="color:${ag.color}">${ag.name}</div></div>`;
-      const td=row.querySelector('div[style]'); td.style.cssText='flex:1;min-width:0;width:100%'; td.appendChild(textDiv);
-      feed.appendChild(row);
-      activeEls[msgId]=textDiv;
-      scrollFeed();
-    }
+socket.on('speaking', ({agentId, start, agentName, agentRole, agentColor, msgId}) => {
+  // Toggle seat glow
+  const seat = document.getElementById('seat-' + agentId);
+  if (seat) seat.classList.toggle('spk', start);
+
+  // Update speaking bar
+  const dot = document.getElementById('spkDot');
+  const nm = document.getElementById('spkNm');
+  const rl = document.getElementById('spkRl');
+  if (start) {
+    dot.style.background = agentColor;
+    nm.textContent = agentName;
+    nm.style.color = agentColor;
+    rl.textContent = agentRole;
+  } else {
+    dot.style.background = 'var(--gold)';
+    nm.textContent = 'Duke pritur...';
+    nm.style.color = 'rgba(232,228,216,.35)';
+    rl.textContent = '';
+  }
+
+  // Create new message row
+  if (start && msgId) {
+    const ag = agents.find(a => a.id === agentId);
+    if (!ag) return;
+    const feed = document.getElementById('pF');
+    const init = ag.name.split(' ').map(w => w[0]).join('');
+
+    const row = document.createElement('div');
+    row.className = 'pmsg';
+
+    const av = document.createElement('div');
+    av.className = 'pav';
+    av.style.cssText = `background:${ag.bg};color:${ag.color}`;
+    av.textContent = init;
+
+    const body = document.createElement('div');
+    body.className = 'pbody';
+
+    const name = document.createElement('div');
+    name.className = 'pnm';
+    name.style.color = ag.color;
+    name.textContent = ag.name;
+
+    const txt = document.createElement('div');
+    txt.className = 'pty';
+    txt.textContent = '…';
+
+    body.appendChild(name);
+    body.appendChild(txt);
+    row.appendChild(av);
+    row.appendChild(body);
+    feed.appendChild(row);
+
+    activeEls[msgId] = txt;
+    scrollF();
   }
 });
 
-socket.on('token',({token,msgId})=>{
-  if(!msgId) return;
-  const el=activeEls[msgId];
-  if(el){
-    if(el.classList.contains('p-ty')) el.className='p-tx';
-    el.textContent=(el.textContent==='…'?'':el.textContent)+token;
-    scrollFeed();
-  }
+socket.on('token', ({token, msgId}) => {
+  if (!msgId || !activeEls[msgId]) return;
+  const el = activeEls[msgId];
+  if (el.className !== 'ptx') el.className = 'ptx';
+  if (el.textContent === '…') el.textContent = token;
+  else el.textContent += token;
+  scrollF();
 });
 
-socket.on('message',({msgId,text})=>{
-  if(!msgId) return;
-  const el=activeEls[msgId];
-  if(el){ el.className='p-tx'; el.textContent=text; scrollFeed(); }
+socket.on('message', ({msgId, text}) => {
+  if (!msgId || !activeEls[msgId]) return;
+  const el = activeEls[msgId];
+  el.className = 'ptx';
+  el.textContent = text;
+  scrollF();
 });
 
-socket.on('audienceQuestion',({question,targetName})=>{
-  const d=document.createElement('div'); d.className='ap';
-  d.innerHTML=`"${question}"<div class="ap-m">→ ${targetName||'Parlamenti'}</div>`;
-  const p=document.getElementById('aPop'); p.prepend(d);
-  setTimeout(()=>{try{p.removeChild(d)}catch(e){}},9000);
+socket.on('audienceQuestion', ({question, targetName}) => {
+  const d = document.createElement('div');
+  d.className = 'ap';
+  d.innerHTML = `"${question}"<div class="apm">→ ${targetName || 'Parlamenti'}</div>`;
+  const p = document.getElementById('aPop');
+  p.insertBefore(d, p.firstChild);
+  setTimeout(() => { try { p.removeChild(d); } catch(e) {} }, 9000);
 });
 
-socket.on('voteUpdate',v=>{
-  const r=document.getElementById('vRow'); r.innerHTML='';
-  agents.filter(a=>a.id!=='moderatori').forEach(a=>{
-    const c=v[a.id]||0;
-    r.innerHTML+=`<div class="vd"><div class="vc" style="background:${a.color}"></div>${a.name.split(' ')[0].substring(0,4)} ${c}</div>`;
+socket.on('voteUpdate', v => {
+  const r = document.getElementById('vRow');
+  r.innerHTML = '';
+  agents.filter(a => a.id !== 'moderatori').forEach(a => {
+    const c = v[a.id] || 0;
+    r.innerHTML += `<div class="vd"><div class="vc" style="background:${a.color}"></div>${a.name.split(' ')[0].substring(0,4)} ${c}</div>`;
   });
 });
-socket.on('challenge',({challengerName,targetName})=>bnr(`⚡ ${challengerName} → ${targetName}`));
-socket.on('injectedQuestion',({question})=>bnr(`💬 ${question.substring(0,50)}…`));
 
-function scrollFeed(){ const f=document.getElementById('pFeed'); requestAnimationFrame(()=>f.scrollTop=f.scrollHeight); }
+socket.on('challenge', ({challengerName, targetName}) => bnr(`⚡ ${challengerName} → ${targetName}`));
+socket.on('injectedQuestion', ({question}) => bnr(`💬 ${question.substring(0, 50)}…`));
 
-/* Controls */
-function doNext(){ socket.emit('nextRound'); }
-
-function doInject(){
-  const pool=questions.length?questions:FALLBACK_Q;
-  const q=pool[Math.floor(Math.random()*pool.length)];
-  socket.emit('injectQuestion',{question:q});
+function scrollF() {
+  const f = document.getElementById('pF');
+  requestAnimationFrame(() => { f.scrollTop = f.scrollHeight; });
 }
 
-function doChallenge(){
-  cStep=1; cSel=null;
-  document.getElementById('mTtl').textContent='Zgjidh sfiduesin:';
-  fillGrid(agents.filter(a=>a.id!=='moderatori'), ag=>{
-    if(cStep===1){ cSel=ag.id; cStep=2;
-      document.getElementById('mTtl').textContent='Kë sfidon '+ag.name.split(' ')[0]+'?';
-      fillGrid(agents.filter(x=>x.id!=='moderatori'&&x.id!==ag.id), tg=>{
+/* ── Controls ── */
+function doNext() { socket.emit('nextRound'); }
+
+function doInject() {
+  const pool = questions.length ? questions : FALLBACK_Q;
+  const q = pool[Math.floor(Math.random() * pool.length)];
+  socket.emit('injectQuestion', {question: q});
+}
+
+function doChallenge() {
+  cStep = 1; cSel = null;
+  document.getElementById('mTtl').textContent = 'Zgjidh sfiduesin:';
+  fillGrid(agents.filter(a => a.id !== 'moderatori'), ag => {
+    if (cStep === 1) {
+      cSel = ag.id; cStep = 2;
+      document.getElementById('mTtl').textContent = 'Kë sfidon ' + ag.name.split(' ')[0] + '?';
+      fillGrid(agents.filter(x => x.id !== 'moderatori' && x.id !== ag.id), tg => {
         document.getElementById('cModal').classList.remove('show');
-        socket.emit('challengeAgent',{challengerId:cSel,targetId:tg.id});
+        socket.emit('challengeAgent', {challengerId: cSel, targetId: tg.id});
       });
     }
   });
   document.getElementById('cModal').classList.add('show');
 }
-function fillGrid(list,cb){
-  const g=document.getElementById('mGrid'); g.innerHTML='';
-  list.forEach(a=>{
-    const b=document.createElement('div'); b.className='m-ag';
-    b.innerHTML=`<span style="color:${a.color}">${a.name.split(' ')[0]}</span><br><span style="font-size:8px;opacity:.55">${a.role}</span>`;
-    b.style.borderColor=a.color+'30'; b.onclick=()=>cb(a); g.appendChild(b);
+
+function fillGrid(list, cb) {
+  const g = document.getElementById('mGrid');
+  g.innerHTML = '';
+  list.forEach(a => {
+    const b = document.createElement('div');
+    b.className = 'mag';
+    b.style.borderColor = a.color + '30';
+    b.innerHTML = `<span style="color:${a.color}">${a.name.split(' ')[0]}</span><br><span style="font-size:8px;opacity:.5">${a.role}</span>`;
+    b.onclick = () => cb(a);
+    g.appendChild(b);
   });
 }
 
-async function fetchQ(){ try{ const r=await fetch('/questions'); questions=await r.json(); }catch(e){} }
-async function loadQR(){ try{ const r=await fetch('/qr'); const d=await r.json(); document.getElementById('qrImg').src=d.qr; }catch(e){} }
+async function fetchQ() {
+  try { const r = await fetch('/questions'); questions = await r.json(); } catch(e) {}
+}
+async function loadQR() {
+  try { const r = await fetch('/qr'); const d = await r.json(); document.getElementById('qrImg').src = d.qr; } catch(e) {}
+}
 
 let bTO;
-function bnr(txt){ clearTimeout(bTO); const b=document.getElementById('bnr'); b.textContent=txt; b.style.opacity='1'; bTO=setTimeout(()=>b.style.opacity='0',4000); }
+function bnr(txt) {
+  clearTimeout(bTO);
+  const b = document.getElementById('bnr');
+  b.textContent = txt; b.style.opacity = '1';
+  bTO = setTimeout(() => b.style.opacity = '0', 4000);
+}
 
-window.addEventListener('resize',()=>{ if(document.getElementById('parl').classList.contains('show')) buildStage(); });
+window.addEventListener('resize', () => {
+  if (document.getElementById('parl').classList.contains('show')) buildStage();
+});
 </script>
 </body>
 </html>
