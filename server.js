@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-const Groq = require('groq-sdk');
+const Anthropic = require('@anthropic-ai/sdk');
 const QRCode = require('qrcode');
 const path = require('path');
 const fs = require('fs');
@@ -10,7 +10,7 @@ const fs = require('fs');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: '*' } });
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -99,38 +99,39 @@ async function speak(agentId, userPrompt, phase) {
     .join('\n');
 
   const isMod = agentId === 'moderatori';
-  const maxTok = isMod ? 180 : 700;
+  const maxTok = isMod ? 200 : 1000;
 
   const systemPrompt = `${agent.sys}
 
-TEMA E DEBATIT (mos u largo kurrë nga kjo temë): "${state.topic}"
+TEMA E DEBATIT: "${state.topic}"
 FAKTE ELBASANI: ${CITY_FACTS}
-${hist ? `\nU tha kohët e fundit:\n${hist}` : ''}
+${hist ? `U tha kohët e fundit:\n${hist}` : ''}
 
-RREGULLA:
-- Fol VETËM shqip standard. Fjali të plota.
-- Mos u devijo nga tema "${state.topic}" asnjëherë.
-- Mos u prezanto me emër.
-- Mos thuaj "Si [roli]...".
-- ${isMod ? 'Maksimum 4 fjali.' : `Shkruaj ${phase === 'opening' ? '3 paragrafë hapëse' : phase === 'closing' ? '3 paragrafë mbyllëse' : '2-3 paragrafë reagimi'}. Cito me emër nëse kundështon dikë.`}`;
+RREGULLA ABSOLUTE:
+1. Shkruaj VETËM në shqip standard letrare. Asnjë fjalë angleze.
+2. Çdo fjali duhet të ketë kryefjalë, kallëzues dhe të jetë e plotë. MOS PRIT FJALI NË MES.
+3. Mos u largo asnjëherë nga tema: "${state.topic}".
+4. Mos u prezanto me emër. Mos thuaj "Si [roli]...".
+5. Përdor fjali të thjeshta dhe të qarta — subject + verb + object.
+6. ${isMod ? 'Maksimum 4 fjali të plota.' : `Shkruaj ${phase === 'opening' ? '3 paragrafë' : phase === 'closing' ? '3 paragrafë' : '2 paragrafë'}. Çdo paragraf: 3-4 fjali të plota. Mbaro çdo fjali me pikë.`}
+7. Nëse kundërshton dikë, citoje me emër.`;
 
   let text = '';
-  const MODELS = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant'];
-
-  for (let attempt = 0; attempt < 3; attempt++) {
-    if (attempt > 0) await sleep(attempt * 3000);
-    const model = attempt < 2 ? MODELS[0] : MODELS[1];
+  for (let attempt = 0; attempt < 2; attempt++) {
+    if (attempt > 0) await sleep(4000);
     try {
-      const stream = await groq.chat.completions.create({
-        model, stream: true, max_tokens: maxTok, temperature: 0.75,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ]
+      const stream = await anthropic.messages.create({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: maxTok,
+        stream: true,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userPrompt }]
       });
       for await (const chunk of stream) {
-        const d = chunk.choices[0]?.delta?.content || '';
-        if (d) { text += d; io.emit('token', { agentId, token: d, msgId }); }
+        if (chunk.type === 'content_block_delta' && chunk.delta?.type === 'text_delta') {
+          const d = chunk.delta.text;
+          if (d) { text += d; io.emit('token', { agentId, token: d, msgId }); }
+        }
       }
       break;
     } catch (e) {
