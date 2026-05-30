@@ -218,29 +218,35 @@ async function runFullRound(phase) {
   io.emit('roundStart', { round: state.round, phase });
   console.log(`[Round ${state.round}] Phase: ${phase}`);
 
-  for (let i = 0; i < DEBATE_AGENTS.length; i++) {
-    const agent = DEBATE_AGENTS[i];
-    const prev = state.messages.slice(-3).map(m => `${m.agentName}: ${m.text.substring(0, 120)}`).join('\n');
-
-    const trigger = phase === 'opening'
-      ? `Tema: "${state.topic}". Fjalimi yt hapës.`
-      : phase === 'closing'
-      ? `Tema: "${state.topic}". Fjalimi yt mbyllës.`
-      : `Reagoji çfarë u tha:\n${prev}\n\nMerr qëndrimin tënd.`;
-
-    await agentSpeak(agent.id, trigger, phase);
+  try {
+    for (let i = 0; i < DEBATE_AGENTS.length; i++) {
+      const agent = DEBATE_AGENTS[i];
+      const prev = state.messages.slice(-3).map(m => `${m.agentName}: ${m.text.substring(0, 120)}`).join('\n');
+      const trigger = phase === 'opening'
+        ? `Tema: "${state.topic}". Fjalimi yt hapës.`
+        : phase === 'closing'
+        ? `Tema: "${state.topic}". Fjalimi yt mbyllës.`
+        : `Reagoji çfarë u tha:\n${prev}\n\nMerr qëndrimin tënd.`;
+      await agentSpeak(agent.id, trigger, phase);
+    }
+  } catch(e) {
+    console.error('[runFullRound] error:', e.message);
+  } finally {
+    io.emit('roundEnd', { round: state.round });
+    state.isRunning = false;
+    console.log(`[Round ${state.round}] Done.`);
   }
 
-  io.emit('roundEnd', { round: state.round });
-  state.isRunning = false;
-  console.log(`[Round ${state.round}] Completed.`);
-
-  await sleep(2000);
-  const q = PROVOCATIVE_QUESTIONS[state.round % PROVOCATIVE_QUESTIONS.length];
-  await agentSpeak('moderatori',
-    `Rundi ${state.round} mbaroi. Sintezë e shkurtër (1 fjali) + pyetje: "${q}"`,
-    'moderation'
-  );
+  try {
+    await sleep(2000);
+    const q = PROVOCATIVE_QUESTIONS[state.round % PROVOCATIVE_QUESTIONS.length];
+    await agentSpeak('moderatori',
+      `Rundi ${state.round} mbaroi. Sintezë (1 fjali) + pyetje: "${q}"`,
+      'moderation'
+    );
+  } catch(e) {
+    console.error('[moderator] error:', e.message);
+  }
 }
 
 // ─── ROUTES ─────────────────────────────────────────────────────────────────
@@ -281,7 +287,8 @@ io.on('connection', socket => {
     if (state.isRunning || !state.topic) return;
     state.isRunning = true;
     const phase = state.round >= 2 ? 'closing' : 'debate';
-    await runFullRound(phase);
+    try { await runFullRound(phase); } catch(e) { console.error('nextRound:', e.message); }
+    finally { state.isRunning = false; }
   });
 
   socket.on('audienceQuestion', async ({ question, targetAgent }) => {
@@ -315,6 +322,7 @@ io.on('connection', socket => {
     const target = DEBATE_AGENTS.find(a => a.id === targetId);
     if (!challenger || !target) { state.isRunning = false; return; }
 
+    try {
     io.emit('roundStart', { round: state.round, phase: 'response' });
     io.emit('challenge', { challengerId, targetId, challengerName: challenger.name, targetName: target.name });
 
@@ -328,8 +336,7 @@ io.on('connection', socket => {
       'response'
     );
 
-    state.isRunning = false;
-    io.emit('roundEnd', { round: state.round });
+  } catch(e) { console.error('challenge:', e.message); } finally { state.isRunning = false; io.emit('roundEnd', { round: state.round }); }
   });
 
   socket.on('vote', ({ agentId }) => {
@@ -342,23 +349,18 @@ io.on('connection', socket => {
     state.isRunning = true;
     io.emit('roundStart', { round: state.round, phase: 'moderation' });
     io.emit('injectedQuestion', { question });
-
-    // Moderatori bën pyetjen, pastaj dy agjentë reagojnë
-    await agentSpeak('moderatori',
-      `Pyetje e re për debatantët: "${question}"`,
-      'moderation'
-    );
-
-    const shuffled = [...DEBATE_AGENTS].sort(() => Math.random() - 0.5).slice(0, 2);
-    for (const ag of shuffled) {
-      await agentSpeak(ag.id,
-        `Moderatorja bëri pyetjen: "${question}". Çfarë mendon ti?`,
-        'debate'
-      );
+    try {
+      await agentSpeak('moderatori', `Pyetje: "${question}"`, 'moderation');
+      const shuffled = [...DEBATE_AGENTS].sort(() => Math.random() - 0.5).slice(0, 2);
+      for (const ag of shuffled) {
+        await agentSpeak(ag.id, `Moderatorja pyeti: "${question}". Mendimi yt?`, 'debate');
+      }
+    } catch(e) {
+      console.error('injectQuestion:', e.message);
+    } finally {
+      state.isRunning = false;
+      io.emit('roundEnd', { round: state.round });
     }
-
-    state.isRunning = false;
-    io.emit('roundEnd', { round: state.round });
   });
 
   socket.on('disconnect', () => console.log('Disconnected:', socket.id));
